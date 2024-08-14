@@ -6,7 +6,7 @@
       <Value Profile="(Default)">Data Source=|DataDirectory|database.db;Version=3;</Value>
     </Setting>
     <Setting Name="system" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Metric</Value>
+      <Value Profile="(Default)">Imperial</Value>
     </Setting>
     <Setting Name="speed" Type="System.String" Scope="User">
       <Value Profile="(Default)">km/h</Value>
@@ -23,8 +23,17 @@
     <Setting Name="MainWindowOpacity" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1</Value>
     </Setting>
-    <Setting Name="Language" Type="System.String" Scope="User">
-      <Value Profile="(Default)">English</Value>
+    <Setting Name="weight" Type="System.String" Scope="User">
+      <Value Profile="(Default)">kg</Value>
+    </Setting>
+    <Setting Name="engineSize" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="torque" Type="System.String" Scope="User">
+      <Value Profile="(Default)">N⋅m</Value>
+    </Setting>
+    <Setting Name="horsepower" Type="System.String" Scope="User">
+      <Value Profile="(Default)">BHP</Value>
     </Setting>
   </Settings>
 </SettingsFile>

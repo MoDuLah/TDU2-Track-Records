@@ -50,7 +50,7 @@
 		<Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
 		<Setter Property="Background" Value="{StaticResource NormalBackground}"/>
 		<Setter Property="BorderThickness" Value="1"/>
-		<Setter Property="Foreground" Value="Red"/>
+		<Setter Property="Foreground" Value="White"/>
 		<Setter Property="HorizontalContentAlignment" Value="Center"/>
 		<Setter Property="VerticalContentAlignment" Value="Center"/>
 		<Setter Property="Padding" Value="10"/>

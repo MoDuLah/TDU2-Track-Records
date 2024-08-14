@@ -12,8 +12,8 @@ namespace TDU2_Track_Records.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.11.0.0")]
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -37,7 +37,7 @@ namespace TDU2_Track_Records.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Metric")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Imperial")]
         public string system {
             get {
                 return ((string)(this["system"]));
@@ -109,13 +109,49 @@ namespace TDU2_Track_Records.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("English")]
-        public string Language {
+        [global::System.Configuration.DefaultSettingValueAttribute("kg")]
+        public string weight {
             get {
-                return ((string)(this["Language"]));
+                return ((string)(this["weight"]));
             }
             set {
-                this["Language"] = value;
+                this["weight"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string engineSize {
+            get {
+                return ((string)(this["engineSize"]));
+            }
+            set {
+                this["engineSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("N⋅m")]
+        public string torque {
+            get {
+                return ((string)(this["torque"]));
+            }
+            set {
+                this["torque"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("BHP")]
+        public string horsepower {
+            get {
+                return ((string)(this["horsepower"]));
+            }
+            set {
+                this["horsepower"] = value;
             }
         }
     }

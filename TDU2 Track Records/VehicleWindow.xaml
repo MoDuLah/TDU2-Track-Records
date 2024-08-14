@@ -1,0 +1,149 @@
+﻿<Window x:Class="TDU2_Track_Records.Vehicle"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
+        xmlns:local="clr-namespace:TDU2_Track_Records"
+        mc:Ignorable="d"
+        Title="Settings" MinWidth="382" MinHeight="350" HorizontalContentAlignment="Stretch" ScrollViewer.CanContentScroll="True">
+    <Window.Background>
+        <ImageBrush ImageSource="/Images/BG.png"/>
+    </Window.Background>
+    <Grid>
+        <TabControl Grid.Row="9" Grid.Column="1" ScrollViewer.CanContentScroll="True">
+            <!-- Add Vehicle Tab -->
+            <TabItem Header="Add Vehicle" ScrollViewer.CanContentScroll="True">
+                <StackPanel Margin="10">
+                    <Label Content="Add Vehicle" />
+                    <StackPanel Orientation="Vertical" Margin="5">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Vehicle Name:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="CarNameTextBox" Width="200" Margin="5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Vehicle Class:" VerticalAlignment="Center" Width="100" />
+                            <ComboBox x:Name="VehicleClass" SelectedIndex="0">
+                                <ComboBoxItem Content="A1"/>
+                                <ComboBoxItem Content="A2"/>
+                                <ComboBoxItem Content="A3"/>
+                                <ComboBoxItem Content="A4"/>
+                                <ComboBoxItem Content="A5"/>
+                                <ComboBoxItem Content="A6"/>
+                                <ComboBoxItem Content="A7"/>
+                                <ComboBoxItem Content="B2"/>
+                                <ComboBoxItem Content="B3"/>
+                                <ComboBoxItem Content="B4"/>
+                                <ComboBoxItem Content="C1"/>
+                                <ComboBoxItem Content="C2"/>
+                                <ComboBoxItem Content="C3"/>
+                                <ComboBoxItem Content="C4"/>
+                                <ComboBoxItem Content="MA1"/>
+                                <ComboBoxItem Content="MA2"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Vehicle Mileage:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="CarMileageTextBox" Width="200" Margin="5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Price:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="CarPriceTextBox" Width="200" Margin="5" />
+                        </StackPanel>
+                        <CheckBox x:Name="CarActiveCheckBox" Content="Active" Margin="5" />
+
+                        <!-- Vehicle Performance Details -->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Acceleration (0-100):" VerticalAlignment="Center" Width="150" />
+                            <Slider x:Name="AccelerationSlider" Minimum="0" Maximum="100" Width="200" Margin="5" 
+                    ToolTip="{Binding ElementName=AccelerationSlider, Path=Value}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Speed Rating:" VerticalAlignment="Center" Width="150" />
+                            <Slider x:Name="SpeedRatingSlider" Minimum="0" Maximum="100" Width="200" Margin="5" 
+                    ToolTip="{Binding ElementName=SpeedRatingSlider, Path=Value}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Braking Rating:" VerticalAlignment="Center" Width="150" />
+                            <Slider x:Name="BrakingRatingSlider" Minimum="0" Maximum="100" Width="200" Margin="5" 
+                    ToolTip="{Binding ElementName=BrakingRatingSlider, Path=Value}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Difficulty Rating:" VerticalAlignment="Center" Width="150" />
+                            <Slider x:Name="DifficultyRatingSlider" Minimum="0" Maximum="5" Width="200" Margin="5" 
+                    ToolTip="{Binding ElementName=DifficultyRatingSlider, Path=Value}"/>
+                        </StackPanel>
+
+                        <!-- Vehicle Specification Details -->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Top Speed:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="TopSpeedTextBox" Width="200" Margin="5" />
+                            <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Acceleration:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="AccelerationTextBox" Width="200" Margin="5" />
+                            <TextBlock Text="Sec." VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Power:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="PowerTextBox" Width="200" Margin="5" />
+                            <TextBlock Text="BHP" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Engine Size:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="EngineSizeTextBox" Width="200" Margin="5" />
+                            <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=engineSize, Mode=OneWay}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Engine Layout:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="EngineLayoutTextBox" Width="200" Margin="5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Gearbox:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="GearboxTextBox" Width="200" Margin="5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Max Torque:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="MaxTorqueTextBox" Width="50" Margin="5" />
+                            <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            <TextBlock Text=" @" VerticalAlignment="Center" />
+                            <TextBox x:Name="MaxTorqueRPMTextBox" Width="50" Margin="5" />
+                            <TextBlock Text="RPM" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Max Power:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="MaxPowerTextBox" Margin="5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Max Power RPM:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="MaxPowerRPMTextBox" Margin="5" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Weight:" VerticalAlignment="Center" Width="100" />
+                            <TextBox x:Name="WeightTextBox" Width="200" Margin="5" />
+                            <TextBlock Text="{Binding ElementName=WeightUnitComboBox, Path=SelectedItem}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        </StackPanel>
+                        <Button Content="Add Vehicle" Width="100" Margin="5" Click="AddCarButton_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <!-- Edit Vehicles Tab -->
+            <TabItem Header="Edit Vehicles">
+                <StackPanel Margin="10">
+                    <ListBox x:Name="EditVehicleListBox" SelectionChanged="EditVehicleListBox_SelectionChanged" Height="300" Margin="5"/>
+                    <Button Content="Save Changes" Width="100" Margin="5" Click="SaveChangesButton_Click" />
+                </StackPanel>
+            </TabItem>
+
+            <!-- View/Delete Vehicles Tab -->
+            <TabItem Header="View/Delete Vehicles">
+                <StackPanel Margin="10">
+                    <ListBox x:Name="VehicleListBox" SelectionChanged="VehicleListBox_SelectionChanged" Height="300" Margin="5"/>
+                    <Button Content="Delete Selected Vehicle" Width="200" Margin="5" Click="DeleteCarButton_Click" />
+                </StackPanel>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

@@ -142,6 +142,14 @@
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UnitConverter.cs" />
+    <Compile Include="VehicleManagement.cs" />
+    <Compile Include="VehicleWindow.xaml.cs">
+      <DependentUpon>VehicleWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VehicleButton.xaml.cs">
+      <DependentUpon>VehicleButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\powerlapViewModel.cs" />
     <Page Include="CloseButton.xaml">
       <SubType>Designer</SubType>
@@ -230,6 +238,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="VehicleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VehicleButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MinimizeButton.xaml.cs">
@@ -256,7 +272,7 @@
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="TDU2 Track Records_TemporaryKey.pfx" />

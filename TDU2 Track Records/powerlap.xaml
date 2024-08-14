@@ -9,7 +9,7 @@
         mc:Ignorable="d" WindowStyle="None" AllowsTransparency="True"
         SizeToContent="WidthAndHeight"
         FontSize="16" WindowStartupLocation="CenterScreen"
-        Icon="/045970ce219180823b77803f651c8df2bdb804d0.ico" FontFamily="Adobe Gothic Std B"
+        Icon="/Images/tdu2.ico" FontFamily="Adobe Gothic Std B"
         Background="{x:Null}"
         Title="Power Lap Board"
         MinWidth="900" MinHeight="600" MaxHeight="950"

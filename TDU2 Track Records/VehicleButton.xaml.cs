@@ -16,19 +16,19 @@ using System.Windows.Shapes;
 namespace TDU2_Track_Records
 {
     /// <summary>
-    /// Interaction logic for SettingsButton.xaml
+    /// Interaction logic for VehicleButton.xaml
     /// </summary>
-    public partial class SettingsButton : UserControl
+    public partial class VehicleButton : UserControl
     {
-        public SettingsButton()
+        public VehicleButton()
         {
             InitializeComponent();
         }
 
         private void CloseButton_Click(object sender, MouseButtonEventArgs e)
         {
-            var settingsWindow = new SettingsWindow();
-            settingsWindow.Show();
+            var VehicleWindow = new Vehicle();
+            VehicleWindow.ShowDialog();
         }
     }
 }

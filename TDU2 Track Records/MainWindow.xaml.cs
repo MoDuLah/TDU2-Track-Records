@@ -22,14 +22,15 @@ namespace TDU2_Track_Records
     {
         public int RecordsOn = 0;
         readonly string connectionString = Settings.Default.connectionString;
-        public string distance, speed;
+        public string distance = Settings.Default.distance;
+        public string speed = Settings.Default.speed;
+        string SI = Settings.Default.system;
         private static readonly Regex _regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
         private static readonly Regex _regexx = new Regex("[^0-9-]+"); //regex that matches disallowed text
         SQLiteDataAdapter dbAdapter;
         SQLiteDataReader reader;
         SQLiteConnection dbConn; // Declare the SQLiteConnection-Object
         SQLiteCommand dbCmd;
-        string SI = Settings.Default.system;
         public double onemile = 0.621371192;
 
 
@@ -39,11 +40,9 @@ namespace TDU2_Track_Records
             InitializeComponent();
             Fill(combo_Track);
             BindComboBox(combo_Vehicle);
-            SI_Setter.Text = SI;
+            //SI_Setter.Text = SI;
             if (SI == "Metric")
             {
-                distance = "km";
-                speed = "km/h";
                 btn_loadrec_Metric.Visibility = Visibility.Visible;
                 btn_loadrec_Imperial.Visibility = Visibility.Collapsed;
                 ViewEntries_Metric.Visibility = Visibility.Collapsed;
@@ -51,8 +50,6 @@ namespace TDU2_Track_Records
             }
             else
             {
-                distance = "mi";
-                speed = "mph";
                 btn_loadrec_Imperial.Visibility = Visibility.Visible;
                 btn_loadrec_Metric.Visibility = Visibility.Collapsed;
                 ViewEntries_Metric.Visibility = Visibility.Collapsed;
@@ -269,9 +266,7 @@ namespace TDU2_Track_Records
                 }
                 else if (child is ComboBox comboBox)
                 {
-                    if(comboBox.Name != SI_Setter.Name) { 
                     comboBox.SelectedIndex = -1;
-                    }
                 }
                 else if (child is CheckBox checkBox)
                 {
@@ -1564,46 +1559,46 @@ namespace TDU2_Track_Records
 
 
 
-        private void SI_Setter_DropDownClosed(object sender, EventArgs e)
-        {
-            // Update settings based on the selected unit
-            if (SI_Setter.Text == "Imperial")
-            {
-                Settings.Default.distance = "mi";
-                Settings.Default.speed = "mph";
-                Settings.Default.system = "Imperial";
-            }
-            else
-            {
-                Settings.Default.distance = "m";
-                Settings.Default.speed = "km/h";
-                Settings.Default.system = "Metric";
-            }
-            Settings.Default.Save();
+        //private void SI_Setter_DropDownClosed(object sender, EventArgs e)
+        //{
+        //    // Update settings based on the selected unit
+        //    if (SI_Setter.Text == "Imperial")
+        //    {
+        //        Settings.Default.distance = "mi";
+        //        Settings.Default.speed = "mph";
+        //        Settings.Default.system = "Imperial";
+        //    }
+        //    else
+        //    {
+        //        Settings.Default.distance = "m";
+        //        Settings.Default.speed = "km/h";
+        //        Settings.Default.system = "Metric";
+        //    }
+        //    Settings.Default.Save();
 
-            // Prompt the user to restart the application
-            if (MessageBox.Show(
-                "To apply the changes the application has to restart.\nMake sure that you have saved your data.",
-                "Restart",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question) == MessageBoxResult.No)
-            {
-                return;
-            }
-            else
-            {
-                try
-                {
-                    // Restart the application
-                    System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
-                    Application.Current.Shutdown();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Failed to restart the application. Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
+        //    // Prompt the user to restart the application
+        //    if (MessageBox.Show(
+        //        "To apply the changes the application has to restart.\nMake sure that you have saved your data.",
+        //        "Restart",
+        //        MessageBoxButton.YesNo,
+        //        MessageBoxImage.Question) == MessageBoxResult.No)
+        //    {
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        try
+        //        {
+        //            // Restart the application
+        //            System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+        //            Application.Current.Shutdown();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            MessageBox.Show($"Failed to restart the application. Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //        }
+        //    }
+        //}
 
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

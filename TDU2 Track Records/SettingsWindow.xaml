@@ -3,25 +3,22 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
         xmlns:local="clr-namespace:TDU2_Track_Records"
-        xmlns:properties="clr-namespace:TDU2_Track_Records.Properties"
         mc:Ignorable="d"
-        Title="Settings" MinWidth="382" MinHeight="350" HorizontalContentAlignment="Stretch" MaxWidth="400" MaxHeight="400">
+        Title="Settings" MinWidth="382" MinHeight="350" MaxWidth="500">
+
+    <Window.Resources>
+        <!-- Define UnitConverter as a resource -->
+        <local:UnitConverter x:Key="UnitConverter"/>
+    </Window.Resources>
+
     <Window.Background>
         <ImageBrush ImageSource="/Images/BG.png"/>
     </Window.Background>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
@@ -39,70 +36,45 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="9" Grid.ColumnSpan="10">
-            <Border.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="White" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-            <TabControl Margin="0,0,0,0"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                <!-- Opacity Tab -->
-                <TabItem Header="Opacity">
+        <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="8" HorizontalAlignment="Center">
+            <TabControl Margin="0,0,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinWidth="342" MinHeight="212" MaxWidth="342">
+                <!-- Opacity and Units Tab -->
+                <TabItem Header="Settings">
                     <StackPanel Margin="10">
-                        <Label Content="Main Window Opacity" />
-                        <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Width="300" Margin="5" TickFrequency="0.01" Value="1" >
-                            <Slider.Foreground>
-                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                    <GradientStop Color="#00000000"/>
-                                    <GradientStop Color="White" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Slider.Foreground>
-                        </Slider>
-                        <TextBlock Text="{Binding ElementName=OpacitySlider, Path=Value, StringFormat='Opacity: {0:F1}'}"
-                   VerticalAlignment="Center" 
-                   HorizontalAlignment="Center" 
-                   FontSize="16" 
-                   Margin="10"/>
-                    </StackPanel>
-                </TabItem>
-
-                <!-- Language Tab -->
-                <TabItem Header="Language" IsEnabled="False" Visibility="Collapsed">
-                    <StackPanel Margin="10">
-                        <Label Content="Language" />
-                        <ComboBox x:Name="LanguageComboBox" Margin="5">
-                            <ComboBoxItem Content="English" />
-                        </ComboBox>
-                    </StackPanel>
-                </TabItem>
-
-                <!-- Unit Tab -->
-                <TabItem Header="Unit">
-                    <StackPanel Margin="10">
-                        <Label Content="Unit" />
-                        <ComboBox x:Name="UnitComboBox" Margin="5" SelectedIndex="0" SelectionChanged="UnitComboBox_SelectionChanged">
-                            <ComboBoxItem Content="Metric" />
-                            <ComboBoxItem Content="Imperial" />
-                        </ComboBox>
-                    </StackPanel>
-                </TabItem>
-
-                <!-- Cars Tab -->
-                <TabItem Header="Cars">
-                    <StackPanel Margin="10">
-                        <Label Content="Add Car" />
-                        <StackPanel Orientation="Vertical" Margin="5">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Car Name:" VerticalAlignment="Center" Width="100" />
-                                <TextBox x:Name="CarNameTextBox" Width="200" Margin="5" />
+                        <GroupBox Header="Main Window Opacity">
+                            <StackPanel>
+                                <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Width="300" Margin="5" TickFrequency="0.1"
+                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=TwoWay}" >
+                                    <Slider.Foreground>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <GradientStop Color="#00000000"/>
+                                            <GradientStop Color="White" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Slider.Foreground>
+                                </Slider>
+                                <TextBlock Text="{Binding ElementName=OpacitySlider, Path=Value, StringFormat='Opacity: {0:F1}'}"
+                                           VerticalAlignment="Center" 
+                                           HorizontalAlignment="Center" 
+                                           FontSize="16" 
+                                           Margin="10"/>
                             </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Car Class:" VerticalAlignment="Center" Width="100" />
-                                <TextBox x:Name="CarClassTextBox" Width="200" Margin="5" />
+                        </GroupBox>
+                        <GroupBox Header="Units">
+                            <StackPanel Orientation="Horizontal" Margin="5">
+                                <Slider x:Name="UnitSlider" Minimum="0" Maximum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="200"
+                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Mode=TwoWay}" />
+                                <TextBlock Text="{Binding ElementName=UnitSlider, Path=Value, Converter={StaticResource UnitConverter}}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
-                            <CheckBox x:Name="CarActiveCheckBox" Content="Active" Margin="5" />
-                            <Button Content="Add Car" Width="100" Margin="5" Click="AddCarButton_Click" />
+                        </GroupBox>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Speed: "/>
+                            <TextBlock x:Name="SpeedUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" />
+                            <TextBlock Text=" Weight: " Margin="5,0,0,0"/>
+                            <TextBlock x:Name="WeightUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}" />
+                            <TextBlock Text="Distance: " Margin="5,0,0,0"/>
+                            <TextBlock x:Name="DistanceUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}" />
+                            <TextBlock Text="Torque: " Margin="5,0,0,0"/>
+                            <TextBlock x:Name="torqueUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}" />
                         </StackPanel>
                     </StackPanel>
                 </TabItem>
@@ -110,7 +82,6 @@
                 <!-- Tracks Tab -->
                 <TabItem Header="Tracks">
                     <StackPanel Margin="10">
-                        
                         <StackPanel Orientation="Vertical" Margin="5">
                             <GroupBox Header="Add Track">
                                 <StackPanel>
@@ -128,9 +99,10 @@
                 </TabItem>
             </TabControl>
         </Border>
-        <StackPanel Grid.Row="10" Grid.Column="0" Orientation="Horizontal" Grid.ColumnSpan="12" HorizontalAlignment="Center" Margin="0,0,0,0">
-            <Button Content="Cancel" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
-            <Button Content="Save" Margin="5" Click="SaveButton_Click" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
+
+        <!-- Close Button -->
+        <StackPanel Grid.Row="10" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
+            <Button Content="Close" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
         </StackPanel>
     </Grid>
 </Window>
