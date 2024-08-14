@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="TDU2_Track_Records.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="connectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data Source=|DataDirectory|database.db;Version=3;</Value>
+    </Setting>
+    <Setting Name="system" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Metric</Value>
+    </Setting>
+    <Setting Name="speed" Type="System.String" Scope="User">
+      <Value Profile="(Default)">km/h</Value>
+    </Setting>
+    <Setting Name="distance" Type="System.String" Scope="User">
+      <Value Profile="(Default)">km</Value>
+    </Setting>
+    <Setting Name="average_Speed" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="high_average" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MainWindowOpacity" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Language" Type="System.String" Scope="User">
+      <Value Profile="(Default)">English</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

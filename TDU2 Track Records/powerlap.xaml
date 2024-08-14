@@ -1,0 +1,145 @@
+﻿<Window x:Class="TDU2_Track_Records.powerlap"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TDU2_Track_Records"
+        xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
+        xmlns:behaviors="clr-namespace:TDU2_Track_Records"
+        mc:Ignorable="d" WindowStyle="None" AllowsTransparency="True"
+        SizeToContent="WidthAndHeight"
+        FontSize="16" WindowStartupLocation="CenterScreen"
+        Icon="/045970ce219180823b77803f651c8df2bdb804d0.ico" FontFamily="Adobe Gothic Std B"
+        Background="{x:Null}"
+        Title="Power Lap Board"
+        MinWidth="900" MinHeight="600" MaxHeight="950"
+        HorizontalContentAlignment="Stretch"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+
+    <Window.Resources>
+        <Style x:Key="NoSelectionListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="FocusManager.FocusedElement" Value="{x:Null}"/>
+        </Style>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
+    <Window.DataContext>
+        <local:PowerLapViewModel/>
+    </Window.DataContext>
+    <Border BorderBrush="Red" BorderThickness="2,2,2,2" CornerRadius="20,20,20,20" Margin="0" MinHeight="900" MinWidth="892" HorizontalAlignment="Center" PreviewMouseRightButtonUp="LapsListBox_PreviewMouseRightButtonUp">
+        <Border.Background>
+            <ImageBrush ImageSource="/Images/powerLapbg.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" Stretch="Fill"/>
+        </Border.Background>
+        <Grid x:Name="mainGrid" HorizontalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="70"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+            <DockPanel x:Name="grp" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <GroupBox Header="Track">
+                    <ComboBox x:Name="combo_Track" ItemsSource="{Binding}" TabIndex="0" MinWidth="150" MaxDropDownHeight="250" VerticalAlignment="Center" Height="45" MinHeight="45"/>
+                </GroupBox>
+                <GroupBox Header="Class">
+                    <ComboBox x:Name="combo_Class" MinWidth="150" Margin="5" MaxDropDownHeight="250" VerticalAlignment="Center" Height="42" MinHeight="45" >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding ImagePath}" Width="40" Height="40" />
+                                    <TextBlock Text="{Binding Description}" Margin="5,0,5,5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </GroupBox>
+                <Button x:Name="combo_Button" TabIndex="2" Content="Show" Click="combo_Button_Click" VerticalAlignment="Bottom" Foreground="White"/>
+
+            </DockPanel>
+            <!--<local:CloseButton Margin="0,0,20,0"/>-->
+            <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="5,10,5,-11">
+                <TextBlock x:Name="trackName" Text="{Binding trackName}" FontFamily="Britannic Bold" FontSize="32" Foreground="#FFBD0000" VerticalAlignment="Center"/>
+                <ContentControl  x:Name="combo_TextBlock" Content="{Binding ImagePath}" HorizontalAlignment="Center" Margin="5,0"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <CheckBox x:Name="cb_conditions" BorderBrush="{x:Null}" Checked="cb_conditions_StateChanged" Unchecked="cb_conditions_StateChanged" Visibility="Collapsed"/>
+                <ToggleButton Foreground="{x:Null}" x:Name="cb_weather" MouseLeftButtonDown="cb_weather_MouseLeftButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="40" MinHeight="40" Click="cb_weather_Click" >
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image>
+                                    <Image.Style>
+                                        <Style>
+                                            <Setter Property="Image.Source" Value="Images/sun.png" />
+                                            <Setter Property="Image.ToolTip" Value="Sunny"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsChecked,RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}" Value="True">
+                                                    <Setter Property="Image.Source" Value="Images/rain.png" />
+                                                    <Setter Property="Image.ToolTip" Value="Rainny"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                </ToggleButton>
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center">
+                <CheckBox x:Name="cb_orientation" BorderBrush="{x:Null}" Checked="cb_orientation_StateChanged" Unchecked="cb_orientation_StateChanged" Margin="5,0,0,0" Visibility="Collapsed"/>
+                <ToggleButton Foreground="{x:Null}" x:Name="txt_orientation" MouseLeftButtonDown="txt_orientation_MouseLeftButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="32" MinHeight="32" Click="txt_orientation_Click">
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image>
+                                    <Image.Style>
+                                        <Style>
+                                            <Setter Property="Image.Source" Value="Images/clockwise.png" />
+                                            <Setter Property="Image.ToolTip" Value="Clockwise"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsChecked,RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}" Value="True">
+                                                    <Setter Property="Image.Source" Value="Images/anticlockwise.png" />
+                                                    <Setter Property="Image.ToolTip" Value="Anticlockwise"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                </ToggleButton>
+            </StackPanel>
+            </StackPanel>
+            <ListBox x:Name="LapsListBox" ItemsSource="{Binding Laps}" Margin="0,15,0,10" Grid.Row="4" Grid.Column="1" Background="{x:Null}" 
+                        Foreground="Black" BorderBrush="{x:Null}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        ItemContainerStyle="{StaticResource NoSelectionListBoxItemStyle}"
+                        MinHeight="300" MaxHeight="675" HorizontalContentAlignment="Center" d:ItemsSource="{d:SampleData ItemCount=25}" ScrollViewer.CanContentScroll="True" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="703">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Background="{DynamicResource Foreground}" HorizontalAlignment="Stretch" Orientation="Horizontal">
+                            <TextBlock Text="{Binding carName}" Margin="0,0,5,0" FontFamily="Bradley Hand ITC" FontSize="26" HorizontalAlignment="Right" FontWeight="Bold" VerticalAlignment="Center"/>
+                            <TextBlock Text=" "/>
+                            <TextBlock Text="{Binding carClass}" Margin="5,0,5,0" FontFamily="Bradley Hand ITC" FontSize="26" HorizontalAlignment="Center" FontWeight="Bold" FontStyle="Italic" VerticalAlignment="Center"/>
+                            <TextBlock Text=" "/>
+                            <TextBlock Background="{DynamicResource Foreground}" Text="{Binding LapTime}" Margin="5,0,0,0" FontFamily="Bradley Hand ITC" FontSize="26" HorizontalAlignment="Left" FontWeight="Bold" VerticalAlignment="Center"/>
+                            <TextBlock Text=" "/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+    </Border>
+</Window>
