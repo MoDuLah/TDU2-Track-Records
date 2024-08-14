@@ -11,7 +11,7 @@
         FontSize="16" WindowStartupLocation="CenterScreen"
         Icon="/TDU2TR.ico" FontFamily="Adobe Gothic Std B"
         MouseLeftButtonDown="Border_MouseLeftButtonDown" Background="{x:Null}"
-        
+        Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
         >
     <!--<Window.Background>
         <ImageBrush ImageSource="Images/BG2.png" Stretch="UniformToFill" Opacity="0.4"/>
@@ -23,7 +23,7 @@
             HorizontalAlignment="Center" VerticalAlignment="Center"
             >
         <Border.Background>
-            <ImageBrush ImageSource="/Images/BG2.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"/>
+            <ImageBrush ImageSource="/Images/BG2.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}"/>
         </Border.Background>
         <Grid>
             <Grid.Background>
@@ -133,13 +133,19 @@
                         </GroupBox>
                     </DockPanel>
                     <DockPanel>
-                        <GroupBox DockPanel.Dock="left" Header="Lap Length" x:Name="lbl_LapLength" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Width="232">
-                            <TextBlock Text="{Binding}" x:Name="lap_Length" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <GroupBox Header="Lap Length" x:Name="lbl_LapLength" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Width="220">
+                            <DockPanel>
+                                <TextBlock DockPanel.Dock="left" Text="{Binding}" x:Name="lap_Length" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock DockPanel.Dock="Right" Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}" VerticalAlignment="Bottom"/>
+                            </DockPanel>
                         </GroupBox>
-                        <GroupBox DockPanel.Dock="Right" Header="Race Length" VerticalAlignment="Center" x:Name="lbl_raceLength" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
-                            <TextBlock Text="{Binding}" x:Name="race_Length" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            
-                        </GroupBox>
+                        <Border Width="1" Margin="0,0" Background="Red"/>
+                        <GroupBox Header="Race Length" VerticalAlignment="Center" x:Name="lbl_raceLength" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding}" x:Name="race_Length" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}" VerticalAlignment="Bottom"/>
+                                </StackPanel>
+                            </GroupBox>
                     </DockPanel>
                     <StackPanel>
 

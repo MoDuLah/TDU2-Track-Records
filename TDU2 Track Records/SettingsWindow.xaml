@@ -5,16 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
         xmlns:local="clr-namespace:TDU2_Track_Records"
-        mc:Ignorable="d"
-        Title="Settings" MinWidth="382" MinHeight="350" MaxWidth="500">
+        mc:Ignorable="d" 
+        Title="Settings" MinWidth="382" MinHeight="350" MaxWidth="500" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}">
 
     <Window.Resources>
-        <!-- Define UnitConverter as a resource -->
         <local:UnitConverter x:Key="UnitConverter"/>
     </Window.Resources>
 
     <Window.Background>
-        <ImageBrush ImageSource="/Images/BG.png"/>
+        <ImageBrush ImageSource="/Images/BG.png"  Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}"/>
     </Window.Background>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -42,8 +41,8 @@
                 <TabItem Header="Settings">
                     <StackPanel Margin="10">
                         <GroupBox Header="Main Window Opacity">
-                            <StackPanel>
-                                <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Width="300" Margin="5" TickFrequency="0.1"
+                            <StackPanel Orientation="Horizontal">
+                                <Slider x:Name="OpacitySlider" Minimum="0.1" Maximum="1" Width="200" Margin="5" TickFrequency="0.1"
                                         Value="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=TwoWay}" >
                                     <Slider.Foreground>
                                         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -52,18 +51,28 @@
                                         </LinearGradientBrush>
                                     </Slider.Foreground>
                                 </Slider>
-                                <TextBlock Text="{Binding ElementName=OpacitySlider, Path=Value, StringFormat='Opacity: {0:F1}'}"
-                                           VerticalAlignment="Center" 
-                                           HorizontalAlignment="Center" 
-                                           FontSize="16" 
-                                           Margin="10"/>
+                                <TextBlock Text="{Binding ElementName=OpacitySlider, Path=Value, StringFormat='Opacity: {0:F1}'}" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Background Opacity">
+                            <StackPanel Orientation="Horizontal">
+                                <Slider x:Name="BGOpacitySlider" Minimum="0.1" Maximum="1" Width="200" Margin="5" TickFrequency="0.1"
+                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=TwoWay}" >
+                                    <Slider.Foreground>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <GradientStop Color="#00000000"/>
+                                            <GradientStop Color="White" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Slider.Foreground>
+                                </Slider>
+                                <TextBlock Text="{Binding ElementName=BGOpacity, Path=Value, StringFormat='Opacity: {0:F1}'}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Header="Units">
                             <StackPanel Orientation="Horizontal" Margin="5">
                                 <Slider x:Name="UnitSlider" Minimum="0" Maximum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="200"
-                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Mode=TwoWay}" />
-                                <TextBlock Text="{Binding ElementName=UnitSlider, Path=Value, Converter={StaticResource UnitConverter}}" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Converter={StaticResource UnitConverter}, Mode=TwoWay}" />
+                                <TextBlock Text="{Binding ElementName=UnitSlider, Path=Value, Converter={StaticResource UnitConverter}, Mode=OneWay}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </GroupBox>
                         <StackPanel Orientation="Horizontal">

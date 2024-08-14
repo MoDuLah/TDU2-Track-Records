@@ -150,8 +150,8 @@ namespace TDU2_Track_Records
                     {
                         value = Math.Round(value * onemile,2);
                     }
-                    lap_Length.Text = value.ToString() + distance;
-                    race_Length.Text = Convert.ToString(value * 5) + distance;
+                    lap_Length.Text = value.ToString();
+                    race_Length.Text = Convert.ToString(value * 5);
                 }
             }
             catch (Exception ex)
@@ -227,7 +227,7 @@ namespace TDU2_Track_Records
                             if (reader.Read())
                             {
                                 double value = reader.IsDBNull(0) ? 0 : Convert.ToDouble(reader[0]);
-                                Total_Odometer.Text = $"{value}{distance}";
+                                Total_Odometer.Text = $"{value}";
                             }
                         }
                     }

@@ -6,7 +6,7 @@
       <Value Profile="(Default)">Data Source=|DataDirectory|database.db;Version=3;</Value>
     </Setting>
     <Setting Name="system" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Imperial</Value>
+      <Value Profile="(Default)">Metric</Value>
     </Setting>
     <Setting Name="speed" Type="System.String" Scope="User">
       <Value Profile="(Default)">km/h</Value>
@@ -34,6 +34,9 @@
     </Setting>
     <Setting Name="horsepower" Type="System.String" Scope="User">
       <Value Profile="(Default)">BHP</Value>
+    </Setting>
+    <Setting Name="BGOpacity" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

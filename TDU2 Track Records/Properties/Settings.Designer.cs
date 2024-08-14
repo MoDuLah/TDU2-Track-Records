@@ -37,7 +37,7 @@ namespace TDU2_Track_Records.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Imperial")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Metric")]
         public string system {
             get {
                 return ((string)(this["system"]));
@@ -152,6 +152,18 @@ namespace TDU2_Track_Records.Properties {
             }
             set {
                 this["horsepower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double BGOpacity {
+            get {
+                return ((double)(this["BGOpacity"]));
+            }
+            set {
+                this["BGOpacity"] = value;
             }
         }
     }
