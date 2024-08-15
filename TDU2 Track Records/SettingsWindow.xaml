@@ -6,16 +6,16 @@
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
         xmlns:local="clr-namespace:TDU2_Track_Records"
         mc:Ignorable="d" 
-        Title="Settings" MinWidth="382" MinHeight="350" MaxWidth="500" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}">
+        Title="Settings" MinWidth="382" MinHeight="350" MaxWidth="500" MaxHeight="550" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" ResizeMode="NoResize" WindowStyle="None" Background="{x:Null}">
 
     <Window.Resources>
         <local:UnitConverter x:Key="UnitConverter"/>
     </Window.Resources>
-
-    <Window.Background>
-        <ImageBrush ImageSource="/Images/BG.png"  Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}"/>
-    </Window.Background>
-    <Grid>
+    <Border>
+        <Border.Background>
+            <ImageBrush ImageSource="/Images/BG.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}"/>
+        </Border.Background>
+        <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
             <ColumnDefinition Width="*"/>
@@ -35,9 +35,9 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
-        <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="8" HorizontalAlignment="Center">
-            <TabControl Margin="0,0,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinWidth="342" MinHeight="212" MaxWidth="342">
-                <!-- Opacity and Units Tab -->
+
+            <TabControl Grid.Row="1" Grid.Column="1" Grid.RowSpan="8" HorizontalAlignment="Center" Margin="0,0,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinWidth="342" MinHeight="212" MaxWidth="342">
+                <!-- O pacity and Units Tab -->
                 <TabItem Header="Settings">
                     <StackPanel Margin="10">
                         <GroupBox Header="Main Window Opacity">
@@ -107,11 +107,11 @@
                     </StackPanel>
                 </TabItem>
             </TabControl>
-        </Border>
 
         <!-- Close Button -->
-        <StackPanel Grid.Row="10" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,0">
+        <StackPanel Grid.Row="10" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,0">
             <Button Content="Close" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
         </StackPanel>
     </Grid>
+    </Border>
 </Window>

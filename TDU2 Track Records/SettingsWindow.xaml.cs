@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Data.SQLite;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Interop;
 using TDU2_Track_Records.Properties;
 
 namespace TDU2_Track_Records
 {
     public partial class SettingsWindow : Window
     {
+        public delegate void MeasurementSystemChangedEventHandler(object sender, EventArgs e);
+        public event MeasurementSystemChangedEventHandler MeasurementSystemChanged;
         public SettingsWindow()
         {
             InitializeComponent();
@@ -40,6 +44,11 @@ namespace TDU2_Track_Records
                 Settings.Default.torque = "N⋅m";
             }
             Settings.Default.Save();
+            // Close the main window and reopen it
+            Application.Current.MainWindow.Close();
+            MainWindow mainWindow = new MainWindow();
+            Application.Current.MainWindow = mainWindow;
+            mainWindow.Show();
         }
 
         private void AddTrackButton_Click(object sender, RoutedEventArgs e)
@@ -71,6 +80,16 @@ namespace TDU2_Track_Records
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+        private void ChangeMeasurementSystem()
+        {
+            // Assuming 'MainWindow' is the owner or a reference to the main window
+            MainWindow mainWindow = (MainWindow)Application.Current.MainWindow;
+            mainWindow.UpdateMeasurementSystem();
+            MeasurementSystemChanged?.Invoke(this, EventArgs.Empty);
+
+            // Or if you passed the main window as a reference to the settings window
+            // mainWindowReference.UpdateMeasurementSystem();
         }
     }
 }

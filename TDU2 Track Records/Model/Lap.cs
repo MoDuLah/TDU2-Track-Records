@@ -13,6 +13,21 @@ namespace TDU2_Track_Records.Models
         private bool _isWeatherImageVisible;
         private string _orientationImageSource;
         private bool _isOrientationImageVisible;
+        private string _measurementUnit;
+ 
+        public string MeasurementUnit
+        {
+            get { return _measurementUnit; }
+            set
+            {
+                if (_measurementUnit != value)
+                {
+                    _measurementUnit = value;
+                    OnPropertyChanged(nameof(MeasurementUnit));
+                }
+            }
+        }
+
 
         public string WeatherImageSource
         {

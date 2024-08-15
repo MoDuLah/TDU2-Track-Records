@@ -26,10 +26,9 @@ namespace TDU2_Track_Records
         public string speed = Settings.Default.speed;
         string SI = Settings.Default.system;
         private static readonly Regex _regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
-        private static readonly Regex _regexx = new Regex("[^0-9-]+"); //regex that matches disallowed text
-        SQLiteDataAdapter dbAdapter;
+        readonly SQLiteDataAdapter dbAdapter;
         SQLiteDataReader reader;
-        SQLiteConnection dbConn; // Declare the SQLiteConnection-Object
+        //SQLiteConnection dbConn; // Declare the SQLiteConnection-Object
         SQLiteCommand dbCmd;
         public double onemile = 0.621371192;
 
@@ -38,8 +37,6 @@ namespace TDU2_Track_Records
         {
 
             InitializeComponent();
-            Fill(combo_Track);
-            BindComboBox(combo_Vehicle);
             //SI_Setter.Text = SI;
             if (SI == "Metric")
             {
@@ -55,48 +52,80 @@ namespace TDU2_Track_Records
                 ViewEntries_Metric.Visibility = Visibility.Collapsed;
                 ViewEntries_Imperial.Visibility = Visibility.Collapsed;
             }
+            Fill(combo_Track);
+            BindComboBox(combo_Vehicle);
             calc_Total_Odometer();
+        }
+        public void UpdateMeasurementSystem()
+        {
+            // Update UI elements directly
+            sysMSG.Text = "Measurement system updated!";
+        }
+        private void OnMeasurementSystemChanged(object sender, EventArgs e)
+        {
+            // Update UI directly
+            sysMSG.Text = "Measurement system updated!";
         }
         private void calc_Total_Lap_Time()
         {
-            // Initialize the total time in milliseconds
+            const int lapCount = 5;  // Number of laps, can be adjusted if needed
             int totalLapTime = 0;
 
-            // Loop through each lap number (assuming you have a total of 5 laps; adjust the count as needed)
-            for (int i = 1; i <= 5; i++)
+            for (int i = 1; i <= lapCount; i++)
             {
-                // Create the lap text boxes for minutes, seconds, and milliseconds
-                TextBox lapMinTextBox = (TextBox)this.FindName($"Lap{i}_Min");
-                TextBox lapSecTextBox = (TextBox)this.FindName($"Lap{i}_Sec");
-                TextBox lapMsTextBox = (TextBox)this.FindName($"Lap{i}_Ms");
+                int lapTime = GetLapTimeInMilliseconds(i);
 
-                // Check if all text boxes are found
-                if (lapMinTextBox != null && lapSecTextBox != null && lapMsTextBox != null)
+                if (lapTime == -1)
                 {
-                    int minutes = Convert.ToInt32(lapMinTextBox.Text);
-                    int seconds = Convert.ToInt32(lapSecTextBox.Text);
-                    int milliseconds = Convert.ToInt32(lapMsTextBox.Text);
-
-                    // Calculate lap time in milliseconds and add to total
-                    int lapTime = (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
-                    totalLapTime += lapTime;
+                    MessageBox.Show($"Invalid time input for Lap {i}. Please enter valid numbers.");
+                    return;
                 }
+
+                totalLapTime += lapTime;
             }
 
-            // Convert total time to TimeSpan and format it
-            TimeSpan timeSpan = TimeSpan.FromMilliseconds(totalLapTime);
-            string formattedTime = string.Format("{0:D2}:{1:D2}.{2:D3}", timeSpan.Minutes, timeSpan.Seconds, timeSpan.Milliseconds);
+            DisplayTotalLapTime(totalLapTime);
+        }
 
-            // Display the total time
-            if(formattedTime != "00:00.000" ) { 
-            Total_Time.Text = formattedTime;
+        private int GetLapTimeInMilliseconds(int lapNumber)
+        {
+            TextBox lapMinTextBox = (TextBox)FindName($"Lap{lapNumber}_Min");
+            TextBox lapSecTextBox = (TextBox)FindName($"Lap{lapNumber}_Sec");
+            TextBox lapMsTextBox = (TextBox)FindName($"Lap{lapNumber}_Ms");
+
+            if (lapMinTextBox != null && lapSecTextBox != null && lapMsTextBox != null &&
+                int.TryParse(lapMinTextBox.Text, out int minutes) &&
+                int.TryParse(lapSecTextBox.Text, out int seconds) &&
+                int.TryParse(lapMsTextBox.Text, out int milliseconds))
+            {
+                // Calculate lap time in milliseconds
+                return (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
+            }
+
+            return -1;  // Return -1 to indicate an error
+        }
+
+        private void DisplayTotalLapTime(int totalLapTime)
+        {
+            if (totalLapTime > 0)
+            {
+                TimeSpan timeSpan = TimeSpan.FromMilliseconds(totalLapTime);
+                string formattedTime = string.Format("{0:D2}:{1:D2}.{2:D3}",
+                                                     timeSpan.Minutes + timeSpan.Hours * 60,
+                                                     timeSpan.Seconds,
+                                                     timeSpan.Milliseconds);
+                Total_Time.Text = formattedTime;
+            }
+            else
+            {
+                Total_Time.Text = "00:00.000";
             }
         }
         private void calc_Average_Speed()
-        {   
-            int removeIndex = race_Length.Text.Length - 2;
-            if (removeIndex > 0) { 
-            double totalDistance = Convert.ToDouble(race_Length.Text.Remove(removeIndex)) * 1000;
+        {
+            // Convert race length from km to meters
+            double totalDistance = Convert.ToDouble(race_Length.Text) * 1000;
+
             int totalLapTime = 0;
             int lapCount = 5;  // Adjust this if you have a different number of laps
 
@@ -107,16 +136,24 @@ namespace TDU2_Track_Records
                 var lapSecTextBox = (TextBox)FindName($"Lap{i}_Sec");
                 var lapMsTextBox = (TextBox)FindName($"Lap{i}_Ms");
 
-                // Check if the TextBoxes exist
+                // Check if the TextBoxes exist and contain valid numbers
                 if (lapMinTextBox != null && lapSecTextBox != null && lapMsTextBox != null)
                 {
-                    // Calculate the lap time in milliseconds
-                    int minutes = Convert.ToInt32(lapMinTextBox.Text);
-                    int seconds = Convert.ToInt32(lapSecTextBox.Text);
-                    int milliseconds = Convert.ToInt32(lapMsTextBox.Text) * 10;  // Convert to milliseconds
-                    int lapTime = (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
+                    if (int.TryParse(lapMinTextBox.Text, out int minutes) &&
+                        int.TryParse(lapSecTextBox.Text, out int seconds) &&
+                        int.TryParse(lapMsTextBox.Text, out int milliseconds))
+                    {
+                        milliseconds *= 10;  // Convert to milliseconds
+                        int lapTime = (minutes * 60 * 1000) + (seconds * 1000) + milliseconds;
 
-                    totalLapTime += lapTime;
+                        totalLapTime += lapTime;
+                    }
+                    else
+                    {
+                        // Handle parsing errors, e.g., show an error message
+                        MessageBox.Show("Please enter valid lap times.");
+                        return;
+                    }
                 }
             }
 
@@ -124,8 +161,8 @@ namespace TDU2_Track_Records
             double averageSpeed = Math.Round((totalDistance * 3600000) / totalLapTime / 1000, 2);
 
             // Display the average speed
+            string speed = " km/h";  // Define the speed unit
             Average_Speed.Text = averageSpeed.ToString() + speed;
-            }
         }
         private void calc_Lap_Length()
         {
@@ -151,7 +188,9 @@ namespace TDU2_Track_Records
                         value = Math.Round(value * onemile,2);
                     }
                     lap_Length.Text = value.ToString();
+                    lap_distance_unit.Visibility = Visibility.Visible;
                     race_Length.Text = Convert.ToString(value * 5);
+                    race_distance_unit.Visibility = Visibility.Visible;
                 }
             }
             catch (Exception ex)
@@ -228,6 +267,7 @@ namespace TDU2_Track_Records
                             {
                                 double value = reader.IsDBNull(0) ? 0 : Convert.ToDouble(reader[0]);
                                 Total_Odometer.Text = $"{value}";
+                                total_distance_unit.Visibility = Visibility.Visible;
                             }
                         }
                     }
@@ -327,7 +367,9 @@ namespace TDU2_Track_Records
                 avgLapSpeeds[i].Text = "0.0";
             }
             lap_Length.Text = "";
+            lap_distance_unit.Visibility = Visibility.Collapsed;
             race_Length.Text = "";
+            race_distance_unit.Visibility = Visibility.Collapsed;
             txt_odometer.Text = "";
             txt_lrec.Text = "";
             txt_lrecCar.Text = "";
@@ -496,7 +538,9 @@ namespace TDU2_Track_Records
             combo_Track.SelectedIndex = -1;
             combo_Class.SelectedIndex = -1;
             lap_Length.Text = string.Empty;
+            lap_distance_unit.Visibility = Visibility.Collapsed;
             race_Length.Text = string.Empty;
+            race_distance_unit.Visibility = Visibility.Collapsed;
             cb_conditions.IsChecked = false;
             combo_Vehicle.SelectedIndex = -1;
             txt_odometer.Text = string.Empty;
@@ -585,78 +629,46 @@ namespace TDU2_Track_Records
 
         private void Combo_Class_LostFocus(object sender, RoutedEventArgs e)
         {
-            BindComboBox(combo_Vehicle);
-            CheckProgress();
-            loadLapRecord();
-
-            //Application.Current.MainWindow.Height = Application.Current.MainWindow.Height - 300;
-
-            if (SI == "Metric")
-            {
-                if (combo_Class.SelectedIndex >= 1) {
-                    btn_loadrec_Metric.Content = "Load Class Records";
-                    Lap_Record_Header.Header = "Class Lap Record";
-                } else
-                {
-                    Lap_Record_Header.Header = "Track Lap Record";
-                }
-                ViewEntries_Metric.Visibility = Visibility.Collapsed;
-                btn_loadrec_Metric.IsChecked = false;
-            }
-            else
-            {
-                if (combo_Class.SelectedIndex >= 1)
-                {
-                    btn_loadrec_Imperial.Content = "Load Class Records";
-                    Lap_Record_Header.Header = "Class Lap Record";
-                }
-                else
-                {
-                    Lap_Record_Header.Header = "Track Lap Record";
-                }
-                ViewEntries_Imperial.Visibility = Visibility.Collapsed;
-                btn_loadrec_Imperial.IsChecked = false;
-            }
-
+            HandleComboClassChange();
         }
+
         private void Combo_Class_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            HandleComboClassChange();
+            AdjustWindowHeight();
+        }
+
+        private void HandleComboClassChange()
         {
             BindComboBox(combo_Vehicle);
             CheckProgress();
             loadLapRecord();
 
+            bool isClassSelected = combo_Class.SelectedIndex >= 1;
+            UpdateUIForSI(isClassSelected);
+        }
+
+        private void UpdateUIForSI(bool isClassSelected)
+        {
             if (SI == "Metric")
             {
-                if (combo_Class.SelectedIndex >= 1)
-                {
-                    btn_loadrec_Metric.Content = "Load Class Records";
-                    Lap_Record_Header.Header = "Class Lap Record";
-                }
-                else
-                {
-                    Lap_Record_Header.Header = "Track Lap Record";
-                    btn_loadrec_Metric.Content = "Load Class Records";
-
-                }
+                btn_loadrec_Metric.Content = isClassSelected ? "Load Class Records" : "Load Track Records";
+                Lap_Record_Header.Header = isClassSelected ? "Class Lap Record" : "Track Lap Record";
                 ViewEntries_Metric.Visibility = Visibility.Collapsed;
                 btn_loadrec_Metric.IsChecked = false;
             }
             else
             {
-                if (combo_Class.SelectedIndex >= 1)
-                {
-                    btn_loadrec_Imperial.Content = "Load Class Records";
-                    Lap_Record_Header.Header = "Class Lap Record";
-                }
-                else
-                {
-                    Lap_Record_Header.Header = "Track Lap Record";
-                    btn_loadrec_Imperial.Content = "Load Track Records";
-                }
+                btn_loadrec_Imperial.Content = isClassSelected ? "Load Class Records" : "Load Track Records";
+                Lap_Record_Header.Header = isClassSelected ? "Class Lap Record" : "Track Lap Record";
                 ViewEntries_Imperial.Visibility = Visibility.Collapsed;
                 btn_loadrec_Imperial.IsChecked = false;
             }
-            Application.Current.MainWindow.Height = Application.Current.MainWindow.Height - 300;
+        }
+
+        private void AdjustWindowHeight()
+        {
+            Application.Current.MainWindow.Height -= 300;
         }
 
         private void loadLapRecord()
@@ -856,30 +868,43 @@ namespace TDU2_Track_Records
 
         private void Fill(ComboBox comboBox)
         {
-            using (SQLiteConnection dbConn = new SQLiteConnection(connectionString))
-            {
-                dbConn.Open();
-                using (SQLiteCommand dbCmd = new SQLiteCommand("SELECT * FROM tracks", dbConn))
-                {
-                    try
-                    {
-                        using (SQLiteDataAdapter dbAdapter = new SQLiteDataAdapter(dbCmd))
-                        {
-                            DataSet ds = new DataSet();
-                            dbAdapter.Fill(ds, "tracks");
+            const string query = "SELECT * FROM tracks";
 
-                            comboBox.ItemsSource = ds.Tables[0].DefaultView;
-                            comboBox.DisplayMemberPath = "Name"; // Display the 'Name' column
-                            comboBox.SelectedValuePath = "id"; // Use the 'id' column as the value
-                        }
-                    }
-                    catch (Exception ex)
+            try
+            {
+                using (var dbConn = new SQLiteConnection(connectionString))
+                {
+                    dbConn.Open();
+                    using (var dbCmd = new SQLiteCommand(query, dbConn))
+                    using (var dbAdapter = new SQLiteDataAdapter(dbCmd))
                     {
-                        MessageBox.Show($"An error occurred while loading tracks:\n{ex}");
+                        var dataSet = new DataSet();
+                        dbAdapter.Fill(dataSet, "tracks");
+
+                        SetComboBoxSource(comboBox, dataSet);
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while loading tracks:\n{ex.Message}");
+            }
         }
+
+        private void SetComboBoxSource(ComboBox comboBox, DataSet dataSet)
+        {
+            if (dataSet.Tables.Count > 0)
+            {
+                comboBox.ItemsSource = dataSet.Tables[0].DefaultView;
+                comboBox.DisplayMemberPath = "Name";  // Display the 'Name' column
+                comboBox.SelectedValuePath = "id";    // Use the 'id' column as the value
+            }
+            else
+            {
+                MessageBox.Show("No tracks found in the database.");
+            }
+        }
+
 
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
@@ -1240,61 +1265,68 @@ namespace TDU2_Track_Records
         }
         private void Combo_Track_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (keep.IsChecked == false) { combo_Class.SelectedIndex = -1; }
-            // Ensure the ComboBox is loaded and has items
-            if (!combo_Track.IsLoaded || combo_Track.Items.Count == 0) return;
-            
-            if (combo_Track.SelectedIndex < 0) return; // Ensure valid index
+            // Early exits for various conditions
+            if (keep.IsChecked == false) combo_Class.SelectedIndex = -1;
+            if (!combo_Track.IsLoaded || combo_Track.Items.Count == 0 || combo_Track.SelectedIndex < 0) return;
+            if (e.AddedItems.Count == 0) return;  // Ensure the selection actually changed
 
-            // Ensure that you only process if the selection actually changed
-            if (e.AddedItems.Count == 0) return;  // No item was added
-
-            // Your logic here
-            if (SI == "Metric")
-            {
-                btn_loadrec_Metric.IsEnabled = true;
-                btn_loadrec_Imperial.IsEnabled = false;
-                btn_loadrec_Metric.IsChecked = false;
-
-                if (combo_Class.SelectedIndex <= 0)
-                {
-                    btn_loadrec_Metric.Content = "Load Track Records";
-                }
-                ViewEntries_Metric.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                btn_loadrec_Imperial.IsChecked = false;
-                btn_loadrec_Imperial.IsEnabled = true;
-                btn_loadrec_Metric.IsEnabled = false;
-
-                if (combo_Class.SelectedIndex <= 0)
-                {
-                    btn_loadrec_Imperial.Content = "Load Track Records";
-                }
-                ViewEntries_Imperial.Visibility = Visibility.Collapsed;
-            }
-
-            Application.Current.MainWindow.Height = 500;
+            UpdateUIForSI();
+            ResetWindowState();
             calc_Lap_Length();
             CheckProgress();
             loadLapRecord();
 
             if (string.IsNullOrEmpty(combo_Vehicle.Text)) return;
 
+            FetchAndDisplayVehicleData();
+        }
+
+        private void UpdateUIForSI()
+        {
+            bool isMetric = SI == "Metric";
+
+            btn_loadrec_Metric.IsEnabled = isMetric;
+            btn_loadrec_Imperial.IsEnabled = !isMetric;
+
+            btn_loadrec_Metric.IsChecked = false;
+            btn_loadrec_Imperial.IsChecked = false;
+
+            if (combo_Class.SelectedIndex <= 0)
+            {
+                if (isMetric)
+                {
+                    btn_loadrec_Metric.Content = "Load Track Records";
+                }
+                else
+                {
+                    btn_loadrec_Imperial.Content = "Load Track Records";
+                }
+            }
+
+            ViewEntries_Metric.Visibility = isMetric ? Visibility.Collapsed : ViewEntries_Metric.Visibility;
+            ViewEntries_Imperial.Visibility = !isMetric ? Visibility.Collapsed : ViewEntries_Imperial.Visibility;
+        }
+
+        private void ResetWindowState()
+        {
+            Application.Current.MainWindow.Height = 500;
+        }
+
+        private void FetchAndDisplayVehicleData()
+        {
             int conditions = cb_conditions.IsChecked == true ? 1 : 0;
             int orientation = cb_orientation.IsChecked == false ? 0 : 1;
             string veh = combo_Vehicle.Text.Replace("'", "''");
             int trackId = combo_Track.SelectedIndex + 1;
 
             string odoColumn = SI == "Metric" ? "Odometer_Metric" : "Odometer_Imperial";
-            double onemile = 1.60934; // Adjust this value as necessary for conversion if not already defined
+            double conversionFactor = 1.60934; // Conversion factor for miles to kilometers
 
             string query = $@"
-            SELECT 
-            (SELECT {odoColumn} AS Odometer FROM cars WHERE Name = '{veh}') ,
-            (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = {trackId}') ,
-            (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = '{conditions}' AND orientation = '{orientation}')";
+                             SELECT 
+                             (SELECT {odoColumn} AS Odometer FROM cars WHERE Name = '{veh}') ,
+                             (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = {trackId}) ,
+                             (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = {conditions} AND orientation = {orientation})";
 
             try
             {
@@ -1311,7 +1343,7 @@ namespace TDU2_Track_Records
                                 double value = reader.GetDouble(0);
                                 if (SI == "Imperial")
                                 {
-                                    value = Math.Round(value * onemile, 2);
+                                    value = Math.Round(value * conversionFactor, 2);
                                 }
                                 txt_odometer.Text = value.ToString();
                             }
@@ -1328,12 +1360,6 @@ namespace TDU2_Track_Records
             }
         }
 
-        private void GroupBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            string height = Application.Current.MainWindow.Height.ToString();
-            string width = Application.Current.MainWindow.Width.ToString();
-            MessageBox.Show("Width: " + width + "\nHeight: " + height);
-        }
 
         private void CheckProgress()
         {
@@ -1452,8 +1478,9 @@ namespace TDU2_Track_Records
             if (string.IsNullOrEmpty(secTextBox.Text)) { return; }
             if (string.IsNullOrEmpty(msTextBox.Text)) { return; }
 
-            int removeIndex = lap_Length.Text.Length - 2;
-            double lapLength = Convert.ToDouble(lap_Length.Text.Remove(removeIndex)) * 1000;
+            //int removeIndex = lap_Length.Text.Length - 2;
+            double lapLength = Convert.ToDouble(lap_Length.Text) * 1000; //.Text.Remove(removeIndex)
+            lap_distance_unit.Visibility = Visibility.Visible;
             int msLength = msTextBox.Text.Length;
 
             if (msLength == 1)
@@ -1530,75 +1557,9 @@ namespace TDU2_Track_Records
         }
         private void LapMs_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            //// Ensure sender is a TextBox and has a valid Tag
-            //if (sender is TextBox textBox)
-            //{
-            //    if (textBox.Tag is string avgSpeedTextBlockName)
-            //    {
-            //        TextBlock avgSpeedTextBlock = FindName(avgSpeedTextBlockName) as TextBlock;
-            //        if (avgSpeedTextBlock != null)
-            //        {
-            //            avgSpeedTextBlock.Text = "0.0";
-            //        }
-            //        else
-            //        {
-            //            MessageBox.Show($"TextBlock with name '{avgSpeedTextBlockName}' not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        MessageBox.Show("Tag is null or not a string.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    }
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Sender is not a TextBox.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            //}
+
         }
 
-
-
-
-        //private void SI_Setter_DropDownClosed(object sender, EventArgs e)
-        //{
-        //    // Update settings based on the selected unit
-        //    if (SI_Setter.Text == "Imperial")
-        //    {
-        //        Settings.Default.distance = "mi";
-        //        Settings.Default.speed = "mph";
-        //        Settings.Default.system = "Imperial";
-        //    }
-        //    else
-        //    {
-        //        Settings.Default.distance = "m";
-        //        Settings.Default.speed = "km/h";
-        //        Settings.Default.system = "Metric";
-        //    }
-        //    Settings.Default.Save();
-
-        //    // Prompt the user to restart the application
-        //    if (MessageBox.Show(
-        //        "To apply the changes the application has to restart.\nMake sure that you have saved your data.",
-        //        "Restart",
-        //        MessageBoxButton.YesNo,
-        //        MessageBoxImage.Question) == MessageBoxResult.No)
-        //    {
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        try
-        //        {
-        //            // Restart the application
-        //            System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
-        //            Application.Current.Shutdown();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            MessageBox.Show($"Failed to restart the application. Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        }
-        //    }
-        //}
 
 
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

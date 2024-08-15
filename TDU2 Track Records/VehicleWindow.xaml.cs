@@ -20,6 +20,12 @@ namespace TDU2_Track_Records
         {
             InitializeComponent();
         }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            string height = this.Height.ToString();
+            string width = this.Width.ToString();
+            MessageBox.Show($"Width: {width} \n Height: {height}");
+        }
         private double ConvertSpeedToSelectedUnit(double speed, string unit)
         {
             return unit == "mph" ? speed * 0.621371 : speed;  // Convert to mph if selected
@@ -31,7 +37,7 @@ namespace TDU2_Track_Records
         }
         private void PopulateVehicleFields(VehicleManagement vehicle)
         {
-            CarNameTextBox.Text = vehicle.Name;
+            CarBrandTextBox.Text = vehicle.Name;
             VehicleClass.Text = vehicle.Class;
             CarMileageTextBox.Text = vehicle.Mileage.ToString();
             CarPriceTextBox.Text = vehicle.Price.ToString();
@@ -50,7 +56,7 @@ namespace TDU2_Track_Records
             PowerTextBox.Text = vehicle.Power.ToString();
             EngineSizeTextBox.Text = vehicle.EngineSize.ToString();
             EngineLayoutTextBox.Text = vehicle.EngineLayout;
-            GearboxTextBox.Text = vehicle.Gearbox;
+            GearboxComboBox.Text = vehicle.Gearbox;
             MaxTorqueTextBox.Text = vehicle.MaxTorque.ToString();
             MaxTorqueRPMTextBox.Text = vehicle.MaxTorqueRPM.ToString();
             MaxPowerTextBox.Text = vehicle.MaxPower.ToString();
@@ -76,7 +82,15 @@ namespace TDU2_Track_Records
             if (EditVehicleListBox.SelectedItem is VehicleManagement selectedVehicle)
             {
                 // Update vehicle details from input fields
-                selectedVehicle.Name = CarNameTextBox.Text;
+                string name;
+                if (CarBrandComboBox.Visibility == Visibility.Visible)
+                {
+                    selectedVehicle.Name = CarBrandComboBox.Text;
+                }
+                else
+                {
+                    selectedVehicle.Name = CarBrandTextBox.Text;
+                }
                 selectedVehicle.Class = VehicleClass.Text;
                 selectedVehicle.Mileage = double.Parse(CarMileageTextBox.Text);
                 selectedVehicle.Price = double.Parse(CarPriceTextBox.Text);
@@ -90,7 +104,7 @@ namespace TDU2_Track_Records
                 selectedVehicle.Power = double.Parse(PowerTextBox.Text);
                 selectedVehicle.EngineSize = double.Parse(EngineSizeTextBox.Text);
                 selectedVehicle.EngineLayout = EngineLayoutTextBox.Text;
-                selectedVehicle.Gearbox = GearboxTextBox.Text;
+                selectedVehicle.Gearbox = GearboxComboBox.Text;
                 selectedVehicle.MaxTorque = double.Parse(MaxTorqueTextBox.Text);
                 selectedVehicle.MaxTorqueRPM = double.Parse(MaxTorqueRPMTextBox.Text);
                 selectedVehicle.MaxPower = double.Parse(MaxPowerTextBox.Text);
@@ -138,7 +152,15 @@ namespace TDU2_Track_Records
 
         private void AddCarButton_Click(object sender, RoutedEventArgs e)
         {
-            string name = CarNameTextBox.Text;
+            string name;
+            if (CarBrandComboBox.Visibility == Visibility.Visible)
+            {
+                name = CarBrandComboBox.Text;
+            }
+            else
+            {
+                name = CarBrandTextBox.Text;
+            }
             string carClass = VehicleClass.Text;
             double mileage = double.Parse(CarMileageTextBox.Text);
             double price = double.Parse(CarPriceTextBox.Text);
@@ -153,7 +175,7 @@ namespace TDU2_Track_Records
             double power = double.Parse(PowerTextBox.Text);
             double engineSize = double.Parse(EngineSizeTextBox.Text);
             string engineLayout = EngineLayoutTextBox.Text;
-            string gearbox = GearboxTextBox.Text;
+            string gearbox = GearboxComboBox.Text;
             double maxTorque = double.Parse(MaxTorqueTextBox.Text);
             double maxTorqueRPM = double.Parse(MaxTorqueRPMTextBox.Text);
             double maxPower = double.Parse(MaxPowerTextBox.Text);
@@ -281,6 +303,50 @@ namespace TDU2_Track_Records
             // Populate the fields with the selected vehicle's details if needed
         }
 
+        private void UploadButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SaveToDbButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void LoadFromDbButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void ToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ImageContentPanel.Visibility == Visibility.Visible)
+            {
+                ImageContentPanel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ImageContentPanel.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void Image_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if(CarBrandComboBox.Visibility == Visibility.Visible)
+            {
+                btn_BrandCancel.Visibility = Visibility.Visible;
+                CarBrandTextBox.Visibility = Visibility.Visible;
+                CarBrandComboBox.Visibility = Visibility.Collapsed;
+                btn_BrandAdd.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                btn_BrandCancel.Visibility = Visibility.Collapsed;
+                CarBrandTextBox.Visibility = Visibility.Collapsed;
+                CarBrandComboBox.Visibility = Visibility.Visible;
+                btn_BrandAdd.Visibility = Visibility.Visible;
+            }
+        }
+
         private void EditVehicleListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (EditVehicleListBox.SelectedItem == null) return;
@@ -288,7 +354,16 @@ namespace TDU2_Track_Records
             var selectedVehicle = (VehicleManagement)EditVehicleListBox.SelectedItem;
 
             // Populate the fields with the selected vehicle's details
-            CarNameTextBox.Text = selectedVehicle.Name;
+            if(selectedVehicle == null) return;
+
+            if (CarBrandComboBox.Visibility == Visibility.Visible)
+            {
+                CarBrandComboBox.Text = selectedVehicle.Name;
+            }
+            else
+            {
+                CarBrandTextBox.Text = selectedVehicle.Name;
+            }
             VehicleClass.Text = selectedVehicle.Class;
             CarMileageTextBox.Text = selectedVehicle.Mileage.ToString();
             CarPriceTextBox.Text = selectedVehicle.Price.ToString();
@@ -302,7 +377,7 @@ namespace TDU2_Track_Records
             PowerTextBox.Text = selectedVehicle.Power.ToString();
             EngineSizeTextBox.Text = selectedVehicle.EngineSize.ToString();
             EngineLayoutTextBox.Text = selectedVehicle.EngineLayout;
-            GearboxTextBox.Text = selectedVehicle.Gearbox;
+            GearboxComboBox.Text = selectedVehicle.Gearbox;
             MaxTorqueTextBox.Text = selectedVehicle.MaxTorque.ToString();
             MaxTorqueRPMTextBox.Text = selectedVehicle.MaxTorqueRPM.ToString();
             MaxPowerTextBox.Text = selectedVehicle.MaxPower.ToString();
