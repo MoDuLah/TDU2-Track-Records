@@ -108,10 +108,10 @@
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
-                                    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0">
-                                        <GroupBox Header="Brand" MinWidth="170" Margin="5">
+                                    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
+                                        <GroupBox Header="Brand" MinWidth="200" Margin="5">
                                             <DockPanel>
-                                                <ComboBox x:Name="CarBrandComboBox" Margin="5" VerticalAlignment="Center" MinWidth="120"/>
+                                                <ComboBox x:Name="CarBrandComboBox" Margin="5" VerticalAlignment="Center" MinWidth="150" Text="Harley Davidson"/>
                                                 <TextBox x:Name="CarBrandTextBox" Margin="5" VerticalAlignment="Center"  MinWidth="120" Visibility="Collapsed" />
                                                 <Image x:Name="btn_BrandAdd" Source="/Images/add.png" Width="32" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Add New?" MouseLeftButtonUp="Image_MouseLeftButtonUp"/>
                                                 <Image x:Name="btn_BrandCancel" Source="/Images/cancel.png" Width="32" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Cancel?" MouseLeftButtonUp="Image_MouseLeftButtonUp" Visibility="Collapsed"/>
@@ -121,8 +121,8 @@
                                             <TextBox x:Name="CarModel" Margin="5" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutoWordSelection="True" CharacterCasing="Upper" TextWrapping="WrapWithOverflow" MaxLength="64" MinWidth="200" MaxWidth="200" />
                                         </GroupBox>
                                     </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center">
-                                        <GroupBox Header="Class" MinWidth="170" MinHeight="100" Margin="5">
+                                    <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
+                                        <GroupBox Header="Class" MinWidth="200" MinHeight="100" Margin="5">
                                             <ComboBox x:Name="VehicleClass" SelectedIndex="0" Margin="5" VerticalAlignment="Center" MinWidth="80">
                                                 <ComboBoxItem Content="A1"/>
                                                 <ComboBoxItem Content="A2"/>
@@ -147,7 +147,7 @@
                                         </GroupBox>
                                     </StackPanel>
                                     <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2">
-                                        <GroupBox Header="Price" MinWidth="170" Margin="5">
+                                        <GroupBox Header="Price" MinWidth="200" Margin="5">
                                             <TextBox x:Name="CarPriceTextBox" Margin="5" VerticalAlignment="Center" />
                                         </GroupBox>
                                         <GroupBox Header="Status" Margin="5" HorizontalContentAlignment="Stretch" MinWidth="218">

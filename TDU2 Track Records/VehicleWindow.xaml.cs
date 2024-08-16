@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Octokit;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using TDU2_Track_Records.Properties;
 
 namespace TDU2_Track_Records
@@ -19,7 +22,43 @@ namespace TDU2_Track_Records
         public Vehicle()
         {
             InitializeComponent();
+            BindComboBox(CarBrandComboBox);
         }
+        private void BindComboBox(ComboBox comboBox)
+        {
+            using (var dbConn = new SQLiteConnection(connectionString))
+            {
+                dbConn.Open();
+                using (var dbCmd = new SQLiteCommand())
+                {
+                    dbCmd.Connection = dbConn;
+                    dbCmd.CommandType = CommandType.Text;
+                    dbCmd.CommandText = @"
+                SELECT MIN(id) AS id, Brand
+                FROM cars 
+                GROUP BY Brand 
+                ORDER BY Brand ASC;";
+
+
+                    using (var dbAdapter = new SQLiteDataAdapter(dbCmd))
+                    {
+                        var ds = new DataSet();
+                        try
+                        {
+                            dbAdapter.Fill(ds, "cars");
+                            comboBox.ItemsSource = ds.Tables[0].DefaultView;
+                            comboBox.DisplayMemberPath = "Brand";
+                            comboBox.SelectedValuePath = "id";
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("An error occurred while loading categories.\n" + ex.ToString());
+                        }
+                    }
+                }
+            }
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             string height = this.Height.ToString();
