@@ -347,6 +347,19 @@ namespace TDU2_Track_Records
             }
         }
 
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            if(Tabctrler.SelectedIndex == 0)
+            {
+                extras.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                extras.Visibility= Visibility.Collapsed;
+            }
+        }
+
         private void EditVehicleListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (EditVehicleListBox.SelectedItem == null) return;

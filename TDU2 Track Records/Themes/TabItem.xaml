@@ -28,10 +28,10 @@
 	<SolidColorBrush x:Key="TabItemSelectedBackground" Color="#F9F9F9"/>
 	<SolidColorBrush x:Key="TabItemHotBorderBrush" Color="#3C7FB1"/>
 	<SolidColorBrush x:Key="TabItemDisabledBorderBrush" Color="#FFC9C7BA"/>
-		
-	<SolidColorBrush x:Key="TabControlOuterBorder" Color="#121011"/>
-	<SolidColorBrush x:Key="TabControlInnerBorder" Color="#5c5e5b"/>
-	
+
+    <SolidColorBrush x:Key="TabControlOuterBorder" Color="#121011"/>
+    <SolidColorBrush x:Key="TabControlInnerBorder" Color="#5c5e5b"/>
+
 	<LinearGradientBrush x:Key="TabItemBackground" EndPoint="0,1" StartPoint="0,0">
 		<GradientStop Color="#FF949494" Offset="1"/>
 		<GradientStop Color="#323230" Offset="0"/>
