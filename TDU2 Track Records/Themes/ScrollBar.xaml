@@ -119,7 +119,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Track x:Name="PART_Track" IsDirectionReversed="true" Grid.Column="0">
+                                <Track x:Name="PART_Track" IsDirectionReversed="False" Grid.Column="0">
                                     <Track.DecreaseRepeatButton>
                                         <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Style="{StaticResource RepeatButtonTransparent}"/>
                                     </Track.DecreaseRepeatButton>

@@ -12,7 +12,7 @@
         Icon="/Images/tdu2.ico" FontFamily="Adobe Gothic Std B"
         Background="{x:Null}"
         Title="Power Lap Board"
-        MinWidth="900" MinHeight="600" MaxHeight="950"
+        MinWidth="1100" MinHeight="600" MaxHeight="950"
         HorizontalContentAlignment="Stretch"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
@@ -26,7 +26,7 @@
     <Window.DataContext>
         <local:PowerLapViewModel/>
     </Window.DataContext>
-    <Border BorderBrush="Red" BorderThickness="2,2,2,2" CornerRadius="20,20,20,20" Margin="0" MinHeight="900" MinWidth="892" HorizontalAlignment="Center" PreviewMouseRightButtonUp="LapsListBox_PreviewMouseRightButtonUp">
+    <Border BorderBrush="Red" BorderThickness="2,2,2,2" CornerRadius="20,20,20,20" Margin="0" MinHeight="900" MinWidth="992" HorizontalAlignment="Center" PreviewMouseRightButtonUp="LapsListBox_PreviewMouseRightButtonUp">
         <Border.Background>
             <ImageBrush ImageSource="/Images/powerLapbg.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" Stretch="Fill"/>
         </Border.Background>
@@ -53,6 +53,18 @@
                 </GroupBox>
                 <GroupBox Header="Class">
                     <ComboBox x:Name="combo_Class" MinWidth="150" Margin="5" MaxDropDownHeight="250" VerticalAlignment="Center" Height="42" MinHeight="45" >
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding ImagePath}" Width="40" Height="40" />
+                                    <TextBlock Text="{Binding Description}" Margin="5,0,5,5" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </GroupBox>
+                <GroupBox Header="Sort">
+                    <ComboBox x:Name="combo_Sort" MinWidth="150" Margin="5" MaxDropDownHeight="250" VerticalAlignment="Center" Height="42" MinHeight="45">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -126,7 +138,8 @@
                         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                         ItemContainerStyle="{StaticResource NoSelectionListBoxItemStyle}"
-                        MinHeight="300" MaxHeight="675" HorizontalContentAlignment="Center" d:ItemsSource="{d:SampleData ItemCount=25}" ScrollViewer.CanContentScroll="True" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="703">
+                        MinHeight="300" MaxHeight="675" HorizontalContentAlignment="Center" d:ItemsSource="{d:SampleData ItemCount=25}"
+                     ScrollViewer.CanContentScroll="True" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="903">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Background="{DynamicResource Foreground}" HorizontalAlignment="Stretch" Orientation="Horizontal">

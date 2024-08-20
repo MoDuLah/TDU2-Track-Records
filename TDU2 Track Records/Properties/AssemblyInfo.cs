@@ -11,7 +11,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Gleris Corp")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("Copyright © 2018-2019")]
+[assembly: AssemblyCopyright("Copyright © 2018-2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

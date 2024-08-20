@@ -1,27 +1,39 @@
 ﻿namespace TDU2_Track_Records
 {
-    internal class VehicleManagement
-    {
-        public int Id { get; set; } // Unique identifier for each vehicle
-        public string Name { get; set; } // Vehicle name
-        public string Class { get; set; } // Vehicle class
-        public double Mileage { get; set; } // Vehicle mileage
-        public double Price { get; set; } // Vehicle price
-        public bool Active { get; set; } // Whether the vehicle is active
-        public double Acceleration { get; set; } // Acceleration rating
-        public double SpeedRating { get; set; } // Speed rating
-        public double BrakingRating { get; set; } // Braking rating
-        public double DifficultyRating { get; set; } // Difficulty rating
-        public double TopSpeed { get; set; } // Top speed
-        public double AccelerationValue { get; set; } // Acceleration value
-        public double Power { get; set; } // Power
-        public double EngineSize { get; set; } // Engine size
-        public string EngineLayout { get; set; } // Engine layout
-        public string Gearbox { get; set; } // Gearbox type
-        public double MaxTorque { get; set; } // Maximum torque
-        public double MaxTorqueRPM { get; set; } // RPM at maximum torque
-        public double MaxPower { get; set; } // Maximum power
-        public double MaxPowerRPM { get; set; } // RPM at maximum power
-        public double Weight { get; set; } // Vehicle weight
+public class VehicleManagement
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string Brand { get; set; }
+    public string Model { get; set; }
+    public string Class { get; set; }
+    public int RacesRan { get; set; }
+    public double Mileage { get; set; }
+    public double OdometerMetric { get; set; }
+    public double OdometerImperial { get; set; }
+    public int Active { get; set; }
+    public int Owned { get; set; }
+    public int Price { get; set; }
+    public int AccelerationRating { get; set; }
+    public int SpeedRating { get; set; }
+    public int BrakingRating { get; set; }
+    public int DifficultyRating { get; set; }
+    public int AccelerationStat { get; set; }
+    public int SpeedStat { get; set; }
+    public int BrakingStat { get; set; }
+    public int DifficultyStat { get; set; }
+    public double AccelerationTime { get; set; }
+    public int TopSpeed { get; set; }
+    public double Acceleration { get; set; }
+    public string Engine { get; set; }
+    public string EngineLayout { get; set; }
+    public string Gearbox { get; set; }
+    public int MaxTorque { get; set; }
+    public int MaxTorqueRPM { get; set; }
+    public int MaxPower { get; set; }
+    public int MaxPowerRPM { get; set; }
+    public int Weight { get; set; }
+    public byte[] Image { get; set; } // Add this property to hold the image data
+
     }
 }

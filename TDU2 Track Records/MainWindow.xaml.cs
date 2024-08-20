@@ -252,7 +252,7 @@ namespace TDU2_Track_Records
         private void calc_Total_Odometer()
         {
             string odo = SI == "Metric" ? "Odometer_Metric" : "Odometer_Imperial";
-            string query = $"SELECT Sum({odo}) FROM [cars];";
+            string query = $"SELECT Sum({odo}) FROM [vehicles];";
 
             try
             {
@@ -507,11 +507,11 @@ namespace TDU2_Track_Records
         SET Runs = Runs + 1 
         WHERE id = '{trackId}';
 
-        UPDATE [cars] 
+        UPDATE [vehicles] 
         SET {odo} = '{Convert.ToDouble(txt_odometer.Text)}', Races_Ran = Races_Ran + 1 
         WHERE Name = '{combo_Vehicle.Text.Replace("'", "''")}';
 
-        UPDATE [cars] 
+        UPDATE [vehicles] 
         SET {otherSiName} = '{calcOtherSIOdometer}' 
         WHERE Name = '{combo_Vehicle.Text.Replace("'", "''")}'";
 
@@ -569,7 +569,7 @@ namespace TDU2_Track_Records
                 dbConn.Open();
                 try
                 {
-                    using (var dbCmd = new SQLiteCommand($"SELECT {odo} FROM [cars] WHERE Name = '{veh}'", dbConn))
+                    using (var dbCmd = new SQLiteCommand($"SELECT {odo} FROM [vehicles] WHERE Name = '{veh}'", dbConn))
                     using (var reader = dbCmd.ExecuteReader())
                     {
                         if (reader.Read())
@@ -974,7 +974,7 @@ namespace TDU2_Track_Records
                 {
                     dbCmd.Connection = dbConn;
                     dbCmd.CommandType = CommandType.Text;
-                    dbCmd.CommandText = "SELECT * FROM cars";
+                    dbCmd.CommandText = "SELECT * FROM vehicles";
 
                     if (!string.IsNullOrEmpty(combo_Class.Text))
                     {
@@ -991,7 +991,7 @@ namespace TDU2_Track_Records
                         var ds = new DataSet();
                         try
                         {
-                            dbAdapter.Fill(ds, "cars");
+                            dbAdapter.Fill(ds, "vehicles");
                             comboBox.ItemsSource = ds.Tables[0].DefaultView;
                             comboBox.DisplayMemberPath = "Name";
                             comboBox.SelectedValuePath = "id";
@@ -1064,7 +1064,7 @@ namespace TDU2_Track_Records
 
             string query = $@"
         SELECT 
-            (SELECT {odo} AS Odometer FROM cars WHERE Name = '{veh}') ,
+            (SELECT {odo} AS Odometer FROM vehicles WHERE Name = '{veh}') ,
             (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = '{trackId}' AND conditions = '{conditions}') ,
             (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = '{trackId}' AND carName = '{veh}' AND conditions = '{conditions}') ";
 
@@ -1153,7 +1153,7 @@ namespace TDU2_Track_Records
 
             string query = $@"
             SELECT 
-                (SELECT {odoColumn} AS Odometer FROM cars WHERE Name = '{veh}') ,
+                (SELECT {odoColumn} AS Odometer FROM vehicles WHERE Name = '{veh}') ,
                 (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = {trackId} AND conditions = '{conditions}' AND orientation = '{orientation}'),
                 (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = '{conditions}' AND orientation = '{orientation}')";
 
@@ -1228,7 +1228,7 @@ namespace TDU2_Track_Records
 
             string query = $@"
             SELECT 
-            (SELECT {odoColumn} AS Odometer FROM cars WHERE Name = '{veh}'),
+            (SELECT {odoColumn} AS Odometer FROM vehicles WHERE Name = '{veh}'),
             (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = {trackId} AND conditions = {conditions} AND orientation = '{orientation}'),
             (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = {conditions} AND orientation = '{orientation}')";
 
@@ -1324,7 +1324,7 @@ namespace TDU2_Track_Records
 
             string query = $@"
                              SELECT 
-                             (SELECT {odoColumn} AS Odometer FROM cars WHERE Name = '{veh}') ,
+                             (SELECT {odoColumn} AS Odometer FROM vehicles WHERE Name = '{veh}') ,
                              (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = {trackId}) ,
                              (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = {conditions} AND orientation = {orientation})";
 
@@ -1411,8 +1411,8 @@ namespace TDU2_Track_Records
         private int GetCarsCount(SQLiteConnection dbConn, string param)
         {
             string query = string.IsNullOrEmpty(param)
-                ? "SELECT COUNT(*) FROM [cars];"
-                : $"SELECT COUNT(*) FROM [cars] WHERE Class = '{param}';";
+                ? "SELECT COUNT(*) FROM [vehicles];"
+                : $"SELECT COUNT(*) FROM [vehicles] WHERE Class = '{param}';";
 
             using (var cmd = new SQLiteCommand(query, dbConn))
             using (var reader = cmd.ExecuteReader())

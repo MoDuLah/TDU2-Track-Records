@@ -143,18 +143,18 @@
                                 <TextBlock x:Name="lap_distance_unit"
                                            DockPanel.Dock="Right"
                                            Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}"
-                                           VerticalAlignment="Bottom"
+                                           VerticalAlignment="Center"
                                            Visibility="Collapsed"/>
+                                <!---->
                             </DockPanel>
                         </GroupBox>
                         <Border Width="1" Margin="0,0" Background="Red"/>
                         <GroupBox Header="Race Length" VerticalAlignment="Center" x:Name="lbl_raceLength" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
                                 <DockPanel HorizontalAlignment="Center" >
-                                    <TextBlock Text="{Binding}" x:Name="race_Length" />
+                                <TextBlock Text="{Binding}" x:Name="race_Length" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                 <TextBlock x:Name="race_distance_unit"
                                            Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}"
-                                           VerticalAlignment="Bottom"
-                                           Visibility="Collapsed"/>
+                                           Visibility="Collapsed" VerticalAlignment="Center"/>
                                 </DockPanel>
                             </GroupBox>
                     </DockPanel>

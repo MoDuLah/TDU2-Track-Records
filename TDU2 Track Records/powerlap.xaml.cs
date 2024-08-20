@@ -45,6 +45,15 @@ namespace TDU2_Track_Records
             };
 
             combo_Class.ItemsSource = items;
+            List<ComboBoxItem> sorts = new List<ComboBoxItem>
+            {
+                new ComboBoxItem { ImagePath = "Images/carClasses/SC.png", Description = "Car Name", Value = "carName" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A1.png", Description = "Fastest Lap", Value = "Fastest_Lap" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A2.png", Description = "Average Lap", Value = "Average_Lap" }
+            };
+
+            combo_Sort.ItemsSource = sorts;
+
             combo_TextBlock.Visibility = Visibility.Collapsed;
             //combo_Track.SelectionChanged += Combo_Track_SelectionChanged;
         }
