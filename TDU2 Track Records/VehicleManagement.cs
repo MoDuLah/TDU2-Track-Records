@@ -13,18 +13,13 @@ public class VehicleManagement
     public double OdometerImperial { get; set; }
     public int Active { get; set; }
     public int Owned { get; set; }
-    public int Price { get; set; }
-    public int AccelerationRating { get; set; }
-    public int SpeedRating { get; set; }
-    public int BrakingRating { get; set; }
-    public int DifficultyRating { get; set; }
+    public string Price { get; set; }
     public int AccelerationStat { get; set; }
     public int SpeedStat { get; set; }
     public int BrakingStat { get; set; }
     public int DifficultyStat { get; set; }
     public double AccelerationTime { get; set; }
     public int TopSpeed { get; set; }
-    public double Acceleration { get; set; }
     public string Engine { get; set; }
     public string EngineLayout { get; set; }
     public string Gearbox { get; set; }

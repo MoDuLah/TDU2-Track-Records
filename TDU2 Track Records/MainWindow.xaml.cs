@@ -24,9 +24,8 @@ namespace TDU2_Track_Records
         readonly string connectionString = Settings.Default.connectionString;
         public string distance = Settings.Default.distance;
         public string speed = Settings.Default.speed;
-        string SI = Settings.Default.system;
+        readonly string SI = Settings.Default.system;
         private static readonly Regex _regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
-        readonly SQLiteDataAdapter dbAdapter;
         SQLiteDataReader reader;
         //SQLiteConnection dbConn; // Declare the SQLiteConnection-Object
         SQLiteCommand dbCmd;
@@ -1785,8 +1784,7 @@ namespace TDU2_Track_Records
 
         private void txt_odometer_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var textBox = sender as TextBox;
-            if (textBox == null)
+            if (!(sender is TextBox textBox))
                 return;
 
             if (textBox.Text.Contains('.'))
