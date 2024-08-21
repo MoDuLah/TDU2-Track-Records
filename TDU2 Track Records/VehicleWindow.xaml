@@ -88,7 +88,7 @@
                                     </DockPanel>
                                 </GroupBox>
                                 <GroupBox Header="Model" Margin="5">
-                                    <TextBox x:Name="VehicleModelTextBox" Margin="5" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutoWordSelection="True" TextWrapping="WrapWithOverflow" MaxLength="64" MinWidth="200" MaxWidth="200" />
+                                    <TextBox x:Name="VehicleModelTextBox" Margin="5" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutoWordSelection="True" TextWrapping="WrapWithOverflow" MaxLength="64" MinWidth="200" MaxWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                 </GroupBox>
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
@@ -114,8 +114,16 @@
                                 </GroupBox>
                                 <GroupBox Header="Odometer" MinWidth="218"  Margin="5">
                                     <DockPanel>
-                                        <TextBox x:Name="Odometer_Metric" MinWidth="200" Margin="5" VerticalAlignment="Center"/>
-                                        <TextBox x:Name="Odometer_Imperial" MinWidth="200" Margin="5" VerticalAlignment="Center" Visibility="Collapsed" />
+                                        <TextBox x:Name="Odometer_Metric" MinWidth="200" Margin="5"
+                                                 local:PlaceholderBehavior.PlaceholderText="0.0" 
+                                                 PreviewTextInput="OneDecimalPointTextBox_PreviewTextInput"
+                                                 DataObject.Pasting="OneDecimalPointTextBox_DataObject_Pasting"
+                                                 TextChanged="OneDecimalPointTextBox_TextChanged" />
+                                        <TextBox x:Name="Odometer_Imperial" MinWidth="200" Margin="5"
+                                                 local:PlaceholderBehavior.PlaceholderText="0.0" 
+                                                 PreviewTextInput="OneDecimalPointTextBox_PreviewTextInput"
+                                                 DataObject.Pasting="OneDecimalPointTextBox_DataObject_Pasting"
+                                                 TextChanged="OneDecimalPointTextBox_TextChanged" Visibility="Collapsed" />
                                     </DockPanel>
                                 </GroupBox>
                             </StackPanel>
@@ -177,7 +185,7 @@
                     <StackPanel>
                         <GroupBox Header="Displacement" Margin="5">
                             <DockPanel VerticalAlignment="Center" LastChildFill="False">
-                                <TextBox DockPanel.Dock="Left" MinWidth="146" x:Name="EngineSizeTextBox" MaxLength="5" />
+                                <TextBox DockPanel.Dock="Left" MinWidth="146" x:Name="EngineSizeTextBox" MaxLength="4" />
                                 <TextBlock Text="cc" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                             </DockPanel>
                         </GroupBox>
@@ -208,19 +216,19 @@
                         </GroupBox>
                         <GroupBox Header="Max Torque" Margin="5">
                             <StackPanel Orientation="Horizontal">
-                                <TextBox x:Name="MaxTorqueTextBox" Width="50" Margin="5,5,5,5" />
+                                <TextBox x:Name="MaxTorqueTextBox" Width="50" Margin="5,5,5,5" MaxLength="3" />
                                 <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}" VerticalAlignment="Center"/>
                                 <TextBlock Text=" @" VerticalAlignment="Center" />
-                                <TextBox x:Name="MaxTorqueRPMTextBox" Width="50" Margin="5" />
+                                <TextBox x:Name="MaxTorqueRPMTextBox" Width="50" Margin="5" MaxLength="4" />
                                 <TextBlock Text="RPM" VerticalAlignment="Center" Padding="0,0,5,0" />
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Header="Max Power" Margin="5">
                             <StackPanel Orientation="Horizontal">
-                                <TextBox x:Name="MaxPowerTextBox" Width="50" Margin="5" VerticalAlignment="Center"/>
+                                <TextBox x:Name="MaxPowerTextBox" Width="50" Margin="5" VerticalAlignment="Center" MaxLength="3"/>
                                 <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=horsepower, Mode=OneWay}" VerticalAlignment="Center" Margin="5,0,0,0"/>
                                 <TextBlock Text=" @" VerticalAlignment="Center" />
-                                <TextBox x:Name="MaxPowerRPMTextBox" Width="50"  Margin="0,0,5,0" VerticalAlignment="Center" />
+                                <TextBox x:Name="MaxPowerRPMTextBox" Width="50"  Margin="0,0,5,0" VerticalAlignment="Center" MaxLength="4" />
                                 <TextBlock Text="RPM" VerticalAlignment="Center" Margin="0,0,5,0"/>
                             </StackPanel>
                         </GroupBox>
@@ -258,19 +266,23 @@
                         </GroupBox>
                         <GroupBox Header="Top Speed" Margin="5">
                             <DockPanel>
-                                <TextBox x:Name="TopSpeedTextBox" Margin="5" Width="100"/>
+                                <TextBox x:Name="TopSpeedTextBox" Margin="5" Width="100" MaxLength="3"/>
                                 <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" VerticalAlignment="Center" Margin="0,0,5,0"/>
                             </DockPanel>
                         </GroupBox>
                         <GroupBox Header="Acceleration" Margin="5">
                             <DockPanel>
-                                <TextBox x:Name="AccelerationTextBox" Width="100"/>
+                                <TextBox x:Name="AccelerationTextBox" Width="100"
+                                         local:PlaceholderBehavior.PlaceholderText="0.00" 
+                                         PreviewTextInput="TwoDecimalPointsTextBox_PreviewTextInput"
+                                           DataObject.Pasting="TwoDecimalPointsTextBox_DataObject_Pasting"
+                                           TextChanged="TwoDecimalPointsTextBox_TextChanged" MaxLength="4"/>
                                 <TextBlock Text="Sec." VerticalAlignment="Center" Margin="0,0,5,0"/>
                             </DockPanel>
                         </GroupBox>
                         <GroupBox Header="Weight" Margin="5">
                             <DockPanel>
-                                <TextBox x:Name="WeightTextBox" Width="100" />
+                                <TextBox x:Name="WeightTextBox" Width="100" MaxLength="4" />
                                 <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}" VerticalAlignment="Center" Padding="0,0,5,0"/>
                             </DockPanel>
                         </GroupBox>

@@ -9,6 +9,10 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using TDU2_Track_Records.Properties;
+using System.Text.RegularExpressions;
+using System.Windows.Input;
+using static System.Net.Mime.MediaTypeNames;
+using System.Globalization;
 
 namespace TDU2_Track_Records
 {
@@ -506,6 +510,8 @@ namespace TDU2_Track_Records
             int maxPower = int.Parse(MaxPowerTextBox.Text);
             int maxPowerRPM = int.Parse(MaxPowerRPMTextBox.Text);
             int weight = int.Parse(WeightTextBox.Text);
+            // Convert the image to a byte array
+            byte[] image = ConvertImageToByteArray(UploadedImage.Source as BitmapImage);
 
             using (var conn = new SQLiteConnection(Settings.Default.connectionString))
             {
@@ -547,7 +553,7 @@ namespace TDU2_Track_Records
                     cmd.Parameters.AddWithValue("@maxPower", maxPower);
                     cmd.Parameters.AddWithValue("@maxPowerRPM", maxPowerRPM);
                     cmd.Parameters.AddWithValue("@weight", weight);
-
+                    cmd.Parameters.AddWithValue("@image", image ?? (object)DBNull.Value);
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -623,7 +629,75 @@ namespace TDU2_Track_Records
                 btn_BrandAdd.Visibility = Visibility.Visible;
             }
         }
+        private void OneDecimalPointTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Define a regular expression pattern to allow only non-negative numbers with one decimal point
+            var regex = new Regex(@"^\d*\.?\d{0,1}$");
+            e.Handled = !regex.IsMatch(e.Text);
+        }
 
+        private void OneDecimalPointTextBox_DataObject_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(DataFormats.Text))
+            {
+                var pasteText = e.DataObject.GetData(DataFormats.Text) as string;
+                var regex = new Regex(@"^\d*\.?\d{0,1}$");
+
+                if (!regex.IsMatch(pasteText))
+                {
+                    e.CancelCommand();
+                }
+            }
+        }
+
+        private void OneDecimalPointTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var regex = new Regex(@"^\d*\.?\d{0,1}$");
+            var text = textBox.Text;
+            if (!regex.IsMatch(text))
+            {
+                textBox.Text = text.Remove(text.Length - 1);
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+        }
+
+        private void TwoDecimalPointsTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Define a regular expression pattern to allow only non-negative numbers with up to two decimal points
+            var regex = new Regex(@"^\d*\.?\d{0,2}$");
+            e.Handled = !regex.IsMatch(e.Text);
+        }
+
+        private void TwoDecimalPointsTextBox_DataObject_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (e.DataObject.GetDataPresent(DataFormats.Text))
+            {
+                var pasteText = e.DataObject.GetData(DataFormats.Text) as string;
+                var regex = new Regex(@"^\d*\.?\d{0,2}$");
+
+                if (!regex.IsMatch(pasteText))
+                {
+                    e.CancelCommand();
+                }
+            }
+        }
+
+        private void TwoDecimalPointsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            if (textBox == null) return;
+
+            var regex = new Regex(@"^\d*\.?\d{0,2}$");
+            var text = textBox.Text;
+            if (!regex.IsMatch(text))
+            {
+                textBox.Text = text.Remove(text.Length - 1);
+                textBox.SelectionStart = textBox.Text.Length;
+            }
+        }
         private void ResetVehicle_Click(object sender, RoutedEventArgs e)
         {
             ResetControls(this);
@@ -666,10 +740,14 @@ namespace TDU2_Track_Records
                 {
                     passwordBox.Clear();
                 }
-                else if (child is TextBlock textBlock)
+                else if (child is System.Windows.Controls.Image imaGe)
                 {
-                    textBlock.Text = string.Empty;
+                    imaGe.Source = null;
                 }
+                //else if (child is TextBlock textBlock)
+                //{
+                //    textBlock.Text = string.Empty;
+                //}
                 // Add more control types as needed
 
                 // Recurse into child elements

@@ -60,11 +60,6 @@ namespace TDU2_Track_Records
             // Update UI elements directly
             sysMSG.Text = "Measurement system updated!";
         }
-        private void OnMeasurementSystemChanged(object sender, EventArgs e)
-        {
-            // Update UI directly
-            sysMSG.Text = "Measurement system updated!";
-        }
         private void calc_Total_Lap_Time()
         {
             const int lapCount = 5;  // Number of laps, can be adjusted if needed

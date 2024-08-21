@@ -61,7 +61,7 @@ namespace TDU2_Track_Records
                 if (textBox.Text == GetPlaceholderText(textBox))
                 {
                     textBox.Text = string.Empty;
-                    textBox.Foreground = Brushes.Black;
+                    textBox.Foreground = Brushes.White;
                 }
             }
         }

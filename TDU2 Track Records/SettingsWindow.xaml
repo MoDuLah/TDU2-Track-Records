@@ -6,7 +6,9 @@
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
         xmlns:local="clr-namespace:TDU2_Track_Records"
         mc:Ignorable="d" 
-        Title="Settings" MinWidth="382" MinHeight="350" MaxWidth="500" MaxHeight="550" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" ResizeMode="NoResize" WindowStyle="None" Background="{x:Null}">
+        Title="Settings" MinWidth="382" MinHeight="350" MaxWidth="500" MaxHeight="550"
+        Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
+        ResizeMode="NoResize" WindowStyle="None" Background="{x:Null}" UseLayoutRounding="False" MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
     <Window.Resources>
         <local:UnitConverter x:Key="UnitConverter"/>
@@ -69,12 +71,9 @@
                             </StackPanel>
                         </GroupBox>
                         <GroupBox Header="Units">
-                            <StackPanel Orientation="Horizontal" Margin="5">
+                            <StackPanel Orientation="Vertical" Margin="5">
                                 <Slider x:Name="UnitSlider" Minimum="0" Maximum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="200"
-                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Converter={StaticResource UnitConverter}, Mode=TwoWay}" />
-                                <TextBlock Text="{Binding ElementName=UnitSlider, Path=Value, Converter={StaticResource UnitConverter}, Mode=OneWay}" Margin="10,0,0,0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </GroupBox>
+                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Converter={StaticResource UnitConverter}, Mode=TwoWay}" />                               
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Speed: "/>
                             <TextBlock x:Name="SpeedUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" />
@@ -85,6 +84,8 @@
                             <TextBlock Text="Torque: " Margin="5,0,0,0"/>
                             <TextBlock x:Name="torqueUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}" />
                         </StackPanel>
+                            </StackPanel>
+                        </GroupBox>
                     </StackPanel>
                 </TabItem>
 

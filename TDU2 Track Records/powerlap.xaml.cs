@@ -225,12 +225,6 @@ namespace TDU2_Track_Records
                     selectedClassText = "";
                 }
 
-                string suffix = "";
-                if (selectedClassText != "All")
-                {
-                    suffix = " - ";//+ selectedClassText;
-                }
-
                 // Create an Image control to display the selected image
                 var imageControl = new Image
                 {
