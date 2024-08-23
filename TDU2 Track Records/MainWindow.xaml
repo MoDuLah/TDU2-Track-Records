@@ -45,13 +45,68 @@
             </Grid.RowDefinitions>
             <DockPanel Grid.Column="0" Grid.Row="0" Margin="0,10,0,0">
                 <Image Source="/Images/tdu2.ico" Stretch="UniformToFill" Margin="80,0,5,0" Width="45" DockPanel.Dock="Left"/>
-                <TextBlock Text="TDU2 Track Records" FontSize="48" Foreground="{DynamicResource HoverBackground}" FontFamily="Gill Sans MT Ext Condensed Bold" Background="{DynamicResource GlassBrush}" HorizontalAlignment="Left"/>
+                <TextBlock Text="TDU2 Track Records" FontSize="48" Foreground="{DynamicResource HoverBackground}" FontFamily="Gill Sans MT Ext Condensed Bold" Background="{DynamicResource GlassBrush}" HorizontalAlignment="Left" Margin="0,0,0,5"/>
             </DockPanel>
-            <DockPanel Grid.Column="5" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,20,0">
-                <local:VehicleButton Margin="0,0,20,0"/>
-                <local:SettingsButton Margin="0,0,20,0"/>
-                <local:MinimizeButton Margin="0,0,20,0"/>
-                <local:CloseButton Margin="0,0,20,0"/>
+            <DockPanel Grid.Column="5" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,5">
+                <Image x:Name="VehicleManager_Button" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown"
+                       Margin="0,0,5,0"
+                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/garage.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/garage_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="Settings_Button" MouseLeftButtonDown="Settings_MouseLeftButtonDown"
+                       Margin="0,0,5,0"
+                       Width="32" Height="32" MinWidth="32" MinHeight="32"
+                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/settings.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/settings_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="Minimize_Button" MouseLeftButtonDown="Minimize_MouseLeftButtonDown"
+                       Margin="0,0,5,0"
+                       Width="32" Height="32" MinWidth="32" MinHeight="32"
+                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/minimize.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/minimize_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="Close_Button" MouseLeftButtonDown="Close_Button_MouseLeftButtonDown"
+                       Margin="0,0,5,0"
+                       Width="32" Height="32" MinWidth="32" MinHeight="32"
+                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/close.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/close_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
             </DockPanel>
             <!--Row 0-->
             

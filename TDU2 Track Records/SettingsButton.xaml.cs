@@ -27,22 +27,7 @@ namespace TDU2_Track_Records
 
         private void CloseButton_Click(object sender, MouseButtonEventArgs e)
         {
-            // Prompt the user before closing the main window
-            MessageBoxResult result = MessageBox.Show(
-                "Changing the settings will reload the main window, and any unsaved data will be lost. Do you want to continue?",
-                "Warning",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
 
-            if (result == MessageBoxResult.Yes)
-            {
-                var settingsWindow = new SettingsWindow();
-                settingsWindow.ShowDialog();
-            }
-            else
-            {
-                // User canceled the operation, do nothing
-            }
 
         }
     }

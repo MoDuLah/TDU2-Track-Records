@@ -51,8 +51,8 @@ namespace TDU2_Track_Records
                 ViewEntries_Metric.Visibility = Visibility.Collapsed;
                 ViewEntries_Imperial.Visibility = Visibility.Collapsed;
             }
-            Fill(combo_Track);
-            BindComboBox(combo_Vehicle);
+            FillComboBoxWithTracks(combo_Track);
+            BindVehicleComboBox(combo_Vehicle);
             calc_Total_Odometer();
         }
         public void UpdateMeasurementSystem()
@@ -634,7 +634,7 @@ namespace TDU2_Track_Records
 
         private void HandleComboClassChange()
         {
-            BindComboBox(combo_Vehicle);
+            BindVehicleComboBox(combo_Vehicle);
             CheckProgress();
             loadLapRecord();
 
@@ -662,7 +662,7 @@ namespace TDU2_Track_Records
 
         private void AdjustWindowHeight()
         {
-            Application.Current.MainWindow.Height -= 300;
+            //Application.Current.MainWindow.Height -= 300;
         }
 
         private void loadLapRecord()
@@ -860,44 +860,7 @@ namespace TDU2_Track_Records
             }
         }
 
-        private void Fill(ComboBox comboBox)
-        {
-            const string query = "SELECT * FROM tracks";
 
-            try
-            {
-                using (var dbConn = new SQLiteConnection(connectionString))
-                {
-                    dbConn.Open();
-                    using (var dbCmd = new SQLiteCommand(query, dbConn))
-                    using (var dbAdapter = new SQLiteDataAdapter(dbCmd))
-                    {
-                        var dataSet = new DataSet();
-                        dbAdapter.Fill(dataSet, "tracks");
-
-                        SetComboBoxSource(comboBox, dataSet);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred while loading tracks:\n{ex.Message}");
-            }
-        }
-
-        private void SetComboBoxSource(ComboBox comboBox, DataSet dataSet)
-        {
-            if (dataSet.Tables.Count > 0)
-            {
-                comboBox.ItemsSource = dataSet.Tables[0].DefaultView;
-                comboBox.DisplayMemberPath = "Name";  // Display the 'Name' column
-                comboBox.SelectedValuePath = "id";    // Use the 'id' column as the value
-            }
-            else
-            {
-                MessageBox.Show("No tracks found in the database.");
-            }
-        }
 
 
 
@@ -954,49 +917,95 @@ namespace TDU2_Track_Records
             }
         }
 
+        private void FillComboBoxWithTracks(ComboBox comboBox)
+        {
+            const string query = "SELECT * FROM tracks";
 
-        private void BindComboBox(ComboBox comboBox)
+            ExecuteQuery(query, "tracks", dataSet =>
+            {
+                SetComboBoxSource(comboBox, dataSet, "Name", "id");
+            },
+            ex => MessageBox.Show($"An error occurred while loading tracks:\n{ex.Message}"));
+        }
+
+        private void BindVehicleComboBox(ComboBox comboBox)
+        {
+            string query = "SELECT * FROM vehicles WHERE Active = '1' AND Owned = '1'";
+
+            if (!string.IsNullOrEmpty(combo_Class.Text))
+            {
+                query += " AND Class = @Class ORDER BY Name ASC;";
+            }
+            else
+            {
+                query += " ORDER BY Name ASC;";
+            }
+
+            ExecuteQuery(query, "vehicles", dataSet =>
+            {
+                if (dataSet.Tables[0].Rows.Count > 0)
+                {
+                    SetComboBoxSource(comboBox, dataSet, "Name", "id");
+                    ClearVehicleDetails();
+                }
+                else
+                {
+                    MessageBox.Show("No vehicles found.\nPlease go to Vehicle Management to add vehicles.\n\nTip: Vehicle management is the garage icon on top right.",
+                                    "Vehicle Management Required",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Exclamation);
+                    var VehicleWindow = new Vehicle();
+                    VehicleWindow.Show();
+                }
+            },
+            ex => MessageBox.Show($"An error occurred while loading vehicles:\n{ex.Message}"),
+            ("@Class", combo_Class.Text));
+        }
+
+        private void ExecuteQuery(string query, string tableName, Action<DataSet> onSuccess, Action<Exception> onError, params (string, object)[] parameters)
+        {
+            try
+            {
+                using (var dbConn = new SQLiteConnection(connectionString))
+                using (var dbCmd = new SQLiteCommand(query, dbConn))
+                using (var dbAdapter = new SQLiteDataAdapter(dbCmd))
+                {
+                    foreach (var param in parameters)
+                    {
+                        dbCmd.Parameters.AddWithValue(param.Item1, param.Item2);
+                    }
+
+                    dbConn.Open();
+                    var dataSet = new DataSet();
+                    dbAdapter.Fill(dataSet, tableName);
+                    onSuccess(dataSet);
+                }
+            }
+            catch (Exception ex)
+            {
+                onError(ex);
+            }
+        }
+
+        private void SetComboBoxSource(ComboBox comboBox, DataSet dataSet, string displayMemberPath, string selectedValuePath)
+        {
+            if (dataSet.Tables.Count > 0)
+            {
+                comboBox.ItemsSource = dataSet.Tables[0].DefaultView;
+                comboBox.DisplayMemberPath = displayMemberPath;
+                comboBox.SelectedValuePath = selectedValuePath;
+            }
+            else
+            {
+                MessageBox.Show($"No data found in the {displayMemberPath} table.");
+            }
+        }
+
+        private void ClearVehicleDetails()
         {
             txt_odometer.Text = "";
             txt_carPB.Text = "";
             txt_rRan.Text = "";
-
-            using (var dbConn = new SQLiteConnection(connectionString))
-            {
-                dbConn.Open();
-                using (var dbCmd = new SQLiteCommand())
-                {
-                    dbCmd.Connection = dbConn;
-                    dbCmd.CommandType = CommandType.Text;
-                    dbCmd.CommandText = "SELECT * FROM vehicles";
-
-                    if (!string.IsNullOrEmpty(combo_Class.Text))
-                    {
-                        dbCmd.CommandText += " WHERE Class = @Class AND Active = '1' ORDER BY Name ASC;";
-                        dbCmd.Parameters.AddWithValue("@Class", combo_Class.Text);
-                    }
-                    else
-                    {
-                        dbCmd.CommandText += " where Active = '1' ORDER BY Name ASC;";
-                    }
-
-                    using (var dbAdapter = new SQLiteDataAdapter(dbCmd))
-                    {
-                        var ds = new DataSet();
-                        try
-                        {
-                            dbAdapter.Fill(ds, "vehicles");
-                            comboBox.ItemsSource = ds.Tables[0].DefaultView;
-                            comboBox.DisplayMemberPath = "Name";
-                            comboBox.SelectedValuePath = "id";
-                        }
-                        catch (Exception ex)
-                        {
-                            MessageBox.Show("An error occurred while loading categories.\n" + ex.ToString());
-                        }
-                    }
-                }
-            }
         }
 
 
@@ -1866,6 +1875,42 @@ namespace TDU2_Track_Records
         void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = (e.Row.GetIndex() + 1).ToString();
+        }
+
+        private void VehicleManager_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var VehicleWindow = new Vehicle();
+            VehicleWindow.Show();
+        }
+
+        private void Settings_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Prompt the user before closing the main window
+            MessageBoxResult result = MessageBox.Show(
+                "Changing the settings will reload the main window, and any unsaved data will be lost. Do you want to continue?",
+                "Warning",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                var settingsWindow = new SettingsWindow();
+                settingsWindow.ShowDialog();
+            }
+            else
+            {
+                // User canceled the operation, do nothing
+            }
+        }
+
+        private void Minimize_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Window.GetWindow(this).WindowState = WindowState.Minimized;
+        }
+
+        private void Close_Button_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Window.GetWindow(this)?.Close();
         }
     }
 

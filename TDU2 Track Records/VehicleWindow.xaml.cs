@@ -11,8 +11,7 @@ using System.Windows.Media.Imaging;
 using TDU2_Track_Records.Properties;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
-using static System.Net.Mime.MediaTypeNames;
-using System.Globalization;
+using System.Linq;
 
 namespace TDU2_Track_Records
 {
@@ -78,7 +77,7 @@ namespace TDU2_Track_Records
             }
             else if (comboBox == VehicleSelection)
             {
-                return "SELECT * FROM vehicles;";
+                return "SELECT id,Name FROM vehicles ORDER BY Name ASC;";
             }
             else
             {
@@ -114,7 +113,7 @@ namespace TDU2_Track_Records
                 using (var conn = new SQLiteConnection(connectionString))
                 {
                     conn.Open();
-                    string query = "SELECT * FROM vehicles";
+                    string query = "SELECT * FROM vehicles ORDER BY Name ASC; ";
                     using (var cmd = new SQLiteCommand(query, conn))
                     {
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -177,8 +176,7 @@ namespace TDU2_Track_Records
         {
             if (VehicleSelection.SelectedItem == null) return;
 
-            var selectedVehicle = VehicleSelection.SelectedItem as VehicleManagement;
-            if (selectedVehicle == null) return;
+            if (!(VehicleSelection.SelectedItem is VehicleManagement selectedVehicle)) return;
 
             // Load and display the image if available
             if (selectedVehicle.Image != null && selectedVehicle.Image.Length > 0)
@@ -269,25 +267,37 @@ namespace TDU2_Track_Records
         }
         private void UpdateVehicleDetails()
         {
-            if (!ValidateInputs(out double mileage, out string price, out int topSpeed,
-                                out int accelerationStat, out int speedStat, out int brakingStat,
-                                out int difficultyStat, out double accelerationTime, out int maxPower,
-                                out int maxPowerRPM, out int maxTorque, out int maxTorqueRPM, out int weight))
+            double mileage;
+            string price;
+            int topSpeed, accelerationStat, speedStat, brakingStat, difficultyStat, maxPower, maxPowerRPM, maxTorque, maxTorqueRPM, weight;
+            double accelerationTime;
+
+            List<string> errors = ValidateInputs(out mileage, out price, out topSpeed,
+                                                out accelerationStat, out speedStat, out brakingStat,
+                                                out difficultyStat, out accelerationTime, out maxPower,
+                                                out maxPowerRPM, out maxTorque, out maxTorqueRPM, out weight);
+
+            if (errors.Any())
             {
-                MessageBox.Show("Please ensure all fields are correctly formatted.");
-                return;
+                // Display or handle errors
+                foreach (string error in errors)
+                {
+                    MessageBox.Show(error);
+                }
             }
-
-            if (VehicleSelection.SelectedItem is VehicleManagement selectedVehicle)
+            else
             {
-                SetVehicleDetails(selectedVehicle, mileage, price, topSpeed, accelerationStat,
-                                  speedStat, brakingStat, difficultyStat, accelerationTime,
-                                  maxPower, maxPowerRPM, maxTorque, maxTorqueRPM, weight);
 
-                // Convert the image to a byte array
-                byte[] imageBytes = ConvertImageToByteArray(UploadedImage.Source as BitmapImage);
+                if (VehicleSelection.SelectedItem is VehicleManagement selectedVehicle)
+                {
+                    SetVehicleDetails(selectedVehicle, mileage, price, topSpeed, accelerationStat,
+                                      speedStat, brakingStat, difficultyStat, accelerationTime,
+                                      maxPower, maxPowerRPM, maxTorque, maxTorqueRPM, weight);
 
-                string query = @"
+                    // Convert the image to a byte array
+                    byte[] imageBytes = ConvertImageToByteArray(UploadedImage.Source as BitmapImage);
+
+                    string query = @"
                             UPDATE Vehicles SET 
                             Name = @name,
                             Brand = @brand,
@@ -315,19 +325,22 @@ namespace TDU2_Track_Records
                             Image = @image
                             WHERE Id = @id";
 
-                try
-                {
-                    ExecuteNonQuery(query, cmd =>
+                    try
                     {
-                        AddParameters(cmd, selectedVehicle, imageBytes);
-                    });
+                        ExecuteNonQuery(query, cmd =>
+                        {
+                            AddParameters(cmd, selectedVehicle, imageBytes);
+                        });
 
-                    MessageBox.Show("Vehicle details updated successfully.");
-                    LoadVehicles();  // Refresh the list
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"An error occurred while saving changes: {ex.Message}");
+                        MessageBox.Show("Vehicle details updated successfully.");
+                        BindComboBox(VehicleBrandComboBox); // Refresh the ComboBox
+                        BindComboBox(VehicleSelection); // Refresh the ComboBox
+                        LoadVehicles();  // Refresh the list
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"An error occurred while saving changes: {ex.Message}");
+                    }
                 }
             }
         }
@@ -341,10 +354,10 @@ namespace TDU2_Track_Records
                 return ms.ToArray();
             }
         }
-        private bool ValidateInputs(out double mileage, out string price, out int topSpeed,
-                                         out int accelerationStat, out int speedStat, out int brakingStat,
-                                         out int difficultyStat, out double accelerationTime, out int maxPower,
-                                         out int maxPowerRPM, out int maxTorque, out int maxTorqueRPM, out int weight)
+        private List<string> ValidateInputs(out double mileage, out string price, out int topSpeed,
+                                           out int accelerationStat, out int speedStat, out int brakingStat,
+                                           out int difficultyStat, out double accelerationTime, out int maxPower,
+                                           out int maxPowerRPM, out int maxTorque, out int maxTorqueRPM, out int weight)
         {
             // Initialize out parameters
             mileage = 0;
@@ -361,29 +374,114 @@ namespace TDU2_Track_Records
             maxTorqueRPM = 0;
             weight = 0;
 
-            bool isValid = true;
+            List<string> errorMessages = new List<string>();
 
-            // Validate mileage, price, and top speed
-            isValid &= (SI == "Metric" ? double.TryParse(Odometer_Metric.Text, out mileage) : double.TryParse(Odometer_Imperial.Text, out mileage)) &&
-                       int.TryParse(TopSpeedTextBox.Text, out topSpeed);
+            // Validate mileage
+            if (!(SI == "Metric" ? double.TryParse(Odometer_Metric.Text, out mileage) : double.TryParse(Odometer_Imperial.Text, out mileage)))
+            {
+                errorMessages.Add("Invalid or empty mileage.");
+            }
+
+            // Validate price
+            if (string.IsNullOrWhiteSpace(VehiclePriceTextBox.Text))
+            {
+                errorMessages.Add("Price is required.");
+            }
+            else
+            {
+                price = VehiclePriceTextBox.Text;
+            }
+
+            // Validate top speed
+            if (!int.TryParse(TopSpeedTextBox.Text, out topSpeed))
+            {
+                errorMessages.Add("Invalid or empty top speed.");
+            }
 
             // Validate sliders
-            isValid &= int.TryParse(AccelerationStatSlider.Value.ToString(), out accelerationStat) &&
-                       int.TryParse(SpeedStatSlider.Value.ToString(), out speedStat) &&
-                       int.TryParse(BrakingStatSlider.Value.ToString(), out brakingStat) &&
-                       int.TryParse(DifficultyStatSlider.Value.ToString(), out difficultyStat);
+            if (!int.TryParse(AccelerationStatSlider.Value.ToString(), out accelerationStat))
+            {
+                errorMessages.Add("Invalid or empty acceleration stat.");
+            }
 
-            // Validate acceleration, max power, max power RPM, max torque, max torque RPM, and weight
-            isValid &= double.TryParse(AccelerationTextBox.Text, out accelerationTime) &&
-                       int.TryParse(MaxPowerTextBox.Text, out maxPower) &&
-                       int.TryParse(MaxPowerRPMTextBox.Text, out maxPowerRPM) &&
-                       int.TryParse(MaxTorqueTextBox.Text, out maxTorque) &&
-                       int.TryParse(MaxTorqueRPMTextBox.Text, out maxTorqueRPM) &&
-                       int.TryParse(WeightTextBox.Text, out weight);
+            if (!int.TryParse(SpeedStatSlider.Value.ToString(), out speedStat))
+            {
+                errorMessages.Add("Invalid or empty speed stat.");
+            }
 
-            return isValid;
+            if (!int.TryParse(BrakingStatSlider.Value.ToString(), out brakingStat))
+            {
+                errorMessages.Add("Invalid or empty braking stat.");
+            }
+
+            if (!int.TryParse(DifficultyStatSlider.Value.ToString(), out difficultyStat))
+            {
+                errorMessages.Add("Invalid or empty difficulty stat.");
+            }
+
+            // Validate acceleration time
+            if (!double.TryParse(AccelerationTextBox.Text, out accelerationTime))
+            {
+                errorMessages.Add("Invalid or empty acceleration time.");
+            }
+
+            // Validate max power
+            if (!int.TryParse(MaxPowerTextBox.Text, out maxPower))
+            {
+                errorMessages.Add("Invalid or empty max power.");
+            }
+
+            // Validate max power RPM
+            if (!int.TryParse(MaxPowerRPMTextBox.Text, out maxPowerRPM))
+            {
+                errorMessages.Add("Invalid or empty max power RPM.");
+            }
+
+            // Validate max torque
+            if (!int.TryParse(MaxTorqueTextBox.Text, out maxTorque))
+            {
+                errorMessages.Add("Invalid or empty max torque.");
+            }
+
+            // Validate max torque RPM
+            if (!int.TryParse(MaxTorqueRPMTextBox.Text, out maxTorqueRPM))
+            {
+                errorMessages.Add("Invalid or empty max torque RPM.");
+            }
+
+            // Validate weight
+            if (!int.TryParse(WeightTextBox.Text, out weight))
+            {
+                errorMessages.Add("Invalid or empty weight.");
+            }
+
+            return errorMessages;
         }
- 
+        private void Textbox_GotFocus(object sender, RoutedEventArgs e)
+        {
+                // Cast the sender to a TextBox
+                TextBox textBox = sender as TextBox;
+
+                // Select all text in the TextBox
+                textBox.SelectAll();
+        
+        }
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+
+            // Check if the text length equals MaxLength
+            if (textBox.Text.Length == textBox.MaxLength)
+            {
+                MoveFocusToNextElement(textBox);
+            }
+        }
+        private void MoveFocusToNextElement(TextBox currentTextBox)
+        {
+            // Move focus to the next element in the tab order
+            currentTextBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+        }
+
         private void SetVehicleDetails(VehicleManagement vehicle, double mileage, string price, int topSpeed,
                                         int accelerationStat, int speedStat, int brakingStat, int difficultyStat,
                                         double accelerationTime, int maxPower, int maxPowerRPM, int maxTorque,
@@ -459,64 +557,87 @@ namespace TDU2_Track_Records
 
         private void AddVehicleButton_Click(object sender, RoutedEventArgs e)
         {
-            double meter_Metric = 0.0;
-            double meter_Imperial = 0.0;
-            string query;
-            string brand;
-            if (VehicleBrandComboBox.Visibility == Visibility.Visible)
+            double mileage;
+            string price;
+            int topSpeed, accelerationStat, speedStat, brakingStat, difficultyStat, maxPower, maxPowerRPM, maxTorque, maxTorqueRPM, weight;
+            double accelerationTime;
+
+            List<string> errors = ValidateInputs(out mileage, out price, out topSpeed,
+                                                out accelerationStat, out speedStat, out brakingStat,
+                                                out difficultyStat, out accelerationTime, out maxPower,
+                                                out maxPowerRPM, out maxTorque, out maxTorqueRPM, out weight);
+
+            if (errors.Any())
             {
-                brand = VehicleBrandComboBox.Text;
+                // Display or handle errors
+                foreach (string error in errors)
+                {
+                    MessageBox.Show(error);
+                }
+                return;
             }
             else
             {
-                brand = VehicleBrandTextBox.Text;
-            }
-            string model = VehicleModelTextBox.Text;
-            string name = brand + " " + model;
-            string vehicleClass = VehicleClassComboBox.Text;
-            if (SI == "Metric") {
-                meter_Metric = double.Parse(Odometer_Metric.Text);
-                meter_Imperial = Math.Round(meter_Metric * 0.621371,1);
-            } else
-            {
-                meter_Imperial = double.Parse(Odometer_Imperial.Text);
-                meter_Metric = Math.Round(meter_Imperial * 1.60934,1);
-            }
-            int races = 0;
-            string price = VehiclePriceTextBox.Text;
-            bool isActive = VehicleActiveCheckBox.IsChecked.GetValueOrDefault();
-            int isactive = 0;
-            if (isActive == true)
-            {
-                isactive = 1;
-            }
-            bool isOwned = VehicleOwnedCheckBox.IsChecked.GetValueOrDefault();
-            int isowned = 0;
-            if (isOwned == true)
-            {
-                isowned = 1;
-            }
-            int accelerationStat = Convert.ToInt32(AccelerationStatSlider.Value);
-            int speedStat = Convert.ToInt32(SpeedStatSlider.Value);
-            int brakingStat = Convert.ToInt32(BrakingStatSlider.Value);
-            int difficultyStat = Convert.ToInt32(DifficultyStatSlider.Value);
-            double accelerationTime = Convert.ToDouble(AccelerationTextBox.Text);
-            int topSpeed = int.Parse(TopSpeedTextBox.Text);
-            string engineSize = EngineSizeTextBox.Text;
-            string engineLayout = EngineLayoutComboBox.Text;
-            string gearbox = GearboxComboBox.Text;
-            int maxTorque = int.Parse(MaxTorqueTextBox.Text);
-            int maxTorqueRPM = int.Parse(MaxTorqueRPMTextBox.Text);
-            int maxPower = int.Parse(MaxPowerTextBox.Text);
-            int maxPowerRPM = int.Parse(MaxPowerRPMTextBox.Text);
-            int weight = int.Parse(WeightTextBox.Text);
-            // Convert the image to a byte array
-            byte[] image = ConvertImageToByteArray(UploadedImage.Source as BitmapImage);
+                double meter_Metric;
+                double meter_Imperial;
+                string query;
+                string brand;
+                if (VehicleBrandComboBox.Visibility == Visibility.Visible)
+                {
+                    brand = VehicleBrandComboBox.Text;
+                }
+                else
+                {
+                    brand = VehicleBrandTextBox.Text;
+                }
+                string model = VehicleModelTextBox.Text;
+                string name = brand + " " + model;
+                string vehicleClass = VehicleClassComboBox.Text;
+                if (SI == "Metric")
+                {
+                    meter_Metric = double.Parse(Odometer_Metric.Text);
+                    meter_Imperial = Math.Round(meter_Metric * 0.621371, 1);
+                }
+                else
+                {
+                    meter_Imperial = double.Parse(Odometer_Imperial.Text);
+                    meter_Metric = Math.Round(meter_Imperial * 1.60934, 1);
+                }
+                int races = 0;
+                price = VehiclePriceTextBox.Text;
+                bool isActive = VehicleActiveCheckBox.IsChecked.GetValueOrDefault();
+                int isactive = 0;
+                if (isActive == true)
+                {
+                    isactive = 1;
+                }
+                bool isOwned = VehicleOwnedCheckBox.IsChecked.GetValueOrDefault();
+                int isowned = 0;
+                if (isOwned == true)
+                {
+                    isowned = 1;
+                }
+                accelerationStat = Convert.ToInt32(AccelerationStatSlider.Value);
+                speedStat = Convert.ToInt32(SpeedStatSlider.Value);
+                brakingStat = Convert.ToInt32(BrakingStatSlider.Value);
+                difficultyStat = Convert.ToInt32(DifficultyStatSlider.Value);
+                accelerationTime = Convert.ToDouble(AccelerationTextBox.Text);
+                topSpeed = int.Parse(TopSpeedTextBox.Text);
+                string engineSize = EngineSizeTextBox.Text;
+                string engineLayout = EngineLayoutComboBox.Text;
+                string gearbox = GearboxComboBox.Text;
+                maxTorque = int.Parse(MaxTorqueTextBox.Text);
+                maxTorqueRPM = int.Parse(MaxTorqueRPMTextBox.Text);
+                maxPower = int.Parse(MaxPowerTextBox.Text);
+                maxPowerRPM = int.Parse(MaxPowerRPMTextBox.Text);
+                weight = int.Parse(WeightTextBox.Text);
+                // Convert the image to a byte array
+                byte[] image = ConvertImageToByteArray(UploadedImage.Source as BitmapImage);
 
-            using (var conn = new SQLiteConnection(Settings.Default.connectionString))
-            {
-                conn.Open();
-            query = @"
+                using (var conn = new SQLiteConnection(connectionString))
+                {
+                    conn.Open();
+                    query = @"
             INSERT INTO vehicles 
             (Name, Brand, Model, Class, Races_Ran, Odometer_Metric, Odometer_Imperial, Price, Active, Owned, Acceleration_Stat, Speed_Stat, Braking_Stat, 
             Difficulty_Stat, Top_Speed, Acceleration_Time, Engine, Engine_Layout, 
@@ -525,41 +646,44 @@ namespace TDU2_Track_Records
             (@name, @brand, @model ,@class, @races, @meter_Metric, @meter_Imperial, @price, @active, @owned, @acceleration, @speedStat, @brakingStat,
             @difficultyStat, @topSpeed, @accelerationValue, @engineSize, @engineLayout,
             @gearbox, @maxTorque, @maxTorqueRPM, @maxPower, @maxPowerRPM, @weight, @image)";
-             
 
-                using (var cmd = new SQLiteCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@name", name);
-                    cmd.Parameters.AddWithValue("@brand", brand);
-                    cmd.Parameters.AddWithValue("@model", model);
-                    cmd.Parameters.AddWithValue("@class", vehicleClass);
-                    cmd.Parameters.AddWithValue("@races", races);
-                    cmd.Parameters.AddWithValue("@meter_Metric", meter_Metric);
-                    cmd.Parameters.AddWithValue("@meter_Imperial", meter_Imperial);
-                    cmd.Parameters.AddWithValue("@active", isactive);
-                    cmd.Parameters.AddWithValue("@owned", isowned);
-                    cmd.Parameters.AddWithValue("@price", price);
-                    cmd.Parameters.AddWithValue("@acceleration", accelerationStat);
-                    cmd.Parameters.AddWithValue("@speedStat", speedStat);
-                    cmd.Parameters.AddWithValue("@brakingStat", brakingStat);
-                    cmd.Parameters.AddWithValue("@difficultyStat", difficultyStat);
-                    cmd.Parameters.AddWithValue("@topSpeed", topSpeed);
-                    cmd.Parameters.AddWithValue("@accelerationValue", accelerationTime);
-                    cmd.Parameters.AddWithValue("@engineSize", engineSize);
-                    cmd.Parameters.AddWithValue("@engineLayout", engineLayout);
-                    cmd.Parameters.AddWithValue("@gearbox", gearbox);
-                    cmd.Parameters.AddWithValue("@maxTorque", maxTorque);
-                    cmd.Parameters.AddWithValue("@maxTorqueRPM", maxTorqueRPM);
-                    cmd.Parameters.AddWithValue("@maxPower", maxPower);
-                    cmd.Parameters.AddWithValue("@maxPowerRPM", maxPowerRPM);
-                    cmd.Parameters.AddWithValue("@weight", weight);
-                    cmd.Parameters.AddWithValue("@image", image ?? (object)DBNull.Value);
-                    cmd.ExecuteNonQuery();
+
+                    using (var cmd = new SQLiteCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@name", name);
+                        cmd.Parameters.AddWithValue("@brand", brand);
+                        cmd.Parameters.AddWithValue("@model", model);
+                        cmd.Parameters.AddWithValue("@class", vehicleClass);
+                        cmd.Parameters.AddWithValue("@races", races);
+                        cmd.Parameters.AddWithValue("@meter_Metric", meter_Metric);
+                        cmd.Parameters.AddWithValue("@meter_Imperial", meter_Imperial);
+                        cmd.Parameters.AddWithValue("@active", isactive);
+                        cmd.Parameters.AddWithValue("@owned", isowned);
+                        cmd.Parameters.AddWithValue("@price", price);
+                        cmd.Parameters.AddWithValue("@acceleration", accelerationStat);
+                        cmd.Parameters.AddWithValue("@speedStat", speedStat);
+                        cmd.Parameters.AddWithValue("@brakingStat", brakingStat);
+                        cmd.Parameters.AddWithValue("@difficultyStat", difficultyStat);
+                        cmd.Parameters.AddWithValue("@topSpeed", topSpeed);
+                        cmd.Parameters.AddWithValue("@accelerationValue", accelerationTime);
+                        cmd.Parameters.AddWithValue("@engineSize", engineSize);
+                        cmd.Parameters.AddWithValue("@engineLayout", engineLayout);
+                        cmd.Parameters.AddWithValue("@gearbox", gearbox);
+                        cmd.Parameters.AddWithValue("@maxTorque", maxTorque);
+                        cmd.Parameters.AddWithValue("@maxTorqueRPM", maxTorqueRPM);
+                        cmd.Parameters.AddWithValue("@maxPower", maxPower);
+                        cmd.Parameters.AddWithValue("@maxPowerRPM", maxPowerRPM);
+                        cmd.Parameters.AddWithValue("@weight", weight);
+                        cmd.Parameters.AddWithValue("@image", image ?? (object)DBNull.Value);
+                        cmd.ExecuteNonQuery();
+                    }
                 }
-            }
 
-            MessageBox.Show("Vehicle Added");
-            BindComboBox(VehicleBrandComboBox);
+                MessageBox.Show("Vehicle Added");
+                BindComboBox(VehicleBrandComboBox);
+                BindComboBox(VehicleSelection);
+                LoadVehicles();
+            }
         }
 
         private void DeleteVehicleButton_Click(object sender, RoutedEventArgs e)
@@ -652,8 +776,7 @@ namespace TDU2_Track_Records
 
         private void OneDecimalPointTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var textBox = sender as TextBox;
-            if (textBox == null) return;
+            if (!(sender is TextBox textBox)) return;
 
             var regex = new Regex(@"^\d*\.?\d{0,1}$");
             var text = textBox.Text;
@@ -687,8 +810,7 @@ namespace TDU2_Track_Records
 
         private void TwoDecimalPointsTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var textBox = sender as TextBox;
-            if (textBox == null) return;
+            if (!(sender is TextBox textBox)) return;
 
             var regex = new Regex(@"^\d*\.?\d{0,2}$");
             var text = textBox.Text;
@@ -702,6 +824,16 @@ namespace TDU2_Track_Records
         {
             ResetControls(this);
         }
+
+        private void VehicleManagement_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
+        }
+
+
         // Call this method to reset all controls
         private void ResetControls(DependencyObject parent)
         {
@@ -740,10 +872,10 @@ namespace TDU2_Track_Records
                 {
                     passwordBox.Clear();
                 }
-                else if (child is System.Windows.Controls.Image imaGe)
-                {
-                    imaGe.Source = null;
-                }
+                //else if (child is System.Windows.Controls.Image imaGe)
+                //{
+                //    imaGe.Source = null;
+                //}
                 //else if (child is TextBlock textBlock)
                 //{
                 //    textBlock.Text = string.Empty;
@@ -754,6 +886,5 @@ namespace TDU2_Track_Records
                 ResetControls(child);
             }
         }
-
     }
 }

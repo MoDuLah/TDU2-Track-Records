@@ -250,6 +250,27 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Images\minimize.png" />
+    <Resource Include="Images\minimize_over.png" />
+    <Resource Include="garage_over.png" />
+    <Resource Include="garage.png" />
+    <Resource Include="Images\close.png" />
+    <Resource Include="Images\close_over.png" />
+    <Resource Include="Images\garage.png" />
+    <Resource Include="Images\garage_over.png" />
+    <Resource Include="Images\settings.png" />
+    <Resource Include="Images\settings_over.png" />
+    <Resource Include="Images\vehicles\Aston Martin DBS Coupé.jpg" />
+    <Resource Include="Images\vehicles\Audi R8 Coupé 4.2 FSI Quattro.jpg" />
+    <Resource Include="Images\vehicles\Audi R8 Coupé 5.2 FSI Quattro.jpg" />
+    <Resource Include="Images\vehicles\Audi RS5 Coupé.jpg" />
+    <Resource Include="Images\vehicles\Audi S5 Coupé.jpg" />
+    <Resource Include="Images\vehicles\Audi TTS Coupé.jpg" />
+    <Resource Include="Images\vehicles\BMW 1M Coupé.jpg" />
+    <Resource Include="Images\vehicles\BMW M3 Coupé.jpg" />
+    <Resource Include="Images\vehicles\BMW M6 Coupe.jpg" />
+    <Resource Include="Images\vehicles\Jaguar E-Type Coupé.jpg" />
+    <Resource Include="Images\vehicles\Shelby Cobra Daytona Coupé.jpg" />
     <Resource Include="Images\add.png" />
     <Resource Include="Images\Cancel.png" />
     <Resource Include="Images\vehicles\Alfa Romeo 8C Competizione.jpg" />
@@ -262,22 +283,16 @@
     <Resource Include="Images\vehicles\Ascari KZ1 R Limited Edition.jpg" />
     <Resource Include="Images\vehicles\Aston Martin DB9 Volante.jpg" />
     <Resource Include="Images\vehicles\Aston Martin DB9.jpg" />
-    <Resource Include="Images\vehicles\Aston Martin DBS Coupe.jpg" />
     <Resource Include="Images\vehicles\Aston Martin One-77.jpg" />
     <Resource Include="Images\vehicles\Aston Martin V12 Vantage.jpg" />
     <Resource Include="Images\vehicles\Aston Martin V8 Vantage.jpg" />
     <Resource Include="Images\vehicles\Atari Fast Track.png" />
     <Resource Include="Images\vehicles\Audi Q7 V12 TDI quattro - TDU2 Inuit Edition.jpg" />
     <Resource Include="Images\vehicles\Audi Q7 V12 TDI quattro.jpg" />
-    <Resource Include="Images\vehicles\Audi R8 Coupe 4.2 FSI Quattro.jpg" />
-    <Resource Include="Images\vehicles\Audi R8 Coupe 5.2 FSI Quattro.jpg" />
     <Resource Include="Images\vehicles\Audi R8 Spyder 5.2 FSI Quattro.jpg" />
-    <Resource Include="Images\vehicles\Audi RS5 Coupe.jpg" />
     <Resource Include="Images\vehicles\Audi RS6 Avant.jpg" />
     <Resource Include="Images\vehicles\Audi S3.jpg" />
-    <Resource Include="Images\vehicles\Audi S5 Coupe.jpg" />
     <Resource Include="Images\vehicles\Audi TT RS Roadster.jpg" />
-    <Resource Include="Images\vehicles\Audi TTS Coupe.jpg" />
     <Resource Include="Images\vehicles\BAC Mono.jpg" />
     <Resource Include="Images\vehicles\BMW I8.jpg" />
     <Resource Include="Images\vehicles\BMW M5.jpg" />
@@ -346,7 +361,6 @@
     <Resource Include="Images\vehicles\Hot Rod.jpg" />
     <Resource Include="Images\vehicles\Hummer H3.jpg" />
     <Resource Include="Images\vehicles\Jaguar D-type.jpg" />
-    <Resource Include="Images\vehicles\Jaguar E-Type Coupe.jpg" />
     <Resource Include="Images\vehicles\Jaguar XKR Speed Pack and Black Pack.jpg" />
     <Resource Include="Images\vehicles\Jaguar XKR.jpg" />
     <Resource Include="Images\vehicles\Jeep Grand Cherokee SRT8.jpg" />
@@ -409,7 +423,6 @@
     <Resource Include="Images\vehicles\Saleen S5S Raptor.jpg" />
     <Resource Include="Images\vehicles\Saleen S7 Twin Turbo Competition.jpg" />
     <Resource Include="Images\vehicles\Shelby Cobra 427.jpg" />
-    <Resource Include="Images\vehicles\Shelby Cobra Daytona Coupe.jpg" />
     <Resource Include="Images\vehicles\Shelby GT500KR.jpg" />
     <Resource Include="Images\vehicles\Spyker C12 Zagato.jpg" />
     <Resource Include="Images\vehicles\Spyker C8 Aileron Spyder.jpg" />
