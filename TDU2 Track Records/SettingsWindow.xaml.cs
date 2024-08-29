@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,38 +53,12 @@ namespace TDU2_Track_Records
             mainWindow.Show();
         }
 
-        private void AddTrackButton_Click(object sender, RoutedEventArgs e)
-        {
-            string trackName = TrackNameTextBox.Text;
-            string lapLength = LapLengthTextBox.Text;
-
-            if (string.IsNullOrWhiteSpace(trackName) || string.IsNullOrWhiteSpace(lapLength))
-            {
-                MessageBox.Show("Track Name and Lap Length must not be empty.");
-                return;
-            }
-
-            using (var conn = new SQLiteConnection(Settings.Default.connectionString))
-            {
-                conn.Open();
-                string query = "INSERT INTO tracks (Name, Length) VALUES (@name, @length)";
-                using (var cmd = new SQLiteCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@name", trackName);
-                    cmd.Parameters.AddWithValue("@length", lapLength);
-                    cmd.ExecuteNonQuery();
-                }
-            }
-
-            MessageBox.Show("Track Added");
-        }
-
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        private void Window_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
             {

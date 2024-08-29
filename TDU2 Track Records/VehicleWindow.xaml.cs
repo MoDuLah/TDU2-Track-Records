@@ -28,14 +28,44 @@ namespace TDU2_Track_Records
         public Vehicle()
         {
             InitializeComponent();
-            BindComboBox(VehicleBrandComboBox);
-            BindComboBox(VehicleSelection);
+            BindComboBoxes();
             LoadVehicles();
+            GarageGroupBox.Visibility = Visibility.Collapsed;
         }
 
-        private void BindComboBox(ComboBox comboBox)
+        private void IslandRadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            string query = GetQueryForComboBox(comboBox);
+            // Determine the selected island based on which RadioButton is checked
+            string selectedIsland = null;
+
+            if (IbizaRadioButton.IsChecked == true)
+            {
+                OahuRadioButton.IsChecked = false;
+                selectedIsland = "Ibiza";
+            }
+            else if (OahuRadioButton.IsChecked == true)
+            {
+                IbizaRadioButton.IsChecked = false;
+                selectedIsland = "Oahu";
+            }
+
+            // Re-bind the HouseComboBox based on the selected island
+            BindComboBox(HouseComboBox, selectedIsland);
+        }
+
+        private void BindComboBoxes()
+        {
+            // Bind VehicleBrandComboBox and VehicleSelection without any filter
+            BindComboBox(VehicleBrandComboBox);
+            BindComboBox(VehicleSelection);
+
+            // Initially bind the HouseComboBox without any filter
+            BindComboBox(HouseComboBox);
+        }
+
+        private void BindComboBox(ComboBox comboBox, string filter = null)
+        {
+            string query = GetQueryForComboBox(comboBox, filter);
 
             if (string.IsNullOrEmpty(query))
             {
@@ -45,19 +75,32 @@ namespace TDU2_Track_Records
 
             try
             {
+                string origin = comboBox == HouseComboBox ? "houses" : "vehicles";
+
                 using (var dbConn = new SQLiteConnection(connectionString))
                 using (var dbCmd = new SQLiteCommand(query, dbConn))
-                using (var dbAdapter = new SQLiteDataAdapter(dbCmd))
                 {
-                    dbConn.Open();
+                    if (filter != null)
+                    {
+                        dbCmd.Parameters.AddWithValue("filter", filter); // Use ? placeholder for SQLite
+                    }
 
-                    var ds = new DataSet();
-                    dbAdapter.Fill(ds, "vehicles");
+                    using (var dbAdapter = new SQLiteDataAdapter(dbCmd))
+                    {
+                        dbConn.Open();
 
-                    comboBox.ItemsSource = ds.Tables[0].DefaultView;
-                    comboBox.DisplayMemberPath = GetDisplayMemberPath(comboBox);
-                    comboBox.SelectedValuePath = "id";
+                        var ds = new DataSet();
+                        dbAdapter.Fill(ds, origin);
+
+                        comboBox.ItemsSource = ds.Tables[0].DefaultView;
+                        comboBox.DisplayMemberPath = GetDisplayMemberPath(comboBox);
+                        comboBox.SelectedValuePath = "id";
+                    }
                 }
+            }
+            catch (SQLiteException sqlEx)
+            {
+                MessageBox.Show($"Database error occurred while loading data.\n{sqlEx.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
@@ -65,7 +108,7 @@ namespace TDU2_Track_Records
             }
         }
 
-        private string GetQueryForComboBox(ComboBox comboBox)
+        private string GetQueryForComboBox(ComboBox comboBox, string filter = null)
         {
             if (comboBox == VehicleBrandComboBox)
             {
@@ -77,7 +120,16 @@ namespace TDU2_Track_Records
             }
             else if (comboBox == VehicleSelection)
             {
-                return "SELECT id,Name FROM vehicles ORDER BY Name ASC;";
+                return "SELECT id, Name FROM vehicles ORDER BY Name ASC;";
+            }
+            else if (comboBox == HouseComboBox)
+            {
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    // Use ? placeholder for SQLite
+                    return "SELECT id, Name FROM houses WHERE Island = ? ORDER BY id ASC";
+                }
+                return "SELECT id, Name FROM houses ORDER BY id ASC";
             }
             else
             {
@@ -105,7 +157,7 @@ namespace TDU2_Track_Records
         {
             return unit == "lbs" ? Math.Round(weight * 2.20462,0) : weight;  // Convert to lbs if selected
         }
-
+  
         private void LoadVehicles()
         {
             try
@@ -175,7 +227,7 @@ namespace TDU2_Track_Records
         private void VehicleSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (VehicleSelection.SelectedItem == null) return;
-
+            GarageGroupBox.Visibility = Visibility.Collapsed;
             if (!(VehicleSelection.SelectedItem is VehicleManagement selectedVehicle)) return;
 
             // Load and display the image if available
@@ -232,6 +284,7 @@ namespace TDU2_Track_Records
             VehiclePriceTextBox.Text = selectedVehicle.Price;
             VehicleActiveCheckBox.IsChecked = Convert.ToBoolean(selectedVehicle.Active);
             VehicleOwnedCheckBox.IsChecked = Convert.ToBoolean(selectedVehicle.Owned);
+            VehicleOwnedCheckBoxChange();
             AccelerationStatSlider.Value = selectedVehicle.AccelerationStat;
             SpeedStatSlider.Value = selectedVehicle.SpeedStat;
             BrakingStatSlider.Value = selectedVehicle.BrakingStat;
@@ -333,8 +386,7 @@ namespace TDU2_Track_Records
                         });
 
                         MessageBox.Show("Vehicle details updated successfully.");
-                        BindComboBox(VehicleBrandComboBox); // Refresh the ComboBox
-                        BindComboBox(VehicleSelection); // Refresh the ComboBox
+                        BindComboBoxes(); // Refresh the ComboBoxes
                         LoadVehicles();  // Refresh the list
                     }
                     catch (Exception ex)
@@ -383,11 +435,9 @@ namespace TDU2_Track_Records
             }
 
             // Validate price
-            if (string.IsNullOrWhiteSpace(VehiclePriceTextBox.Text))
-            {
+            if (string.IsNullOrWhiteSpace(VehiclePriceTextBox.Text)) {
                 errorMessages.Add("Price is required.");
-            }
-            else
+            } else
             {
                 price = VehiclePriceTextBox.Text;
             }
@@ -692,7 +742,7 @@ namespace TDU2_Track_Records
 
             var selectedVehicle = (VehicleManagement)VehicleSelection.SelectedItem;  // Assume you have a Vehicle class
 
-            using (var conn = new SQLiteConnection(Settings.Default.connectionString))
+            using (var conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
                 string query = "DELETE FROM Vehicles WHERE Id = @id";
@@ -706,8 +756,6 @@ namespace TDU2_Track_Records
             MessageBox.Show("Vehicle Deleted");
             LoadVehicles();  // Refresh the list after deletion
         }
-
-
 
         private void UploadButton_Click(object sender, RoutedEventArgs e)
         {
@@ -723,7 +771,6 @@ namespace TDU2_Track_Records
             }
         }
 
- 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
             if (ImageContentPanel.Visibility == Visibility.Visible)
@@ -736,7 +783,7 @@ namespace TDU2_Track_Records
             }
         }
 
-        private void Image_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Image_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (VehicleBrandComboBox.Visibility == Visibility.Visible)
             {
@@ -744,9 +791,7 @@ namespace TDU2_Track_Records
                 VehicleBrandTextBox.Visibility = Visibility.Visible;
                 VehicleBrandComboBox.Visibility = Visibility.Collapsed;
                 btn_BrandAdd.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
+            } else {
                 btn_BrandCancel.Visibility = Visibility.Collapsed;
                 VehicleBrandTextBox.Visibility = Visibility.Collapsed;
                 VehicleBrandComboBox.Visibility = Visibility.Visible;
@@ -832,7 +877,72 @@ namespace TDU2_Track_Records
                 this.DragMove();
             }
         }
+        private void Minimize_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Window.GetWindow(this).WindowState = WindowState.Minimized;
+        }
 
+        private void Close_Button_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Close();
+        }
+
+
+
+        private void PopulateHouseComboBox(string islandName)
+        {
+            // Clear the existing items
+            HouseComboBox.Items.Clear();
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Define the SQL query based on the island name
+                string query = "SELECT * FROM Houses WHERE IslandName = @IslandName";
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@IslandName", islandName);
+
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            string houseName = reader["Name"].ToString();
+
+                            HouseComboBox.Items.Add(new ComboBoxItem
+                            {
+                                Value = houseName
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        private void VehicleOwnedCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            if (VehicleOwnedCheckBox.IsChecked == true)
+            {
+                GarageGroupBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                GarageGroupBox.Visibility= Visibility.Collapsed;
+            }
+        }
+        private void VehicleOwnedCheckBoxChange()
+        {
+            if (VehicleOwnedCheckBox.IsChecked == true)
+            {
+                GarageGroupBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                GarageGroupBox.Visibility = Visibility.Collapsed;
+            }
+        }
 
         // Call this method to reset all controls
         private void ResetControls(DependencyObject parent)
@@ -887,4 +997,5 @@ namespace TDU2_Track_Records
             }
         }
     }
+
 }

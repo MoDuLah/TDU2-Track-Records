@@ -116,6 +116,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppState.cs" />
+    <Compile Include="dealerships.xaml.cs">
+      <DependentUpon>dealerships.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="houses.xaml.cs">
+      <DependentUpon>houses.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model\Lap.cs" />
     <Compile Include="Model\VehicleModel.cs" />
     <Compile Include="powerlap.xaml.cs">
@@ -132,6 +138,9 @@
     <Compile Include="SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="tracks.xaml.cs">
+      <DependentUpon>tracks.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UnitConverter.cs" />
     <Compile Include="VehicleManagement.cs" />
     <Compile Include="VehicleWindow.xaml.cs">
@@ -142,6 +151,14 @@
     </Compile>
     <Compile Include="ViewModels\powerlapViewModel.cs" />
     <Page Include="CloseButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="dealerships.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="houses.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -228,6 +245,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="tracks.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="VehicleWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -250,6 +271,90 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Images\ico\speed2.png" />
+    <Resource Include="Images\ico\eliminator.png" />
+    <Resource Include="Images\ico\ftl.png" />
+    <Resource Include="Images\ico\kyd.png" />
+    <Resource Include="Images\ico\race2.png" />
+    <Resource Include="Images\ico\speed.png" />
+    <Resource Include="Images\ico\st.png" />
+    <Resource Include="Images\ico\st2.png" />
+    <Resource Include="Images\ico\ta.png" />
+    <Resource Include="Images\ico\ico_casino.png" />
+    <Resource Include="Images\ico\ico_casino_cat1.png" />
+    <Resource Include="Images\ico\ico_casino_cat1_over.png" />
+    <Resource Include="Images\ico\ico_casino_cat2.png" />
+    <Resource Include="Images\ico\ico_casino_cat2_over.png" />
+    <Resource Include="Images\ico\ico_casino_cat3.png" />
+    <Resource Include="Images\ico\ico_casino_cat3_over.png" />
+    <Resource Include="Images\ico\ico_casino_cat4.png" />
+    <Resource Include="Images\ico\ico_casino_cat4_over.png" />
+    <Resource Include="Images\ico\ico_casino_games.png" />
+    <Resource Include="Images\ico\ico_casino_racing.png" />
+    <Resource Include="Images\ico\ico_cat1.png" />
+    <Resource Include="Images\ico\ico_cat1_over.png" />
+    <Resource Include="Images\ico\ico_cat2.png" />
+    <Resource Include="Images\ico\ico_cat2_over.png" />
+    <Resource Include="Images\ico\ico_cat3.png" />
+    <Resource Include="Images\ico\ico_cat3_over.png" />
+    <Resource Include="Images\ico\ico_cat4.png" />
+    <Resource Include="Images\ico\ico_cat4_over.png" />
+    <Resource Include="Images\ico\ico_championships.png" />
+    <Resource Include="Images\ico\ico_chase.png" />
+    <Resource Include="Images\ico\ico_clothes.png" />
+    <Resource Include="Images\ico\ico_club.png" />
+    <Resource Include="Images\ico\ico_cocktails.png" />
+    <Resource Include="Images\ico\ico_coop.png" />
+    <Resource Include="Images\ico\ico_cosmetic_clinic.png" />
+    <Resource Include="Images\ico\ico_crc.png" />
+    <Resource Include="Images\ico\ico_cups.png" />
+    <Resource Include="Images\ico\ico_duel.png" />
+    <Resource Include="Images\ico\ico_emotes_cocktails.png" />
+    <Resource Include="Images\ico\ico_events.png" />
+    <Resource Include="Images\ico\ico_exclusive_rewards.png" />
+    <Resource Include="Images\ico\ico_features_and_actions.png" />
+    <Resource Include="Images\ico\ico_friends.png" />
+    <Resource Include="Images\ico\ico_haircuts.png" />
+    <Resource Include="Images\ico\ico_houses_and_furniture.png" />
+    <Resource Include="Images\ico\ico_instant_challenges.png" />
+    <Resource Include="Images\ico\ico_meeting_people.png" />
+    <Resource Include="Images\ico\ico_multiplayer_challenges.png" />
+    <Resource Include="Images\ico\ico_photographer.png" />
+    <Resource Include="Images\ico\ico_poker_cash.png" />
+    <Resource Include="Images\ico\ico_poker_tournament.png" />
+    <Resource Include="Images\ico\ico_racing_school.png" />
+    <Resource Include="Images\ico\ico_roads.png" />
+    <Resource Include="Images\ico\ico_roulette.png" />
+    <Resource Include="Images\ico\ico_shopping.png" />
+    <Resource Include="Images\ico\ico_sit_go.png" />
+    <Resource Include="Images\ico\ico_slot_machine.png" />
+    <Resource Include="Images\ico\ico_sticker_shop.png" />
+    <Resource Include="Images\ico\ico_treasure_hunts.png" />
+    <Resource Include="Images\ico\ico_vehicles.png" />
+    <Resource Include="Images\ico\minimize.png" />
+    <Resource Include="Images\ico\minimize_over.png" />
+    <Resource Include="Images\ico\close.png" />
+    <Resource Include="Images\ico\close_over.png" />
+    <Resource Include="Images\ico\cars.png" />
+    <Resource Include="Images\ico\cars_over.png" />
+    <Resource Include="Images\ico\settings.png" />
+    <Resource Include="Images\ico\settings_over.png" />
+    <Resource Include="Images\ico\crc.png" />
+    <Resource Include="Images\ico\garage.png" />
+    <Resource Include="Images\ico\garage_over.png" />
+    <Resource Include="Images\ico\houseproper.png" />
+    <Resource Include="Images\ico\objectives.png" />
+    <Resource Include="Images\ico\objectives_over.png" />
+    <Resource Include="Images\ico\photo.png" />
+    <Resource Include="Images\ico\race.png" />
+    <Resource Include="Images\ico\realestate.png" />
+    <Resource Include="Images\ico\stage4.png" />
+    <Resource Include="Images\ico\dealership.png" />
+    <Resource Include="Images\ico\dealership_over.png" />
+    <Resource Include="Images\ico\house.png" />
+    <Resource Include="Images\ico\house_over.png" />
+    <Resource Include="Images\lap.png" />
+    <Resource Include="Images\lap_over.png" />
     <Resource Include="Images\minimize.png" />
     <Resource Include="Images\minimize_over.png" />
     <Resource Include="garage_over.png" />

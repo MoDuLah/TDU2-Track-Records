@@ -58,7 +58,7 @@ namespace TDU2_Track_Records
             //combo_Track.SelectionChanged += Combo_Track_SelectionChanged;
         }
 
-        private void Combo_Class_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void Combo_Class_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBoxItem selectedItem = combo_Class.SelectedItem as ComboBoxItem;
             if (selectedItem != null)

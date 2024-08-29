@@ -21,6 +21,7 @@ namespace TDU2_Track_Records
     public partial class MainWindow : Window
     {
         public int RecordsOn = 0;
+        public int Popup = 0;
         readonly string connectionString = Settings.Default.connectionString;
         public string distance = Settings.Default.distance;
         public string speed = Settings.Default.speed;
@@ -54,12 +55,32 @@ namespace TDU2_Track_Records
             FillComboBoxWithTracks(combo_Track);
             BindVehicleComboBox(combo_Vehicle);
             calc_Total_Odometer();
+
+            List<ComboBoxItem> items = new List<ComboBoxItem>
+            {
+                new ComboBoxItem { ImagePath = "Images/carClasses/SC.png", Description = "All", Value = "All" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A1.png", Description = "Asphalt 1", Value = "A1" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A2.png", Description = "Asphalt 2", Value = "A2" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A3.png", Description = "Asphalt 3", Value = "A3" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A4.png", Description = "Asphalt 4", Value = "A4" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A5.png", Description = "Asphalt 5", Value = "A5" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A6.png", Description = "Asphalt 6", Value = "A6" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A7.png", Description = "Asphalt 7", Value = "A7" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/B1.png", Description = "Rally 1", Value = "B1" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/B2.png", Description = "Rally 2", Value = "B2" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/B3.png", Description = "Rally 3", Value = "B3" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/B4.png", Description = "Rally 4", Value = "B4" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/C1.png", Description = "Classic 1", Value = "C1" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/C2.png", Description = "Classic 2", Value = "C2" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/C3.png", Description = "Classic 3", Value = "C3" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/C4.png", Description = "Classic 4", Value = "C4" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/MA1.png", Description = "Motorcycles 1", Value = "MA1" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/MA2.png", Description = "Motorcycles 2", Value = "MA2" }
+            };
+
+            combo_Class.ItemsSource = items;
         }
-        public void UpdateMeasurementSystem()
-        {
-            // Update UI elements directly
-            sysMSG.Text = "Measurement system updated!";
-        }
+
         private void calc_Total_Lap_Time()
         {
             const int lapCount = 5;  // Number of laps, can be adjusted if needed
@@ -860,10 +881,6 @@ namespace TDU2_Track_Records
             }
         }
 
-
-
-
-
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             FextBox_GotFocus((TextBox)sender);
@@ -904,7 +921,6 @@ namespace TDU2_Track_Records
             }
         }
 
-
         private void MyTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Auto-tab when maxlength is reached
@@ -930,11 +946,15 @@ namespace TDU2_Track_Records
 
         private void BindVehicleComboBox(ComboBox comboBox)
         {
+            ComboBoxItem selectedItem = (ComboBoxItem)combo_Class.SelectedItem;
             string query = "SELECT * FROM vehicles WHERE Active = '1' AND Owned = '1'";
 
             if (!string.IsNullOrEmpty(combo_Class.Text))
             {
-                query += " AND Class = @Class ORDER BY Name ASC;";
+                string selectedValue = selectedItem.Value;
+                if (selectedValue != "All") { 
+                query += $" AND Class = '{selectedValue}' ORDER BY Name ASC;";
+                }
             }
             else
             {
@@ -950,12 +970,17 @@ namespace TDU2_Track_Records
                 }
                 else
                 {
-                    MessageBox.Show("No vehicles found.\nPlease go to Vehicle Management to add vehicles.\n\nTip: Vehicle management is the garage icon on top right.",
+                    Popup = Popup + 1;
+                    if (Popup == 1)
+                    {
+                        MessageBox.Show("No vehicles found.\nPlease go to Vehicle Management to add vehicles.\n\nTip: Vehicle management is the garage icon on top right.",
                                     "Vehicle Management Required",
                                     MessageBoxButton.OK,
                                     MessageBoxImage.Exclamation);
-                    var VehicleWindow = new Vehicle();
-                    VehicleWindow.Show();
+
+                        var VehicleWindow = new Vehicle();
+                        VehicleWindow.Show();
+                    }
                 }
             },
             ex => MessageBox.Show($"An error occurred while loading vehicles:\n{ex.Message}"),
@@ -1008,9 +1033,7 @@ namespace TDU2_Track_Records
             txt_rRan.Text = "";
         }
 
-
-        private void Btn_loadrec_Click(object sender,
-                                       RoutedEventArgs e)
+        private void Btn_loadrec_Click(object sender, RoutedEventArgs e)
         {
             int adjustment = 300;
             //if(combo_Track.SelectedIndex == -1) { return; }
@@ -1044,7 +1067,6 @@ namespace TDU2_Track_Records
             }
         }
  
-
         private void Combo_Vehicle_LostFocus(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(combo_Vehicle.Text)) {
@@ -1093,8 +1115,6 @@ namespace TDU2_Track_Records
                 MessageBox.Show("Error: " + ex.ToString());
             }
         }
-
-
 
         private void Btn_submit_GotFocus(object sender, RoutedEventArgs e)
         {
@@ -1269,7 +1289,7 @@ namespace TDU2_Track_Records
         private void Combo_Track_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Early exits for various conditions
-            if (keep.IsChecked == false) combo_Class.SelectedIndex = -1;
+            //if (keep.IsChecked == false) combo_Class.SelectedIndex = -1;
             if (!combo_Track.IsLoaded || combo_Track.Items.Count == 0 || combo_Track.SelectedIndex < 0) return;
             if (e.AddedItems.Count == 0) return;  // Ensure the selection actually changed
 
@@ -1315,7 +1335,7 @@ namespace TDU2_Track_Records
             Application.Current.MainWindow.Height = 500;
         }
 
-        private void FetchAndDisplayVehicleData()
+        private void FetchAndDisplayVehicleData() 
         {
             int conditions = cb_conditions.IsChecked == true ? 1 : 0;
             int orientation = cb_orientation.IsChecked == false ? 0 : 1;
@@ -1400,8 +1420,8 @@ namespace TDU2_Track_Records
         private int GetRecordCount(SQLiteConnection dbConn, int trackId, int conditions, int orientation, string param)
         {
             string query = string.IsNullOrEmpty(param)
-                ? $"SELECT COUNT(*) FROM [records] WHERE trackId = '{trackId}' AND conditions = '{conditions}' and orientation = '{orientation}';"
-                : $"SELECT COUNT(*) FROM [records] WHERE trackId = '{trackId}' AND carClass = '{param}' AND conditions = '{conditions}';";
+                ? $"SELECT COUNT(*) FROM [records] WHERE trackId = '{trackId}' AND conditions = '{conditions}' and orientation = '{orientation}' ;"
+                : $"SELECT COUNT(*) FROM [records] WHERE trackId = '{trackId}' AND carClass = '{param}' AND conditions = '{conditions}' ;";
 
             using (var cmd = new SQLiteCommand(query, dbConn))
             using (var reader = cmd.ExecuteReader())
@@ -1414,8 +1434,8 @@ namespace TDU2_Track_Records
         private int GetCarsCount(SQLiteConnection dbConn, string param)
         {
             string query = string.IsNullOrEmpty(param)
-                ? "SELECT COUNT(*) FROM [vehicles];"
-                : $"SELECT COUNT(*) FROM [vehicles] WHERE Class = '{param}';";
+                ? "SELECT COUNT(*) FROM [vehicles] WHERE Active = '1' ;"
+                : $"SELECT COUNT(*) FROM [vehicles] WHERE Class = '{param}' and Active = '1' ;";
 
             using (var cmd = new SQLiteCommand(query, dbConn))
             using (var reader = cmd.ExecuteReader())
@@ -1529,7 +1549,6 @@ namespace TDU2_Track_Records
             HandleLapMsPreviewLostKeyboardFocus(Lap5_Min, Lap5_Sec, Lap5_Ms, avg_SpeedLap5);
         }
 
-
         private void ResetAvgSpeedText(object sender, KeyboardFocusChangedEventArgs e, TextBlock avgSpeedTextBlock)
         {
             avgSpeedTextBlock.Text = "0.0";
@@ -1563,8 +1582,6 @@ namespace TDU2_Track_Records
 
         }
 
-
-
         private void Border_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
@@ -1575,7 +1592,9 @@ namespace TDU2_Track_Records
 
         private void Btn_TrackInfo_Click(object sender, MouseButtonEventArgs e)
         {
-            if (combo_Track.SelectedIndex == -1) { return; }
+            if (combo_Track.SelectedIndex == -1) {
+                MessageBox.Show("No Track Selected","Error",MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return; }
 
             int trackId = combo_Track.SelectedIndex + 1;
             using (var dbConn = new SQLiteConnection(connectionString))
@@ -1635,8 +1654,6 @@ namespace TDU2_Track_Records
                 }
             }
         }
-
-
 
         private void FillDataGrid()
         {
@@ -1722,7 +1739,6 @@ namespace TDU2_Track_Records
                 MessageBox.Show("Error Message: " + ex.Message);
             }
         }
-
 
         private void cb_conditions_StateChanged(object sender, RoutedEventArgs e)
         {
@@ -1865,13 +1881,6 @@ namespace TDU2_Track_Records
             }
         }
 
-        private void Image_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-                var powerlap = new powerlap();
-                powerlap.Show();
-        }
-
         void DataGrid_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             e.Row.Header = (e.Row.GetIndex() + 1).ToString();
@@ -1911,6 +1920,33 @@ namespace TDU2_Track_Records
         private void Close_Button_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Window.GetWindow(this)?.Close();
+        }
+
+        private void PowerLaps_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var powerlap = new powerlap();
+            powerlap.Show();
+        }
+
+        private void Objectives_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void Houses_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void Dealership_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void tracks_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var tracks = new tracks();
+            tracks.Show();
         }
     }
 

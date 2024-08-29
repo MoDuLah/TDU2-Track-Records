@@ -38,7 +38,7 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
-            <TabControl Grid.Row="1" Grid.Column="1" Grid.RowSpan="8" HorizontalAlignment="Center" Margin="0,0,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinWidth="342" MinHeight="212" MaxWidth="342">
+            <TabControl Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" HorizontalAlignment="Center" Margin="0,0,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinWidth="342" MinHeight="212" MaxWidth="342">
                 <!-- O pacity and Units Tab -->
                 <TabItem Header="Settings">
                     <StackPanel Margin="10">
@@ -79,21 +79,7 @@
 
                 <!-- Tracks Tab -->
                 <TabItem Header="Tracks">
-                    <StackPanel Margin="10">
-                        <StackPanel Orientation="Vertical" Margin="5">
-                            <GroupBox Header="Add Track">
-                                <StackPanel>
-                                    <GroupBox Header="Track Name:" >
-                                        <TextBox x:Name="TrackNameTextBox" Margin="5" />
-                                    </GroupBox>
-                                    <GroupBox Header="Lap Length:">
-                                        <TextBox x:Name="LapLengthTextBox" Width="200" Margin="5" />
-                                    </GroupBox>
-                                    <Button Content="Add Track" Width="100" Margin="5" Click="AddTrackButton_Click" />
-                                </StackPanel>
-                            </GroupBox>
-                        </StackPanel>
-                    </StackPanel>
+                    
                 </TabItem>
             </TabControl>
 

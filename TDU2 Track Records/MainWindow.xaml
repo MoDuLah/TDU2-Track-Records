@@ -48,15 +48,85 @@
                 <TextBlock Text="TDU2 Track Records" FontSize="48" Foreground="{DynamicResource HoverBackground}" FontFamily="Gill Sans MT Ext Condensed Bold" Background="{DynamicResource GlassBrush}" HorizontalAlignment="Left" Margin="0,0,0,5"/>
             </DockPanel>
             <DockPanel Grid.Column="5" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,5">
-                <Image x:Name="VehicleManager_Button" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown"
-                       Margin="0,0,5,0"
-                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None">
+                <Image x:Name="tracks_Button" MouseLeftButtonDown="tracks_MouseLeftButtonDown"
+                   Margin="0,0,5,0" Width="32" Height="32"
+                   ToolTip="Objectives" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/garage.png"/>
+                            <Setter Property="Source" Value="Images/ico/crc.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/garage_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/ico_roads.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="Objectives_Button" MouseLeftButtonDown="Objectives_MouseLeftButtonDown"
+                    Margin="0,0,5,0" Width="32" Height="32"
+                    ToolTip="Objectives" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/objectives.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/objectives_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="Houses_Button" MouseLeftButtonDown="Houses_MouseLeftButtonDown"
+                    Margin="0,0,5,0"
+                    ToolTip="Houses" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/house.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/house_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="Dealership_Button" MouseLeftButtonDown="Dealership_MouseLeftButtonDown"
+                    Margin="0,0,5,0"
+                    ToolTip="Dealerships" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/dealership.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/dealership_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="PowerLaps_Button" MouseLeftButtonDown="PowerLaps_MouseLeftButtonDown"
+                        Margin="0,0,5,0"
+                        ToolTip="Power Laps Leaderboard" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/lap.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/Lap_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="VehicleManager_Button" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown"
+                       Margin="0,0,5,0" Width="32" Height="32"
+                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/cars.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/cars_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -65,13 +135,13 @@
                 <Image x:Name="Settings_Button" MouseLeftButtonDown="Settings_MouseLeftButtonDown"
                        Margin="0,0,5,0"
                        Width="32" Height="32" MinWidth="32" MinHeight="32"
-                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center">
+                       ToolTip="Settings" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/settings.png"/>
+                            <Setter Property="Source" Value="Images/ico/settings.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/settings_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/settings_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -80,13 +150,13 @@
                 <Image x:Name="Minimize_Button" MouseLeftButtonDown="Minimize_MouseLeftButtonDown"
                        Margin="0,0,5,0"
                        Width="32" Height="32" MinWidth="32" MinHeight="32"
-                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center">
+                       ToolTip="Minimize Application" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/minimize.png"/>
+                            <Setter Property="Source" Value="Images/ico/minimize.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/minimize_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/minimize_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -95,13 +165,13 @@
                 <Image x:Name="Close_Button" MouseLeftButtonDown="Close_Button_MouseLeftButtonDown"
                        Margin="0,0,5,0"
                        Width="32" Height="32" MinWidth="32" MinHeight="32"
-                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center">
+                       ToolTip="Close Application" HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/close.png"/>
+                            <Setter Property="Source" Value="Images/ico/close.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/close_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/close_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -119,7 +189,7 @@
                                       SelectionChanged="Combo_Track_SelectionChanged" LostFocus="Combo_Track_LostFocus" PreviewKeyUp="Combo_Track_PreviewKeyUp" MinWidth="160" MaxDropDownHeight="250"/>
                         </GroupBox>
                         <GroupBox Header="Information">
-                            <Image MouseLeftButtonDown="Btn_TrackInfo_Click" Width="32" Height="32" MinWidth="32" MinHeight="32" ToolTip="Information" MouseRightButtonDown="Image_MouseRightButtonDown">
+                            <Image MouseLeftButtonDown="Btn_TrackInfo_Click" Width="32" Height="32" MinWidth="32" MinHeight="32" ToolTip="Information">
                                 <Image.Style>
                                     <Style TargetType="{x:Type Image}">
                                         <Setter Property="Source" Value="Images/info.png"/>
@@ -254,24 +324,15 @@
                 <StackPanel>
                     <DockPanel>
                         <GroupBox Header="Class">
-                            <ComboBox x:Name="combo_Class" MinWidth="75" VerticalAlignment="Stretch" FontSize="18" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" LostFocus="Combo_Class_LostFocus" TabIndex="1" PreviewKeyUp="Combo_Class_PreviewKeyUp" Height="38" MaxHeight="38">
-                                <ComboBoxItem Content=""/>
-                                <ComboBoxItem Content="A1"/>
-                                <ComboBoxItem Content="A2"/>
-                                <ComboBoxItem Content="A3"/>
-                                <ComboBoxItem Content="A4"/>
-                                <ComboBoxItem Content="A5"/>
-                                <ComboBoxItem Content="A6"/>
-                                <ComboBoxItem Content="A7"/>
-                                <ComboBoxItem Content="B2"/>
-                                <ComboBoxItem Content="B3"/>
-                                <ComboBoxItem Content="B4"/>
-                                <ComboBoxItem Content="C1"/>
-                                <ComboBoxItem Content="C2"/>
-                                <ComboBoxItem Content="C3"/>
-                                <ComboBoxItem Content="C4"/>
-                                <ComboBoxItem Content="MA1"/>
-                                <ComboBoxItem Content="MA2"/>
+                            <ComboBox x:Name="combo_Class" MinWidth="75" VerticalAlignment="Stretch" FontSize="18" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" LostFocus="Combo_Class_LostFocus" TabIndex="1" PreviewKeyUp="Combo_Class_PreviewKeyUp" Height="38" MaxHeight="38" Padding="5,5,5,5">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill" />
+                                            <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
                             </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Name" DockPanel.Dock="Right">
