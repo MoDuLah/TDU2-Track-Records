@@ -4,47 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
+        mc:Ignorable="d"
         xmlns:local="clr-namespace:TDU2_Track_Records"
-        mc:Ignorable="d" AllowsTransparency="True"
-        Title="Settings" MinWidth="382" MinHeight="350" MaxWidth="500" MaxHeight="550"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
         Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
-        ResizeMode="NoResize" WindowStyle="None" Background="{x:Null}" UseLayoutRounding="False" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+ HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+        ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Adobe Gothic Std B" FontSize="16" 
+        WindowStyle="None" AllowsTransparency="True" 
+        Background="{x:Null}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False">
 
     <Window.Resources>
         <local:UnitConverter x:Key="UnitConverter"/>
     </Window.Resources>
-    <Border>
-        <Border.Background>
-            <ImageBrush ImageSource="/Images/BG.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}"/>
-        </Border.Background>
-        <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="20"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-
-            <TabControl Grid.Row="1" Grid.Column="1" Grid.RowSpan="7" HorizontalAlignment="Center" Margin="0,0,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" MinWidth="342" MinHeight="212" MaxWidth="342">
-                <!-- O pacity and Units Tab -->
-                <TabItem Header="Settings">
-                    <StackPanel Margin="10">
+                   <StackPanel Margin="10">
                         <GroupBox Header="Main Window Opacity">
                             <StackPanel Orientation="Horizontal">
-                                <Slider x:Name="OpacitySlider" Minimum="0.05" LargeChange="0.25" Maximum="1" Width="200" Margin="5" TickFrequency="0.05" TickPlacement="Both"
+                                <Slider x:Name="OpacitySlider" Minimum="0.05" LargeChange="0.25" Maximum="1" Width="150" Margin="5" TickFrequency="0.05" TickPlacement="Both"
                                         Value="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=TwoWay}" />
 
                                 <TextBlock Text="{Binding ElementName=OpacitySlider, Path=Value, StringFormat='Opacity: {0:F2}'}" Margin="10,0,0,0" VerticalAlignment="Center"/>
@@ -52,7 +27,7 @@
                         </GroupBox>
                         <GroupBox Header="Background Opacity">
                             <StackPanel Orientation="Horizontal">
-                                <Slider x:Name="BGOpacitySlider" Minimum="0.05" LargeChange="0.25" Maximum="1" Width="200" Margin="5" TickFrequency="0.05" TickPlacement="Both"
+                                <Slider x:Name="BGOpacitySlider" Minimum="0.05" LargeChange="0.25" Maximum="1" Width="150" Margin="5" TickFrequency="0.05" TickPlacement="Both"
                                         Value="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=TwoWay}"  />
 
                                 <TextBlock Text="{Binding ElementName=BGOpacitySlider, Path=Value, StringFormat='Opacity: {0:F2}'}" Margin="10,0,0,0" VerticalAlignment="Center"/>
@@ -60,33 +35,20 @@
                         </GroupBox>
                         <GroupBox Header="Units">
                             <StackPanel Orientation="Vertical" Margin="5">
-                                <Slider x:Name="UnitSlider" Minimum="0" Maximum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="200"
-                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Converter={StaticResource UnitConverter}, Mode=TwoWay}" />                               
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Speed: "/>
-                            <TextBlock x:Name="SpeedUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" />
-                            <TextBlock Text=" Weight: " Margin="5,0,0,0"/>
-                            <TextBlock x:Name="WeightUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}" />
-                            <TextBlock Text="Distance: " Margin="5,0,0,0"/>
-                            <TextBlock x:Name="DistanceUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}" />
-                            <TextBlock Text="Torque: " Margin="5,0,0,0"/>
-                            <TextBlock x:Name="torqueUnit" Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}" />
+                                <Slider x:Name="UnitSlider" Minimum="0" Maximum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="150"
+                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Converter={StaticResource UnitConverter}, Mode=TwoWay}" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                    <TextBlock Text="Speed: " FontSize="12"/>
+                    <TextBlock x:Name="SpeedUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" />
+                    <TextBlock Text=" Weight: "  FontSize="12" Margin="5,0,0,0"/>
+                    <TextBlock x:Name="WeightUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}" />
+                    <TextBlock Text="Distance: "  FontSize="12" Margin="5,0,0,0"/>
+                    <TextBlock x:Name="DistanceUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}" />
+                    <TextBlock Text="Torque: "  FontSize="12" Margin="5,0,0,0"/>
+                    <TextBlock x:Name="torqueUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}" />
                         </StackPanel>
                             </StackPanel>
                         </GroupBox>
-                    </StackPanel>
-                </TabItem>
-
-                <!-- Tracks Tab -->
-                <TabItem Header="Tracks">
-                    
-                </TabItem>
-            </TabControl>
-
-        <!-- Close Button -->
-        <StackPanel Grid.Row="10" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,0">
             <Button Content="Close" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
-        </StackPanel>
-    </Grid>
-    </Border>
+    </StackPanel>
 </Window>

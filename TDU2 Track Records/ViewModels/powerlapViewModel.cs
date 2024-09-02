@@ -12,8 +12,11 @@ namespace TDU2_Track_Records.ViewModels
             get => _laps;
             set
             {
-                _laps = value;
-                OnPropertyChanged(nameof(Laps));
+                if (_laps != value)
+                {
+                    _laps = value;
+                    OnPropertyChanged(nameof(Laps));
+                }
             }
         }
 
@@ -24,7 +27,7 @@ namespace TDU2_Track_Records.ViewModels
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -3,20 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TDU2_Track_Records"
+        xmlns:local="clr-namespace:TDU2_Track_Records.Classes"
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
-        xmlns:behaviors="clr-namespace:TDU2_Track_Records"
+        xmlns:behaviors="clr-namespace:TDU2_Track_Records.Classes"
+        xmlns:vm="clr-namespace:TDU2_Track_Records.ViewModels"
         mc:Ignorable="d" WindowStyle="None" AllowsTransparency="True" 
         Title="TDU2 Track Records" SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
         Icon="/TDU2TR.ico" FontFamily="Adobe Gothic Std B" FontSize="16" 
-        MouseLeftButtonDown="Border_MouseLeftButtonDown" Background="{x:Null}"
-        Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
-        >
-    <!--<Window.Background>
-        <ImageBrush ImageSource="Images/BG2.png" Stretch="UniformToFill" Opacity="0.4"/>
-    </Window.Background>-->
-
+        Background="{x:Null}"
+        Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" >
+    <Window.Resources>
+        <!--<local:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+        <local:StringToDoubleConverter x:Key="StringToDoubleConverter"/>-->
+    </Window.Resources>
     <Border BorderBrush="Red" BorderThickness="1,1,1,1"
             CornerRadius="50,50,50,50"
             Margin="0"
@@ -48,15 +48,29 @@
                 <TextBlock Text="TDU2 Track Records" FontSize="48" Foreground="{DynamicResource HoverBackground}" FontFamily="Gill Sans MT Ext Condensed Bold" Background="{DynamicResource GlassBrush}" HorizontalAlignment="Left" Margin="0,0,0,5"/>
             </DockPanel>
             <DockPanel Grid.Column="5" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,5">
-                <Image x:Name="tracks_Button" MouseLeftButtonDown="tracks_MouseLeftButtonDown"
+                <Image x:Name="carCard_Button" MouseLeftButtonDown="carCard_MouseLeftButtonDown"
                    Margin="0,0,5,0" Width="32" Height="32"
-                   ToolTip="Objectives" HorizontalAlignment="Center" VerticalAlignment="Center">
+                   ToolTip="Check the Car Out">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/ico/crc.png"/>
+                            <Setter Property="Source" Value="Images/ico/events/ico_cup_race.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/ico/ico_roads.png"/>
+                                    <Setter Property="Source" Value="Images/ico/events/ico_mp_race.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="tracks_Button" MouseLeftButtonDown="tracks_MouseLeftButtonDown"
+                   Margin="0,0,5,0" Width="32" Height="32"
+                   ToolTip="Add Events">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/objectives/crc.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/objectives/ico_roads.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -64,13 +78,13 @@
                 </Image>
                 <Image x:Name="Objectives_Button" MouseLeftButtonDown="Objectives_MouseLeftButtonDown"
                     Margin="0,0,5,0" Width="32" Height="32"
-                    ToolTip="Objectives" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    ToolTip="Objectives">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/ico/objectives.png"/>
+                            <Setter Property="Source" Value="Images/ico/navigation/objectives.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/ico/objectives_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/navigation/objectives_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -78,13 +92,13 @@
                 </Image>
                 <Image x:Name="Houses_Button" MouseLeftButtonDown="Houses_MouseLeftButtonDown"
                     Margin="0,0,5,0"
-                    ToolTip="Houses" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None">
+                    ToolTip="Houses" Stretch="None">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/ico/house.png"/>
+                            <Setter Property="Source" Value="Images/ico/navigation/house.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/ico/house_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/navigation/house_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -92,13 +106,13 @@
                 </Image>
                 <Image x:Name="Dealership_Button" MouseLeftButtonDown="Dealership_MouseLeftButtonDown"
                     Margin="0,0,5,0"
-                    ToolTip="Dealerships" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None">
+                    ToolTip="Dealerships" Stretch="None">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/ico/dealership.png"/>
+                            <Setter Property="Source" Value="Images/ico/navigation/dealership.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/ico/dealership_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/navigation/dealership_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -106,7 +120,7 @@
                 </Image>
                 <Image x:Name="PowerLaps_Button" MouseLeftButtonDown="PowerLaps_MouseLeftButtonDown"
                         Margin="0,0,5,0"
-                        ToolTip="Power Laps Leaderboard" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="None">
+                        ToolTip="Power Laps Leaderboard" Stretch="None">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/lap.png"/>
@@ -120,13 +134,13 @@
                 </Image>
                 <Image x:Name="VehicleManager_Button" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown"
                        Margin="0,0,5,0" Width="32" Height="32"
-                       ToolTip="Vehicle Management" HorizontalAlignment="Center" VerticalAlignment="Center">
+                       ToolTip="Vehicle Management">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/ico/cars.png"/>
+                            <Setter Property="Source" Value="Images/ico/navigation/cars.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/ico/cars_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/navigation/cars_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -135,13 +149,13 @@
                 <Image x:Name="Settings_Button" MouseLeftButtonDown="Settings_MouseLeftButtonDown"
                        Margin="0,0,5,0"
                        Width="32" Height="32" MinWidth="32" MinHeight="32"
-                       ToolTip="Settings" HorizontalAlignment="Center" VerticalAlignment="Center">
+                       ToolTip="Settings">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/ico/settings.png"/>
+                            <Setter Property="Source" Value="Images/ico/navigation/settings.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/ico/settings_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/navigation/settings_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -150,13 +164,13 @@
                 <Image x:Name="Minimize_Button" MouseLeftButtonDown="Minimize_MouseLeftButtonDown"
                        Margin="0,0,5,0"
                        Width="32" Height="32" MinWidth="32" MinHeight="32"
-                       ToolTip="Minimize Application" HorizontalAlignment="Center" VerticalAlignment="Center">
+                       ToolTip="Minimize Application">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/ico/minimize.png"/>
+                            <Setter Property="Source" Value="Images/ico/navigation/minimize.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/ico/minimize_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/navigation/minimize_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -165,13 +179,13 @@
                 <Image x:Name="Close_Button" MouseLeftButtonDown="Close_Button_MouseLeftButtonDown"
                        Margin="0,0,5,0"
                        Width="32" Height="32" MinWidth="32" MinHeight="32"
-                       ToolTip="Close Application" HorizontalAlignment="Center" VerticalAlignment="Center">
+                       ToolTip="Close Application">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/ico/close.png"/>
+                            <Setter Property="Source" Value="Images/ico/navigation/close.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/ico/close_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/navigation/close_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -179,14 +193,45 @@
                 </Image>
             </DockPanel>
             <!--Row 0-->
-            
+
             <!--Row 1-->
-            <GroupBox Header="Track" Grid.Column="0" Grid.Row="1" Margin="20,0,5,0">
+            <GroupBox Header="Event" Grid.Column="0" Grid.Row="1" Margin="20,0,5,0">
                 <StackPanel>
                     <DockPanel>
-                        <GroupBox Header="Name" FontFamily="Adobe Gothic Std B" FontSize="16">
-                            <ComboBox x:Name="combo_Track" ItemsSource="{Binding}" TabIndex="0" Loaded="Combo_Track_Loaded"
+                        <GroupBox Header="Event Type">
+                            <ComboBox x:Name="combo_Type" ItemsSource="{Binding}" TabIndex="0" SelectionChanged="combo_Type_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                            <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </GroupBox>
+
+                        <GroupBox Header="Event Name">
+                            <ComboBox x:Name="combo_Track" ItemsSource="{Binding}"  DisplayMemberPath="Name" SelectedValuePath="Id" TabIndex="0" Loaded="Combo_Track_Loaded"
                                       SelectionChanged="Combo_Track_SelectionChanged" LostFocus="Combo_Track_LostFocus" PreviewKeyUp="Combo_Track_PreviewKeyUp" MinWidth="160" MaxDropDownHeight="250"/>
+                        </GroupBox>
+                        <GroupBox x:Name="ClassRestictionGroupBox" >
+                            <GroupBox.Header>
+                                <TextBlock Text="Class Resticted" 
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Center"/>
+                            </GroupBox.Header>
+                            <TextBlock x:Name="ClassRestrictionTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </GroupBox>
+                        <GroupBox x:Name="VehicleRestictionGroupBox" >
+                            <GroupBox.Header>
+                                <TextBlock Text="Resticted to Vehicle"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Center"/>
+                            </GroupBox.Header>
+                            <TextBlock x:Name="VehicleRestrictionTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </GroupBox>
                         <GroupBox Header="Information">
                             <Image MouseLeftButtonDown="Btn_TrackInfo_Click" Width="32" Height="32" MinWidth="32" MinHeight="32" ToolTip="Information">
@@ -202,7 +247,7 @@
                                 </Image.Style>
                             </Image>
                         </GroupBox>
-                        <GroupBox Header="Weather">
+                        <GroupBox x:Name="WeatherGroupBox" Header="Weather">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <CheckBox x:Name="cb_conditions" BorderBrush="{x:Null}" Checked="cb_conditions_StateChanged" Unchecked="cb_conditions_StateChanged" Visibility="Collapsed"/>
                                 <ToggleButton Foreground="{x:Null}" x:Name="cb_weather" MouseLeftButtonDown="cb_weather_MouseLeftButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="32" MinHeight="32" Click="cb_weather_Click" >
@@ -223,13 +268,13 @@
                                                         </Style>
                                                     </Image.Style>
                                                 </Image>
-                                             </StackPanel>
+                                            </StackPanel>
                                         </ControlTemplate>
                                     </ToggleButton.Template>
                                 </ToggleButton>
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox Header="Orientation">
+                        <GroupBox x:Name="OrientationGroupBox" Header="Orientation">
                             <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <CheckBox x:Name="cb_orientation" BorderBrush="{x:Null}" Checked="cb_orientation_StateChanged" Unchecked="cb_orientation_StateChanged" Margin="5,0,0,0" Visibility="Collapsed"/>
                                 <ToggleButton Foreground="{x:Null}" x:Name="txt_orientation" MouseLeftButtonDown="txt_orientation_MouseLeftButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="32" MinHeight="32" Click="txt_orientation_Click">
@@ -257,15 +302,15 @@
                             </DockPanel>
                         </GroupBox>
                     </DockPanel>
-                    <DockPanel>
-                        <GroupBox Header="Lap Length" x:Name="lbl_LapLength" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Width="220">
+                    <DockPanel >
+                        <GroupBox x:Name="LapLengthGroupBox" Header="Lap Length" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Width="220">
                             <DockPanel HorizontalAlignment="Center">
                                 <TextBlock x:Name="lap_Length"
                                            DockPanel.Dock="left"
                                            Text="{Binding}"
                                            HorizontalAlignment="Center"
                                            VerticalAlignment="Center"/>
-                                <TextBlock x:Name="lap_distance_unit"
+                                <TextBlock x:Name="Lap_Distance_Unit"
                                            DockPanel.Dock="Right"
                                            Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}"
                                            VerticalAlignment="Center"
@@ -273,20 +318,24 @@
                                 <!---->
                             </DockPanel>
                         </GroupBox>
-                        <Border Width="1" Margin="0,0" Background="Red"/>
-                        <GroupBox Header="Race Length" VerticalAlignment="Center" x:Name="lbl_raceLength" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
-                                <DockPanel HorizontalAlignment="Center" >
+                        <GroupBox x:Name="LapsGroupBox"  Header="Laps">
+                            <StackPanel>
+                                <TextBlock x:Name="LapsTextBlock" Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBox x:Name="LapsTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox x:Name="RaceLengthGroupBox" Header="Race Length" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
+                            <DockPanel HorizontalAlignment="Center" >
                                 <TextBlock Text="{Binding}" x:Name="race_Length" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                <TextBlock x:Name="race_distance_unit"
+                                <TextBlock x:Name="RaceLength_Distance_Unit"
                                            Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}"
                                            Visibility="Collapsed" VerticalAlignment="Center"/>
-                                </DockPanel>
-                            </GroupBox>
+                            </DockPanel>
+                        </GroupBox>
                     </DockPanel>
                     <StackPanel>
-
                         <StackPanel>
-                            <GroupBox Header="Track Lap Record" x:Name="Lap_Record_Header">
+                            <GroupBox Header="Track Lap Record" x:Name="TrackLapRecordGroupbox">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock x:Name="txt_lrecCar" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     <Border Width="1" Margin="5,0" Background="Red"/>
@@ -297,34 +346,69 @@
                                     <Image x:Name="orientationA_lrec" Source="Images/anticlockwise.png" Visibility="Collapsed"/>
                                 </StackPanel>
                             </GroupBox>
+                            <GroupBox x:Name="PointsGroupBox" Header="Points" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
+                                <DockPanel HorizontalAlignment="Center" >
+                                    <TextBox x:Name="PointsTextBlock" MinWidth="100" />
+                                    <TextBlock x:Name="rdc" Text="{Binding Source={x:Static p:Settings.Default}, Path=Points, Mode=OneWay}" VerticalAlignment="Center"/>
+                                    <Border Width="1" Margin="5,0" Background="Red"/>
+                                    <TextBlock x:Name="PointsRecordTextBlock" Text="High score: " Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </DockPanel>
+                            </GroupBox>
                         </StackPanel>
-                        <GroupBox Header="Track Progress">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock x:Name="txt_Progress_1" />
-                                <Border Width="1" Margin="5,0" Background="Red"/>
-                                <TextBlock x:Name="txt_Progress_2" />
-                            </StackPanel>
-                        </GroupBox>
-                        <GroupBox Header="Total Distance Covered" x:Name="lbl_TotalOdometer" VerticalAlignment="Top">
-                            <DockPanel HorizontalAlignment="Center">
-                            <TextBlock DockPanel.Dock="Left" Text="{Binding}" x:Name="Total_Odometer" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            <TextBlock DockPanel.Dock="Right" x:Name="total_distance_unit"
-                                           Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}"
-                                           VerticalAlignment="Bottom"
-                                           Visibility="Collapsed"/>
+                        <GroupBox x:Name="MinimumSpeedGroupBox" Header="Minimum Speed" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
+                            <DockPanel HorizontalAlignment="Center" >
+                                <TextBlock x:Name="MinimumSpeedTextBlock" Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <TextBlock x:Name="MinimumSpeed_Distance_Unit" Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}" Visibility="Collapsed" VerticalAlignment="Center"/>
                             </DockPanel>
                         </GroupBox>
+                        <GroupBox x:Name="CheckPointsGroupBox" Header="Checkpoints" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
+                            <DockPanel HorizontalAlignment="Center" >
+                                <TextBlock x:Name="CheckpointsTextBlock" Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            </DockPanel>
+                        </GroupBox>
+                        <GroupBox x:Name="TrackProgressGroupBox" Header="Progress">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock x:Name="txt_Progress_1" Text="0/181" />
+                                <Border Width="1" Margin="5,0" Background="Red"/>
+                                <TextBlock x:Name="txt_Progress_2" Text="0%" />
+                            </StackPanel>
+                        </GroupBox>
+                        <StackPanel x:Name="GroupButtons" Orientation="Horizontal" UseLayoutRounding="True" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,10,0,0">
+                            <CheckBox x:Name="keep" TabIndex="21" VerticalAlignment="Center" Foreground="Black" />
+                            <TextBlock Text="Keep Choices?" 
+                                      FontSize="16" 
+                                      Foreground="#FFBBBBBB" 
+                                      FontWeight="Bold" 
+                                      VerticalAlignment="Center" 
+                                      Margin="0,10,0,0" 
+                                      MouseLeftButtonDown="TextBlock_MouseLeftButtonDown">
+                                <TextBlock.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel>
+                                            <TextBlock Text="Keeps Trackname and Class the same," FontWeight="Bold"/>
+                                            <TextBlock Text="Car goes to next in line when submit." FontStyle="Italic"/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </TextBlock.ToolTip>
+                           </TextBlock>
+                            <Button x:Name="btn_reset" Content="Reset" Click="Btn_reset_Click" TabIndex="22" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White"   />
+                            <Button x:Name="btn_submit" Content="Submit" Click="Btn_submit_Click" TabIndex="20" FontWeight="Bold" Foreground="White" FontSize="18" GotFocus="Btn_submit_GotFocus" />
+                        <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" x:Name="btn_loadrec_Metric" IsEnabled="false" Content="Load Records" TabIndex="23" FontWeight="Bold" FontSize="18" Click="Btn_loadrec_Click"/>
+                        <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" x:Name="btn_loadrec_Imperial" IsEnabled="false" Content="Load Records" TabIndex="23" FontWeight="Bold" FontSize="18" Click="Btn_loadrec_Click" Visibility="Visible" />
+                        </StackPanel>
                         <TextBlock x:Name="sysMSG" Text="" Foreground="Red"/>
                     </StackPanel>
                 </StackPanel>
             </GroupBox>
 
             <!--Row 2-->
-            <GroupBox Header="Vehicle" Grid.Row="1" Grid.Column="2" Margin="5,0,5,0">
+            <GroupBox Header="Vehicle" Grid.Row="1" MinWidth="400" Grid.Column="2" Margin="5,0,5,0">
                 <StackPanel>
                     <DockPanel>
                         <GroupBox Header="Class">
-                            <ComboBox x:Name="combo_Class" MinWidth="75" VerticalAlignment="Stretch" FontSize="18" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" LostFocus="Combo_Class_LostFocus" TabIndex="1" PreviewKeyUp="Combo_Class_PreviewKeyUp" Height="38" MaxHeight="38" Padding="5,5,5,5">
+                            <ComboBox x:Name="combo_Class" MinWidth="75" VerticalAlignment="Stretch"
+                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                      Height="38" MaxHeight="38" Padding="5,5,5,5" SelectionChanged="combo_Class_SelectionChanged">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -361,48 +445,26 @@
                     <GroupBox Header="Races Ran" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                         <TextBlock x:Name="txt_rRan" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </GroupBox>
-                    <GroupBox Header="Timestamp" Visibility="Collapsed">
+                    <GroupBox x:Name="lbl_TotalOdometer" Header="Total Distance Covered" VerticalAlignment="Top">
+                        <DockPanel HorizontalAlignment="Center">
+                            <TextBlock DockPanel.Dock="Left" Text="{Binding}" x:Name="Total_Odometer" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <TextBlock DockPanel.Dock="Right" x:Name="total_distance_unit"
+                                           Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}"
+                                           VerticalAlignment="Bottom"
+                                           Visibility="Collapsed"/>
+                        </DockPanel>
+                    </GroupBox>
+                    <GroupBox Header="Timestamp" Visibility="Visible">
                         <TextBlock x:Name="txt_Timestamp" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </GroupBox>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <GroupBox Header="Unit System" VerticalAlignment="Center" Focusable="True" HorizontalAlignment="Left" Visibility="Collapsed">
-                            <!--<StackPanel Orientation="Horizontal">
-                                <ComboBox x:Name="SI_Setter" MinWidth="100" MaxWidth="60" DropDownClosed="SI_Setter_DropDownClosed" VerticalAlignment="Center">
-                                    <ComboBoxItem Content="Metric"/>
-                                    <ComboBoxItem Content="Imperial"/>
-                                </ComboBox>
-                            </StackPanel>-->
-                        </GroupBox>
-                        <StackPanel Orientation="Horizontal" UseLayoutRounding="True">
-                            <CheckBox x:Name="keep" TabIndex="21" VerticalAlignment="Center" Foreground="Black" Margin="20,10,0,0" />
-                            <TextBlock Text="Keep Choices?" 
-                                       FontSize="16" 
-                                       Foreground="#FFBBBBBB" 
-                                       FontWeight="Bold" 
-                                       VerticalAlignment="Center" 
-                                       Margin="0,10,0,0" 
-                                       MouseLeftButtonDown="TextBlock_MouseLeftButtonDown">
-                                <TextBlock.ToolTip>
-                                    <ToolTip>
-                                        <StackPanel>
-                                            <TextBlock Text="Keeps Trackname and Class the same," FontWeight="Bold"/>
-                                            <TextBlock Text="Car goes to next in line when submit." FontStyle="Italic"/>
-                                        </StackPanel>
-                                    </ToolTip>
-                                </TextBlock.ToolTip>
-                            </TextBlock>
-                            <Button x:Name="btn_reset" Content="Reset" Click="Btn_reset_Click" TabIndex="22" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Margin="10,10,10,0"  />
-                            <Button x:Name="btn_submit" Content="Submit" Click="Btn_submit_Click" TabIndex="20" FontWeight="Bold" Foreground="White" FontSize="18" GotFocus="Btn_submit_GotFocus" Margin="10,10,10,0" />
-                        </StackPanel>
-                    </StackPanel>
-                    <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" x:Name="btn_loadrec_Metric" IsEnabled="false" Content="Load Records" TabIndex="23" FontWeight="Bold" FontSize="18" Click="Btn_loadrec_Click" Margin="10,24,10,-42"/>
-                    <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" x:Name="btn_loadrec_Imperial" IsEnabled="false" Content="Load Records" TabIndex="23" FontWeight="Bold" FontSize="18" Click="Btn_loadrec_Click" Visibility="Hidden" Margin="10,24,10,-42"/>
-
                 </StackPanel>
             </GroupBox>
             <!--Row 3-->
             <GroupBox Header="Race Data" Grid.Column="3" Grid.Row="1" Margin="5,0,20,5" >
                 <StackPanel>
+                    <!--<ItemsControl x:Name="LapItemsControl" Grid.Row="1" Grid.ColumnSpan="9"
+              ItemsSource="{Binding LapItems}" 
+              ItemTemplate="{StaticResource LapTemplate}"/>-->
                     <Grid HorizontalAlignment="Left" FocusManager.FocusedElement="{Binding ElementName=Lap1_Min}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -472,7 +534,6 @@
                         <TextBlock x:Name="avg_SpeedLap4" Tag="avg_SpeedLap4" Text="0.0" Grid.Row="5" Grid.Column="7" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="5" Grid.Column="8" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <!--Lap 5-->
-
                         <TextBlock Text="Lap 5" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
                         <TextBox Grid.Column="1" x:Name="Lap5_Min" Grid.Row="6" Text="00" MaxLength="1" TabIndex="17" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewTextInput="PreviewNoDecInput" />
                         <TextBlock Text=":" Grid.Column="2" Grid.Row="6" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -483,6 +544,7 @@
                         <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="6" Grid.Column="8" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                     </Grid>
+
                     <GroupBox Header="Average Lap" Grid.Column="4" Grid.Row="7" x:Name="lbl_avgLapTime" >
                         <TextBlock Text="{Binding}" x:Name="average_LapTime" HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </GroupBox>

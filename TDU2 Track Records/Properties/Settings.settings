@@ -27,16 +27,19 @@
       <Value Profile="(Default)">kg</Value>
     </Setting>
     <Setting Name="engineSize" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">cc</Value>
     </Setting>
     <Setting Name="torque" Type="System.String" Scope="User">
       <Value Profile="(Default)">N⋅m</Value>
     </Setting>
     <Setting Name="horsepower" Type="System.String" Scope="User">
-      <Value Profile="(Default)">BHP</Value>
+      <Value Profile="(Default)">bhp</Value>
     </Setting>
     <Setting Name="BGOpacity" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="Points" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Points</Value>
     </Setting>
   </Settings>
 </SettingsFile>

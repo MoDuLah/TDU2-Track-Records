@@ -5,13 +5,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
-        xmlns:local="clr-namespace:TDU2_Track_Records"
+        xmlns:local="clr-namespace:TDU2_Track_Records.Classes"
         mc:Ignorable="d" FontFamily="Adobe Gothic Std B" FontSize="16" MinHeight="573" MinWidth="1525"
         Title="Database Vehicle Managment" WindowStyle="None" AllowsTransparency="True" 
         Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
         Background="{x:Null}"
         ResizeMode="CanResizeWithGrip" SizeToContent="WidthAndHeight" HorizontalContentAlignment="Stretch"
-        ScrollViewer.HorizontalScrollBarVisibility="Auto" MouseLeftButtonDown="VehicleManagement_MouseLeftButtonDown"><!---->
+        ScrollViewer.HorizontalScrollBarVisibility="Auto" MouseLeftButtonDown="VehicleManagement_MouseLeftButtonDown">
     <Grid>
         <Grid.Background>
             <ImageBrush ImageSource="/Images/BG.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}"/>

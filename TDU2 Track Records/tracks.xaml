@@ -5,42 +5,63 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TDU2_Track_Records"
         mc:Ignorable="d" MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="tracks" Height="450" Width="800" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-        ScrollViewer.VerticalScrollBarVisibility="Auto" 
+        Title="Add Event" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+        ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Adobe Gothic Std B" FontSize="16" 
         WindowStyle="None" AllowsTransparency="True" 
         Background="{x:Null}" SizeToContent="WidthAndHeight"
-        Topmost="True" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <StackPanel Margin="10">
-            <StackPanel Orientation="Vertical" Margin="5">
-                <GroupBox Header="Add Track">
-                    <StackPanel>
-                        <GroupBox Header="Track Name:">
-                            <TextBox x:Name="TrackNameTextBox" Margin="5" />
-                        </GroupBox>
-                        <GroupBox Header="Lap Length:">
-                            <TextBox x:Name="LapLengthTextBox" Width="200" Margin="5" />
-                        </GroupBox>
-                        <GroupBox Header="Race Type:">
-                            <ComboBox x:Name="RaceTypeComboBox" Width="200" Margin="5" SelectionChanged="RaceTypeComboBox_SelectionChanged">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill" />
-                                            <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </GroupBox>
-                        <GroupBox Header="Number of Laps:" x:Name="LapsGroupBox" Visibility="Collapsed">
-                            <TextBox x:Name="LapsTextBox" Width="200" Margin="5" />
-                        </GroupBox>
-                        <Button Content="Add Track" Width="100" Margin="5" Click="AddTrackButton_Click" />
-                    </StackPanel>
-                </GroupBox>
-            </StackPanel>
-            <Button Content="Close" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
+        Topmost="True" KeyDown="Window_KeyDown">
+    <StackPanel Margin="10">
+        <StackPanel Orientation="Vertical" Margin="5">
+            <GroupBox Header="Add Event">
+                <StackPanel>
+                    <GroupBox Header="Race Type:">
+                        <ComboBox x:Name="RaceTypeComboBox" Width="200" Margin="5" SelectionChanged="RaceTypeComboBox_SelectionChanged" SelectedValuePath="id" >
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </GroupBox>
+                    <GroupBox Header="Event Name:">
+                        <TextBox x:Name="TrackNameTextBox" Margin="5" />
+                    </GroupBox>
+                    <GroupBox Header="Event Length (Total):" x:Name="DistanceGroupBox" Visibility="Visible">
+                        <TextBox x:Name="LapLengthTextBox" Width="200" Margin="5" />
+                    </GroupBox>
+                    <GroupBox Header="Number of Laps:" x:Name="LapsGroupBox" Visibility="Visible">
+                        <TextBox x:Name="LapsTextBox" Width="200" Margin="5" Text="1" />
+                    </GroupBox>
+                    <GroupBox Header="Minimum Speed:" x:Name="SpeedGroupBox" Visibility="Visible">
+                        <TextBox x:Name="MinSpeedTextBox" Width="200" Margin="5" Text="0" />
+                    </GroupBox>
+                    <GroupBox Header="Checkpoints:" x:Name="CheckpointsGroupBox" Visibility="Visible">
+                        <TextBox x:Name="CheckpointsTextBox" Width="200" Margin="5" Text="0" />
+                    </GroupBox>
+                    <GroupBox Header="Restricted Class:" x:Name="RestrictedClassGroupBox" Visibility="Visible">
+                        <ComboBox x:Name="RestrictedClassComboBox" Width="200" Margin="5" SelectedIndex="0"  SelectedValuePath="id"  SelectionChanged="RestrictedClassComboBox_SelectionChanged">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill" />
+                                        <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </GroupBox>
+                    <GroupBox Header="Restricted Car:" x:Name="RestrictedCarGroupBox" Visibility="Visible">
+                        <ComboBox x:Name="RestrictedCarComboBox" ItemsSource="{Binding}" Width="200" Margin="5" DisplayMemberPath="Name" SelectedValuePath="id" />
+                    </GroupBox>
+                    <CheckBox x:Name="KeepCheckBox" Content="Keep" VerticalAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" Click="KeepCheckBox_Click"/>
+                    <Button Content="Add Event" Width="100" Margin="5" Click="AddTrackButton_Click" />
+                    <TextBlock x:Name="LastEntry" Text="{Binding}" MaxWidth="218" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="14"/>
+                </StackPanel>
+            </GroupBox>
         </StackPanel>
-    </Grid>
+        <Button Content="Close" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
+    </StackPanel>
 </Window>

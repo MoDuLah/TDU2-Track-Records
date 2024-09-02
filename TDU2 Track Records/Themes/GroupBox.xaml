@@ -5,13 +5,13 @@
 	
 	
 	<LinearGradientBrush x:Key="NormalBackground" EndPoint="0,1" StartPoint="0,0">
-		<GradientStop Color="#626262" Offset="1"/>
-		<GradientStop Color="#4c4c4c" Offset="0"/>
+		<GradientStop Color="#FF626262" Offset="1"/>
+		<GradientStop Color="#FF4c4c4c" Offset="0"/>
 	</LinearGradientBrush>
 	
 	<LinearGradientBrush x:Key="HeaderBackground" EndPoint="0,1" StartPoint="0,0">
-		<GradientStop Color="#4c4a4b" Offset="0"/>
-		<GradientStop Color="#282828" Offset="1"/>
+		<GradientStop Color="#FF4c4a4b" Offset="0"/>
+		<GradientStop Color="#FF222222" Offset="1"/>
 	</LinearGradientBrush>
 	
 	<SolidColorBrush x:Key="NormalOuterBorder" Color="#7a7a7a"/>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -22,10 +23,13 @@ namespace TDU2_Track_Records
     {
         public int RecordsOn = 0;
         public int Popup = 0;
+        int isCalculated = 0;
         readonly string connectionString = Settings.Default.connectionString;
         public string distance = Settings.Default.distance;
         public string speed = Settings.Default.speed;
         readonly string SI = Settings.Default.system;
+        private static double lastTracksLeft;
+        private static double lastTracksTop;
         private static readonly Regex _regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
         SQLiteDataReader reader;
         //SQLiteConnection dbConn; // Declare the SQLiteConnection-Object
@@ -52,7 +56,18 @@ namespace TDU2_Track_Records
                 ViewEntries_Metric.Visibility = Visibility.Collapsed;
                 ViewEntries_Imperial.Visibility = Visibility.Collapsed;
             }
-            FillComboBoxWithTracks(combo_Track);
+            ClassRestictionGroupBox.Visibility = Visibility.Collapsed;
+            VehicleRestictionGroupBox.Visibility = Visibility.Collapsed;
+            OrientationGroupBox.Visibility = Visibility.Collapsed;
+            LapLengthGroupBox.Visibility = Visibility.Collapsed;
+            LapsGroupBox.Visibility = Visibility.Collapsed;
+            RaceLengthGroupBox.Visibility = Visibility.Collapsed;
+            TrackLapRecordGroupbox.Visibility = Visibility.Collapsed;
+            PointsGroupBox.Visibility = Visibility.Collapsed;
+            MinimumSpeedGroupBox.Visibility = Visibility.Collapsed;
+            CheckPointsGroupBox.Visibility = Visibility.Collapsed;
+
+
             BindVehicleComboBox(combo_Vehicle);
             calc_Total_Odometer();
 
@@ -79,6 +94,22 @@ namespace TDU2_Track_Records
             };
 
             combo_Class.ItemsSource = items;
+
+            List<ComboBoxItem> itemb = new List<ComboBoxItem>
+            {
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_cup_race.png", Description = "Race Cup", Value = "Race SP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_cup_speed.png", Description = "Speed Cup", Value = "Speed SP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_cup_eliminator.png", Description = "Eliminator Cup", Value = "Eliminator SP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_cup_speedtrap.png", Description = "Speed Trap Cup", Value = "Speed Trap SP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_cup_timeattack.png", Description = "Time Attack Cup", Value = "Time Attack SP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_race.png", Description = "Race Multiplayer", Value = "Race MP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_speed.png", Description = "Speed Multiplayer", Value = "Speed MP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_ftl.png", Description = "Follow The Leader", Value = "Follow The Leader MP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_kyd.png", Description = "Keep Your Distance", Value = "Keep Your Distance MP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_speedtrap.png", Description = "Speed Trap Multiplayer", Value = "Speed Trap MP" }
+            };
+
+            combo_Type.ItemsSource = itemb;
         }
 
         private void calc_Total_Lap_Time()
@@ -138,9 +169,16 @@ namespace TDU2_Track_Records
         }
         private void calc_Average_Speed()
         {
+            if(LapsGroupBox.Visibility == Visibility.Collapsed) { return; }
             // Convert race length from km to meters
-            double totalDistance = Convert.ToDouble(race_Length.Text) * 1000;
-
+            double totalDistance;
+            if (RaceLengthGroupBox.Visibility == Visibility.Visible) { 
+                totalDistance = Convert.ToDouble(race_Length.Text) * 1000;
+            }
+            else
+            {
+                totalDistance = Convert.ToDouble("lap_Length.Text");
+            }
             int totalLapTime = 0;
             int lapCount = 5;  // Adjust this if you have a different number of laps
 
@@ -176,19 +214,18 @@ namespace TDU2_Track_Records
             double averageSpeed = Math.Round((totalDistance * 3600000) / totalLapTime / 1000, 2);
 
             // Display the average speed
-            string speed = " km/h";  // Define the speed unit
             Average_Speed.Text = averageSpeed.ToString() + speed;
         }
         private void calc_Lap_Length()
         {
+            if (string.IsNullOrEmpty(combo_Type.Text)) { return; }
             if (string.IsNullOrEmpty(combo_Track.Text)) { return; }
-            int trackId = combo_Track.SelectedIndex +1;
+            string trackId = combo_Track.Text.Replace("'","''");
             SQLiteConnection dbConn; // Declare the SQLiteConnection-Object
             dbConn = new SQLiteConnection(connectionString);
-            dbConn.Open();
             try
             {
-                string query = $"SELECT Length From [tracks] where id ='{trackId}' ; ";
+                string query = $"SELECT Length, Laps, RestrictedClass, RestrictedCar, MinSpeed, Checkpoints From [tracks] where Name ='{trackId}' ; ";
                 if (dbConn.State == ConnectionState.Closed)
                 {
                     dbConn.Open();
@@ -198,14 +235,89 @@ namespace TDU2_Track_Records
                 while (reader.Read())
                 {
                     double value = Convert.ToDouble(reader[0].ToString());
+                    int laps = Convert.ToInt32(reader[1].ToString());
+                    string ClassRestriction = reader[2].ToString();
+                    string VehicleRestriction = reader[3].ToString();
+                    double MinimumSpeed = Convert.ToDouble(reader[4]);
+                    int Checkpoints = Convert.ToInt32(reader[5].ToString());
+
+                    if (!string.IsNullOrEmpty(ClassRestriction)) {
+                        //ClassRestictionGroupBox.Visibility = Visibility.Visible;
+                        ClassRestrictionTextBlock.Text = ClassRestriction; // Assuming carClass holds the value like "A1", "B2", etc.
+
+                        string valued = ClassRestrictionTextBlock.Text;
+
+                        combo_Class.SelectedValuePath = "Value";  // Set to the property name you're matching against
+                        combo_Class.SelectedValue = valued;       // Set the value to match
+                        combo_Class.IsEnabled = false;
+
+                    }
+                    else
+                    {
+                        //ClassRestictionGroupBox.Visibility= Visibility.Collapsed;
+                        ClassRestrictionTextBlock.Text = null;
+                        combo_Class.IsEnabled = true;
+                    }
+                    if (!string.IsNullOrEmpty(VehicleRestriction))
+                    {
+                        //VehicleRestictionGroupBox.Visibility = Visibility.Visible;
+                        VehicleRestrictionTextBlock.Text = VehicleRestriction; // Assuming carClass holds the value like "A1", "B2", etc.
+
+                        string valued = VehicleRestrictionTextBlock.Text;
+
+                        combo_Vehicle.SelectedValuePath = "Value";  // Set to the property name you're matching against
+                        combo_Vehicle.SelectedValue = valued;       // Set the value to match
+                        BindVehicleComboBox(combo_Vehicle, valued);
+                        combo_Vehicle.IsEnabled = false;
+                    }
+                    else
+                    {
+                        //VehicleRestictionGroupBox.Visibility = Visibility.Collapsed;
+                        VehicleRestrictionTextBlock.Text = null;
+                        combo_Vehicle.IsEnabled = true;
+                    }
                     if (SI == "Imperial")
                     {
-                        value = Math.Round(value * onemile,2);
+                        value = Math.Round(value * onemile, 2);
+                        MinimumSpeed = Math.Round(MinimumSpeed * onemile, 2);
                     }
-                    lap_Length.Text = value.ToString();
-                    lap_distance_unit.Visibility = Visibility.Visible;
-                    race_Length.Text = Convert.ToString(value * 5);
-                    race_distance_unit.Visibility = Visibility.Visible;
+                    lap_Length.Text = value.ToString() + distance;
+                    if (MinimumSpeedGroupBox.Visibility == Visibility.Visible)
+                    {
+                        MinimumSpeedTextBlock.Text = MinimumSpeed.ToString() + speed;
+                    }
+                    else
+                    {
+                        MinimumSpeedTextBlock.Text = null;
+                    }
+                    if (CheckPointsGroupBox.Visibility == Visibility.Visible)
+                    {
+                        CheckpointsTextBlock.Text = Checkpoints.ToString();
+                    }
+                    else
+                    {
+                        CheckpointsTextBlock.Text = null;
+                    }
+                    if (laps > 0) {
+                    LapsTextBlock.Text = laps.ToString();
+                    race_Length.Text = Convert.ToString(value * laps) + distance;
+                        if (laps == 1)
+                        {
+                            lap_Length.Text = "N/A";
+                            LapsTextBlock.Text = "N/A";
+                            race_Length.Text = value.ToString() + distance;
+                        }
+                        //LapsGroupBox.Visibility = Visibility.Visible;
+                        //RaceLengthGroupBox.Visibility = Visibility.Visible;
+                        //RaceLengthGroupBox.Visibility = Visibility.Visible;
+                        //TrackLapRecordGroupbox.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        //LapsGroupBox.Visibility = Visibility.Collapsed;
+                        //RaceLengthGroupBox.Visibility = Visibility.Collapsed;
+                        //TrackLapRecordGroupbox.Visibility = Visibility.Collapsed;
+                    }
                 }
             }
             catch (Exception ex)
@@ -262,7 +374,7 @@ namespace TDU2_Track_Records
             {
                 average_LapTime.Text = answer;
             }
-           
+
         }
         private void calc_Total_Odometer()
         {
@@ -356,7 +468,7 @@ namespace TDU2_Track_Records
 
         private void Btn_reset_Click(object sender, RoutedEventArgs e)
         {
-            
+
 
             //// Reset other controls
             //combo_Track.SelectedIndex = -1;
@@ -368,6 +480,7 @@ namespace TDU2_Track_Records
             ResetControls(this);
 
             // Arrays of TextBoxes for laps and average lap speeds
+            isCalculated = 0;
             TextBox[] lapMinutes = { Lap1_Min, Lap2_Min, Lap3_Min, Lap4_Min, Lap5_Min };
             TextBox[] lapSeconds = { Lap1_Sec, Lap2_Sec, Lap3_Sec, Lap4_Sec, Lap5_Sec };
             TextBox[] lapMilliseconds = { Lap1_Ms, Lap2_Ms, Lap3_Ms, Lap4_Ms, Lap5_Ms };
@@ -381,10 +494,14 @@ namespace TDU2_Track_Records
                 lapMilliseconds[i].Text = "000";
                 avgLapSpeeds[i].Text = "0.0";
             }
+            combo_Type.SelectedIndex = -1;
+            combo_Track.SelectedIndex = -1;
+
+            combo_Class.SelectedIndex = -1;
             lap_Length.Text = "";
-            lap_distance_unit.Visibility = Visibility.Collapsed;
+            LapLengthGroupBox.Visibility = Visibility.Collapsed;
             race_Length.Text = "";
-            race_distance_unit.Visibility = Visibility.Collapsed;
+            RaceLengthGroupBox.Visibility = Visibility.Collapsed;
             txt_odometer.Text = "";
             txt_lrec.Text = "";
             txt_lrecCar.Text = "";
@@ -407,9 +524,6 @@ namespace TDU2_Track_Records
                 ViewEntries_Imperial.Visibility = Visibility.Collapsed;
                 btn_loadrec_Imperial.IsChecked = false;
             }
-
-            // Set window height
-            Application.Current.MainWindow.Height = 500;
         }
 
         private void Btn_submit_Click(object sender, RoutedEventArgs e)
@@ -428,7 +542,8 @@ namespace TDU2_Track_Records
                  out string avg,
                  out string epidia);
 
-            int trackId = combo_Track.SelectedIndex + 1;
+            if (string.IsNullOrEmpty(combo_Track.Text)) { return; }
+            int trackId = Convert.ToInt32(combo_Track.SelectedValue);
 
             using (var dbConn = new SQLiteConnection(connectionString))
             {
@@ -453,6 +568,7 @@ namespace TDU2_Track_Records
                 LoadNextVehicleData(odo);
 
             UpdateViewEntries();
+            isCalculated = 0;
         }
 
         private bool ValidateSelections()
@@ -550,12 +666,13 @@ namespace TDU2_Track_Records
 
         private void ResetAllFields()
         {
+            combo_Type.SelectedIndex = -1;
             combo_Track.SelectedIndex = -1;
             combo_Class.SelectedIndex = -1;
-            lap_Length.Text = string.Empty;
-            lap_distance_unit.Visibility = Visibility.Collapsed;
+            LapLengthGroupBox.Visibility = Visibility.Collapsed;
+            RaceLengthGroupBox.Visibility = Visibility.Collapsed;
             race_Length.Text = string.Empty;
-            race_distance_unit.Visibility = Visibility.Collapsed;
+            lap_Length.Text = string.Empty;
             cb_conditions.IsChecked = false;
             combo_Vehicle.SelectedIndex = -1;
             txt_odometer.Text = string.Empty;
@@ -641,21 +758,34 @@ namespace TDU2_Track_Records
             }
         }
 
-
-        private void Combo_Class_LostFocus(object sender, RoutedEventArgs e)
+        private void combo_Class_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            HandleComboClassChange();
-        }
+            if (!combo_Class.IsLoaded || combo_Class.Items.Count == 0 || combo_Class.SelectedIndex < 0) return;
+            if (e.AddedItems.Count == 0) return;  // Ensure the selection actually changed
+            BindVehicleComboBox(combo_Vehicle);
 
-        private void Combo_Class_PreviewKeyUp(object sender, KeyEventArgs e)
-        {
-            HandleComboClassChange();
-            AdjustWindowHeight();
         }
 
         private void HandleComboClassChange()
         {
-            BindVehicleComboBox(combo_Vehicle);
+            if (VehicleRestictionGroupBox.Visibility == Visibility.Collapsed)
+            {
+                BindVehicleComboBox(combo_Vehicle);
+                combo_Vehicle.IsEnabled = true;
+            }
+            else
+            {
+                BindVehicleComboBox(combo_Vehicle, VehicleRestrictionTextBlock.Text);
+                combo_Vehicle.IsEnabled = false;
+            }
+            if (ClassRestictionGroupBox.Visibility == Visibility.Collapsed)
+            {
+                combo_Class.IsEnabled = true;
+            }
+            else
+            {
+                combo_Class.IsEnabled = false;
+            }
             CheckProgress();
             loadLapRecord();
 
@@ -665,218 +795,164 @@ namespace TDU2_Track_Records
 
         private void UpdateUIForSI(bool isClassSelected)
         {
+                btn_loadrec_Metric.Content = isClassSelected ? "Load Class Records" : "Load Track Records";
+                TrackLapRecordGroupbox.Header = isClassSelected ? "Class Lap Record" : "Track Lap Record";
             if (SI == "Metric")
             {
-                btn_loadrec_Metric.Content = isClassSelected ? "Load Class Records" : "Load Track Records";
-                Lap_Record_Header.Header = isClassSelected ? "Class Lap Record" : "Track Lap Record";
                 ViewEntries_Metric.Visibility = Visibility.Collapsed;
                 btn_loadrec_Metric.IsChecked = false;
             }
             else
             {
-                btn_loadrec_Imperial.Content = isClassSelected ? "Load Class Records" : "Load Track Records";
-                Lap_Record_Header.Header = isClassSelected ? "Class Lap Record" : "Track Lap Record";
                 ViewEntries_Imperial.Visibility = Visibility.Collapsed;
                 btn_loadrec_Imperial.IsChecked = false;
             }
         }
 
-        private void AdjustWindowHeight()
-        {
-            //Application.Current.MainWindow.Height -= 300;
-        }
 
         private void loadLapRecord()
         {
-
+            // Hide all related UI elements initially
             orientationA_lrec.Visibility = Visibility.Collapsed;
             orientationC_lrec.Visibility = Visibility.Collapsed;
             weatherS_lrec.Visibility = Visibility.Collapsed;
             weatherR_lrec.Visibility = Visibility.Collapsed;
-            if (string.IsNullOrEmpty(combo_Track.Text)) { return; }
+
+            // Check if the track is selected
+            if (string.IsNullOrEmpty(combo_Track.Text)) return;
+
             int conditions = cb_conditions.IsChecked == true ? 1 : 0;
-            int track = combo_Track.SelectedIndex + 1;
+            int orientation = cb_orientation.IsChecked == true ? 1 : 0;
+            int trackId = Convert.ToInt32(combo_Track.SelectedValue);
             string spec = combo_Class.Text;
-            SQLiteConnection dbConn; // Declare the SQLiteConnection-Object
-            dbConn = new SQLiteConnection(connectionString);
-            dbConn.Open();
-            try
+
+            using (var dbConn = new SQLiteConnection(connectionString))
             {
-                string query = "";
-                if (!string.IsNullOrEmpty(combo_Track.Text) && string.IsNullOrEmpty(combo_Class.Text))
+                dbConn.Open();
+
+                string query = !string.IsNullOrEmpty(combo_Class.Text)
+                    ? $"SELECT carName, Min(Fastest_Lap), conditions, orientation FROM [records] WHERE carClass = '{spec}' AND trackId = '{trackId}';"
+                    : $"SELECT carName, Min(Fastest_Lap), conditions, orientation FROM [records] WHERE trackId = '{trackId}';";
+
+                using (var dbCmd = new SQLiteCommand(query, dbConn))
+                using (var reader = dbCmd.ExecuteReader())
                 {
-                    query = $"SELECT carName, Min(Fastest_Lap),conditions,orientation From [records] where trackID ='{track}'; ";
-                }
-                else { 
-                if (!string.IsNullOrEmpty(combo_Track.Text) && !string.IsNullOrEmpty(combo_Class.Text))
-                {
-                    query = $"SELECT carName, Min(Fastest_Lap),conditions,orientation From [records] where carClass ='{spec}' and trackID ='{track}'; ";
-                }
-                }
-                if (dbConn.State == ConnectionState.Closed)
-                {
-                    dbConn.Open();
-                }
-                dbCmd = new SQLiteCommand(query, dbConn);
-                reader = dbCmd.ExecuteReader();
-                try
-                {
-                    while (reader.Read())
+                    if (!reader.Read() || reader.IsDBNull(0))
                     {
-                        if (reader.IsDBNull(0))
-                        {
-                            txt_lrec.Text = "No Record";
-                            txt_lrecCar.Text = "No Record";
-                            reader.Close();
-                            if (dbConn.State == ConnectionState.Open)
-                            {
-                                dbConn.Close();
-                            }
-                            return;
-                        }
-                        string carName = reader[0].ToString();
-                        string value = reader[1].ToString();
-                        int weather = Convert.ToInt32(reader[2].ToString());
-                        int orient = Convert.ToInt32(reader[3].ToString());
-                        if (string.IsNullOrEmpty(carName))
-                        {
-                            carName = "No Record";
-                        }
-                        if (string.IsNullOrEmpty(value))
-                        {
-                            value = "No Record";
-                        }
-                        txt_lrec.Text = value;
-                        txt_lrecCar.Text = carName;
+                        txt_lrec.Text = "No Record";
+                        txt_lrecCar.Text = "No Record";
+                        return;
+                    }
 
-                        if (weather == 0)
-                        {
-                            weatherS_lrec.Visibility = Visibility.Visible;
-                        }
-                        else if (weather == 1)
-                        {
-                            weatherR_lrec.Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            weatherS_lrec.Visibility = Visibility.Collapsed;
-                            weatherR_lrec.Visibility = Visibility.Collapsed;
-                        }
+                    string carName = reader.IsDBNull(0) ? "No Record" : reader.GetString(0);
+                    string value = reader.IsDBNull(1) ? "No Record" : reader.GetString(1);
+                    int weather = reader.IsDBNull(2) ? 0 : reader.GetInt32(2);
+                    int orient = reader.IsDBNull(3) ? 0 : reader.GetInt32(3);
 
-                        if (orient == 0)
-                        {
-                            orientationC_lrec.Visibility = Visibility.Visible;
-                        }
-                        else if (orient == 1)
-                        {
-                            orientationA_lrec.Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            orientationA_lrec.Visibility = Visibility.Collapsed;
-                            orientationC_lrec.Visibility = Visibility.Collapsed;
-                        }
+                    txt_lrec.Text = value;
+                    txt_lrecCar.Text = carName;
 
-                        string recordX = "";
-                        string track3r = combo_Track.Text.Replace("'", "''");
-                        switch (combo_Class.SelectedIndex)
+                    // Weather conditions
+                    if (weather == 0)
+                    {
+                        weatherS_lrec.Visibility = Visibility.Visible;
+                    }
+                    else if (weather == 1)
+                    {
+                        weatherR_lrec.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        weatherS_lrec.Visibility = Visibility.Collapsed;
+                        weatherR_lrec.Visibility = Visibility.Collapsed;
+                    }
+
+                    // Orientation
+                    if (orient == 0)
+                    {
+                        orientationC_lrec.Visibility = Visibility.Visible;
+                    }
+                    else if (orient == 1)
+                    {
+                        orientationA_lrec.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        orientationA_lrec.Visibility = Visibility.Collapsed;
+                        orientationC_lrec.Visibility = Visibility.Collapsed;
+                    }
+
+                    // Record type
+                    string recordX;
+                    switch (combo_Class.SelectedIndex)
+                    {
+                        case -1:
+                        case 0:
+                            recordX = "Track_Lap_Record";
+                            break;
+                        case 1:
+                            recordX = "Record_A1";
+                            break;
+                        case 2:
+                            recordX = "Record_A2";
+                            break;
+                        case 3:
+                            recordX = "Record_A3";
+                            break;
+                        case 4:
+                            recordX = "Record_A4";
+                            break;
+                        case 5:
+                            recordX = "Record_A5";
+                            break;
+                        case 6:
+                            recordX = "Record_A6";
+                            break;
+                        case 7:
+                            recordX = "Record_A7";
+                            break;
+                        case 8:
+                            recordX = "Record_B2";
+                            break;
+                        case 9:
+                            recordX = "Record_B3";
+                            break;
+                        case 10:
+                            recordX = "Record_B4";
+                            break;
+                        case 11:
+                            recordX = "Record_C1";
+                            break;
+                        case 12:
+                            recordX = "Record_C2";
+                            break;
+                        case 13:
+                            recordX = "Record_C3";
+                            break;
+                        case 14:
+                            recordX = "Record_C4";
+                            break;
+                        case 15:
+                            recordX = "Record_MA1";
+                            break;
+                        case 16:
+                            recordX = "Record_MA2";
+                            break;
+                        default:
+                            recordX = "Track_Lap_Record";
+                            break;
+                    }
+
+                    if (!string.IsNullOrEmpty(carName) && !string.IsNullOrEmpty(value))
+                    {
+                        string trackName = combo_Track.Text.Replace("'", "''");
+                        string updateQuery = $"UPDATE [tracks] SET {recordX} = '{carName} - {txt_lrec.Text}' WHERE Name = '{trackName}'";
+
+                        using (var updateCmd = new SQLiteCommand(updateQuery, dbConn))
                         {
-                            case -1:
-                                recordX = "Track_Lap_Record";
-                                break;
-                            case 0:
-                                recordX = "Track_Lap_Record";
-                                break;
-                            case 1:
-                                recordX = "Record_A1";
-                                break;
-                            case 2:
-                                recordX = "Record_A2";
-                                break;
-                            case 3:
-                                recordX = "Record_A3";
-                                break;
-                            case 4:
-                                recordX = "Record_A4";
-                                break;
-                            case 5:
-                                recordX = "Record_A5";
-                                break;
-                            case 6:
-                                recordX = "Record_A6";
-                                break;
-                            case 7:
-                                recordX = "Record_A7";
-                                break;
-                            case 8:
-                                recordX = "Record_B2";
-                                break;
-                            case 9:
-                                recordX = "Record_B3";
-                                break;
-                            case 10:
-                                recordX = "Record_B4";
-                                break;
-                            case 11:
-                                recordX = "Record_C1";
-                                break;
-                            case 12:
-                                recordX = "Record_C2";
-                                break;
-                            case 13:
-                                recordX = "Record_C3";
-                                break;
-                            case 14:
-                                recordX = "Record_C4";
-                                break;
-                            case 15:
-                                recordX = "Record_MA1";
-                                break;
-                            case 16:
-                                recordX = "Record_MA2";
-                                break;
-                        }
-                        if (!string.IsNullOrEmpty(carName) & !string.IsNullOrEmpty(value))
-                        {
-                            string fuery = $"UPDATE [tracks] SET {recordX} = '" + carName + " - " + txt_lrec.Text + "' WHERE Name = '" + track3r + "'";
-                            if (dbConn.State == ConnectionState.Closed)
-                            {
-                                dbConn.Open();
-                            }
-                            dbCmd = new SQLiteCommand(fuery, dbConn);
-                            int resultAffectedRows = dbCmd.ExecuteNonQuery();
+                            updateCmd.ExecuteNonQuery();
                         }
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error" + ex.ToString());
-                    if (dbConn.State == ConnectionState.Open)
-                    {
-                        dbConn.Close();
-                    }
-                }
-                finally
-                {
-                    if (dbConn.State == ConnectionState.Open)
-                    {
-                        dbConn.Close();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error" + ex.ToString());
-                if (dbConn.State == ConnectionState.Open)
-                {
-                    dbConn.Close();
-                }
-            }
-            finally
-            {
-                if (dbConn.State == ConnectionState.Open)
-                {
-                    dbConn.Close();
                 }
             }
         }
@@ -935,8 +1011,10 @@ namespace TDU2_Track_Records
 
         private void FillComboBoxWithTracks(ComboBox comboBox)
         {
-            const string query = "SELECT * FROM tracks";
-
+            ComboBoxItem selectedItem = (ComboBoxItem)combo_Type.SelectedItem;
+            string selectedRaceType = selectedItem?.Value;
+            string query = $"SELECT * FROM tracks WHERE RaceType = '{selectedRaceType}'";
+            //MessageBox.Show(query);
             ExecuteQuery(query, "tracks", dataSet =>
             {
                 SetComboBoxSource(comboBox, dataSet, "Name", "id");
@@ -944,16 +1022,19 @@ namespace TDU2_Track_Records
             ex => MessageBox.Show($"An error occurred while loading tracks:\n{ex.Message}"));
         }
 
-        private void BindVehicleComboBox(ComboBox comboBox)
+        private void BindVehicleComboBox(ComboBox comboBox, string selectedId = null)
         {
-            ComboBoxItem selectedItem = (ComboBoxItem)combo_Class.SelectedItem;
+            //if(comboBox.SelectedIndex == -1) { return; }
+
             string query = "SELECT * FROM vehicles WHERE Active = '1' AND Owned = '1'";
 
-            if (!string.IsNullOrEmpty(combo_Class.Text))
+            if (combo_Class.SelectedIndex > -1)
             {
+                ComboBoxItem selectedItem = (ComboBoxItem)combo_Class.SelectedItem;
                 string selectedValue = selectedItem.Value;
-                if (selectedValue != "All") { 
-                query += $" AND Class = '{selectedValue}' ORDER BY Name ASC;";
+                if (selectedValue != "All")
+                {
+                    query += $" AND Class = '{selectedValue}' ORDER BY Name ASC;";
                 }
             }
             else
@@ -961,16 +1042,26 @@ namespace TDU2_Track_Records
                 query += " ORDER BY Name ASC;";
             }
 
+
             ExecuteQuery(query, "vehicles", dataSet =>
             {
                 if (dataSet.Tables[0].Rows.Count > 0)
                 {
-                    SetComboBoxSource(comboBox, dataSet, "Name", "id");
                     ClearVehicleDetails();
+                    SetComboBoxSource(comboBox, dataSet, "Name", "id");
+                    // If a specific ID is provided, select the corresponding item
+                    if (!string.IsNullOrEmpty(selectedId))
+                    {
+                        comboBox.SelectedValue = selectedId;
+                    }
+                    else if (combo_Class.SelectedIndex > -1)
+                    {
+                        comboBox.SelectedIndex = 0; // Default to the first item if no ID is provided
+                    }
                 }
                 else
                 {
-                    Popup = Popup + 1;
+                    Popup++;
                     if (Popup == 1)
                     {
                         MessageBox.Show("No vehicles found.\nPlease go to Vehicle Management to add vehicles.\n\nTip: Vehicle management is the garage icon on top right.",
@@ -999,7 +1090,6 @@ namespace TDU2_Track_Records
                     {
                         dbCmd.Parameters.AddWithValue(param.Item1, param.Item2);
                     }
-
                     dbConn.Open();
                     var dataSet = new DataSet();
                     dbAdapter.Fill(dataSet, tableName);
@@ -1033,12 +1123,18 @@ namespace TDU2_Track_Records
             txt_rRan.Text = "";
         }
 
+        private void Btn_submit_GotFocus(object sender, RoutedEventArgs e)
+        {
+            calc_Average_Lap_Time();
+            calc_Total_Lap_Time();
+            calc_Average_Speed();
+        }
+
         private void Btn_loadrec_Click(object sender, RoutedEventArgs e)
         {
-            int adjustment = 300;
-            //if(combo_Track.SelectedIndex == -1) { return; }
-            if (btn_loadrec_Metric.IsChecked == true || btn_loadrec_Imperial.IsChecked == true) {
-            Application.Current.MainWindow.Height = Application.Current.MainWindow.Height + adjustment;
+            if(combo_Track.SelectedIndex == -1) { return; }
+            if (btn_loadrec_Metric.IsChecked == true || btn_loadrec_Imperial.IsChecked == true)
+            {
                 if (SI == "Metric")
                 {
                     ViewEntries_Metric.Visibility = Visibility.Visible;
@@ -1047,7 +1143,7 @@ namespace TDU2_Track_Records
                 {
                     ViewEntries_Imperial.Visibility = Visibility.Visible;
                 }
-            FillDataGrid();
+                FillDataGrid();
             }
             else
             {
@@ -1061,327 +1157,275 @@ namespace TDU2_Track_Records
                     ViewEntries_Imperial.Visibility = Visibility.Collapsed;
                     ViewEntries_Imperial.ItemsSource = "";
                 }
-  
-                Application.Current.MainWindow.Height = Application.Current.MainWindow.Height - adjustment;
-  
+
             }
         }
- 
+
         private void Combo_Vehicle_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(combo_Vehicle.Text)) {
-                return;
-            }
-            else
-            {
-                btn_loadrec_Metric.Content = "Load Vehicle Records";
-            }
-
-            string odo = SI == "Metric" ? "Odometer_Metric" : "Odometer_Imperial";
-            int conditions = cb_conditions.IsChecked == true ? 1 : 0;
-            int orientation = cb_orientation.IsChecked == false ? 0 : 1;
-            string veh = combo_Vehicle.Text.Replace("'", "''");
-            int trackId = combo_Track.SelectedIndex + 1;
-
-            txt_carPB.Text = "";
-            txt_odometer.Text = "";
-            txt_rRan.Text = "";
-
-            string query = $@"
-        SELECT 
-            (SELECT {odo} AS Odometer FROM vehicles WHERE Name = '{veh}') ,
-            (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = '{trackId}' AND conditions = '{conditions}') ,
-            (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = '{trackId}' AND carName = '{veh}' AND conditions = '{conditions}') ";
-
-            try
-            {
-                using (var dbConn = new SQLiteConnection(connectionString))
-                {
-                    dbConn.Open();
-                    using (var dbCmd = new SQLiteCommand(query, dbConn))
-                    using (var reader = dbCmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            txt_odometer.Text = reader.IsDBNull(0) ? "0" : reader.GetDouble(0).ToString();
-                            txt_carPB.Text = reader.IsDBNull(1) ? "No Record" : reader.GetString(1);
-                            txt_rRan.Text = reader.GetInt32(2).ToString();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.ToString());
-            }
-        }
-
-        private void Btn_submit_GotFocus(object sender, RoutedEventArgs e)
-        {
-            calc_Average_Lap_Time();
-            calc_Total_Lap_Time();
-            calc_Average_Speed();
-        }
-
-        private void Combo_Track_LostFocus(object sender, RoutedEventArgs e)
-        {
-
-            if (SI == "Metric")
-            {
-                if (combo_Track.SelectedIndex == -1)
-                {
-                    return;
-                }
-                else
-                {
-                    btn_loadrec_Metric.IsEnabled = true;
-                    btn_loadrec_Imperial.IsEnabled = false;
-                    btn_loadrec_Metric.IsChecked = false;
-                    if (combo_Class.SelectedIndex < 0)
-                    {
-                        btn_loadrec_Metric.Content = "Load Track Records";
-                    }
-                }
-                ViewEntries_Metric.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                if (combo_Track.SelectedIndex == -1)
-                {
-                    return;
-                }
-                else
-                {
-                    btn_loadrec_Imperial.IsChecked = false;
-                    btn_loadrec_Imperial.IsEnabled = true;
-                    btn_loadrec_Metric.IsEnabled = false;
-                    btn_loadrec_Imperial.Content = "Load Track Records";
-                }
-                ViewEntries_Imperial.Visibility = Visibility.Collapsed;
-            }
-            Application.Current.MainWindow.Height = 500;
-            calc_Lap_Length();
-            CheckProgress();
-            loadLapRecord();
-
             if (string.IsNullOrEmpty(combo_Vehicle.Text)) return;
 
-            int conditions = cb_conditions.IsChecked == true ? 1 : 0;
-            int orientation = cb_orientation.IsChecked == false ? 0 : 1;
-            string veh = combo_Vehicle.Text.Replace("'", "''");
-            int trackId = combo_Track.SelectedIndex + 1;
-
-            string odoColumn = SI == "Metric" ? "Odometer_Metric" : "Odometer_Imperial";
-            double onemile = 1.60934; // Adjust this value as necessary for conversion if not already defined
-
-            string query = $@"
-            SELECT 
-                (SELECT {odoColumn} AS Odometer FROM vehicles WHERE Name = '{veh}') ,
-                (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = {trackId} AND conditions = '{conditions}' AND orientation = '{orientation}'),
-                (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = '{conditions}' AND orientation = '{orientation}')";
-
-            try
-            {
-                using (var dbConn = new SQLiteConnection(connectionString))
-                {
-                    dbConn.Open();
-                    using (var dbCmd = new SQLiteCommand(query, dbConn))
-                    using (var reader = dbCmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            if (!reader.IsDBNull(0))
-                            {
-                                double value = reader.GetDouble(0);
-                                if (SI == "Imperial")
-                                {
-                                    value = Math.Round(value * onemile, 2);
-                                }
-                                txt_odometer.Text = value.ToString();
-                            }
-
-                            txt_carPB.Text = reader.IsDBNull(1) ? "No Record" : reader.GetString(1);
-                            txt_rRan.Text = reader.GetInt32(2).ToString();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.ToString());
-            }
-        }
-
-        private void Combo_Track_PreviewKeyUp(object sender, KeyEventArgs e)
-        {
-            if (SI == "Metric")
-            {
-                btn_loadrec_Metric.IsEnabled = true;
-                if (btn_loadrec_Metric.IsChecked == true)
-                {
-                    btn_loadrec_Metric.IsChecked = false;
-                }
-                ViewEntries_Metric.Visibility = Visibility.Collapsed;
-                Application.Current.MainWindow.Height = 500;
-            }
-            else
-            {
-                btn_loadrec_Imperial.IsEnabled = true;
-                if (btn_loadrec_Imperial.IsChecked == true)
-                {
-                    btn_loadrec_Imperial.IsChecked = false;
-                }
-                ViewEntries_Imperial.Visibility = Visibility.Collapsed;
-                Application.Current.MainWindow.Height = 500;
-            }
-            CheckProgress();
-            loadLapRecord();
-            calc_Lap_Length();
-
-            if (string.IsNullOrEmpty(combo_Vehicle.Text)) return;
-
-            txt_carPB.Text = "";
-            int conditions = cb_conditions.IsChecked == true ? 1 : 0;
-            int orientation = cb_orientation.IsChecked == false ? 0 : 1;
-            string veh = combo_Vehicle.Text.Replace("'", "''");
-            int trackId = combo_Track.SelectedIndex + 1;
-
-            string odoColumn = SI == "Metric" ? "Odometer_Metric" : "Odometer_Imperial";
-            double onemile = 1.60934; // Adjust this value as necessary for conversion if not already defined
-
-            string query = $@"
-            SELECT 
-            (SELECT {odoColumn} AS Odometer FROM vehicles WHERE Name = '{veh}'),
-            (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = {trackId} AND conditions = {conditions} AND orientation = '{orientation}'),
-            (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = {conditions} AND orientation = '{orientation}')";
-
-            try
-            {
-                using (var dbConn = new SQLiteConnection(connectionString))
-                {
-                    dbConn.Open();
-                    using (var dbCmd = new SQLiteCommand(query, dbConn))
-                    using (var reader = dbCmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            if (!reader.IsDBNull(0))
-                            {
-                                double value = reader.GetDouble(0);
-                                if (SI == "Imperial")
-                                {
-                                    value = Math.Round(value * onemile, 2);
-                                }
-                                txt_odometer.Text = value.ToString();
-                            }
-
-                            txt_carPB.Text = reader.IsDBNull(1) ? "No Record" : reader.GetString(1);
-                            txt_rRan.Text = reader.GetInt32(2).ToString();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.ToString());
-            }
-        }
-        private void Combo_Track_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            // Early exits for various conditions
-            //if (keep.IsChecked == false) combo_Class.SelectedIndex = -1;
-            if (!combo_Track.IsLoaded || combo_Track.Items.Count == 0 || combo_Track.SelectedIndex < 0) return;
-            if (e.AddedItems.Count == 0) return;  // Ensure the selection actually changed
-
-            UpdateUIForSI();
-            ResetWindowState();
-            calc_Lap_Length();
-            CheckProgress();
-            loadLapRecord();
-
-            if (string.IsNullOrEmpty(combo_Vehicle.Text)) return;
+            btn_loadrec_Metric.Content = "Load Vehicle Records";
 
             FetchAndDisplayVehicleData();
         }
 
-        private void UpdateUIForSI()
-        {
-            bool isMetric = SI == "Metric";
 
+        private void combo_Type_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            isCalculated = 0;
+            HideAll();
+            FillComboBoxWithTracks(combo_Track);
+        }
+
+        // Handles the logic when the Combo_Track loses focus.
+        private void Combo_Track_LostFocus(object sender, RoutedEventArgs e)
+        {
+            // Call HandleTrackChange to update the UI based on the track selection
+            HandleTrackChange();
+            FinalizeUI();
+        }
+        // Handles the logic when a key is released while the Combo_Track is focused.
+        private void Combo_Track_PreviewKeyUp(object sender, KeyEventArgs e)
+        {
+            // Call HandleTrackChange to update the UI and clear txt_carPB when a key is pressed
+            HandleTrackChange(clearCarPB: true);
+            FinalizeUI();
+        }
+
+        private void Combo_Track_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Ensure that the selection change is valid before proceeding
+            if (!combo_Track.IsLoaded || combo_Track.Items.Count == 0 || combo_Track.SelectedIndex < 0 || e.AddedItems.Count == 0)
+                return;
+
+            // Call HandleTrackChange to update the UI based on the track selection
+            HandleTrackChange();
+
+            // Update UI elements based on the selected race type
+            UpdateRaceTypeUI();
+        }
+
+        // Centralized method to handle changes when a track is selected or changed.
+        private void HandleTrackChange(bool clearCarPB = false)
+        {
+            // Hide all UI elements initially
+            if (isCalculated == 0)
+            {
+                HideAll();
+            }
+
+            // If no track is selected, exit early
+            if (combo_Track.SelectedIndex == -1) return;
+
+            // Update UI elements based on the track selection
+            UpdateTrackUI();
+            FinalizeUI();
+
+            // Optionally clear txt_carPB based on the flag
+            if (clearCarPB)
+                txt_carPB.Text = "";
+
+            // Fetch and display vehicle data if a vehicle is selected
+            if (!string.IsNullOrEmpty(combo_Vehicle.Text))
+                FetchAndDisplayVehicleData();
+        }
+
+        // Hides all UI elements and resets their associated text fields.
+        private void HideAll()
+        {
+            if (isCalculated == 0) { 
+            // Hide and reset all UI elements
+            ClassRestictionGroupBox.Visibility = Visibility.Collapsed;
+            ClassRestrictionTextBlock.Text = "";
+            VehicleRestictionGroupBox.Visibility = Visibility.Collapsed;
+            VehicleRestrictionTextBlock.Text = "";
+            OrientationGroupBox.Visibility = Visibility.Collapsed;
+            LapLengthGroupBox.Visibility = Visibility.Collapsed;
+            lap_Length.Text = "";
+            LapsGroupBox.Visibility = Visibility.Collapsed;
+            LapsTextBlock.Text = "";
+            RaceLengthGroupBox.Visibility = Visibility.Collapsed;
+            race_Length.Text = "";
+            TrackLapRecordGroupbox.Visibility = Visibility.Collapsed;
+            txt_lrecCar.Text = "";
+            weatherS_lrec.Visibility = Visibility.Collapsed;
+            weatherR_lrec.Visibility = Visibility.Collapsed;
+            orientationC_lrec.Visibility = Visibility.Collapsed;
+            orientationA_lrec.Visibility = Visibility.Collapsed;
+            PointsGroupBox.Visibility = Visibility.Collapsed;
+            PointsTextBlock.Text = "";
+            MinimumSpeedGroupBox.Visibility = Visibility.Collapsed;
+            MinimumSpeedTextBlock.Text = "";
+            CheckPointsGroupBox.Visibility = Visibility.Collapsed;
+            CheckpointsTextBlock.Text = "";
+            }
+        }
+
+        // Updates the UI based on the selected race type.
+        // Update UI elements related to the selected race type.
+        private void UpdateRaceTypeUI()
+        {
+            // Ensure that combo_Type is not null and has selected items
+            if (isCalculated == 0) {
+                if (combo_Track.SelectedIndex > -1)
+                {
+                    if (combo_Type.SelectedItem is ComboBoxItem selectedItem)
+                    {
+                        string selectedRaceType = selectedItem.Value;
+                        // Determine event types
+                        bool isRace = selectedRaceType == "Race SP" || selectedRaceType == "Race RMP";
+                        bool isEliminator = selectedRaceType.StartsWith("Eli");
+                        bool isTimeAttack = selectedRaceType == "Time Attack SP";
+                        bool isSpeedEvent = selectedRaceType == "Speed SP" || selectedRaceType == "Speed MP";
+                        bool isSpeedTrap = selectedRaceType == "Speed Trap SP" || selectedRaceType == "Speed Trap MP";
+                        bool isFYLEvent = selectedRaceType == "Follow The Leader MP";
+                        bool isKYDEvent = selectedRaceType == "Keep Your Distance MP";
+
+                        // Define visibility conditions
+                        bool hasRestrictedClass = isRace || isEliminator || isTimeAttack || isSpeedEvent || isSpeedTrap || isFYLEvent || isKYDEvent;
+                        bool hasRestrictedVehicle = isRace || isEliminator || isTimeAttack || isSpeedEvent || isSpeedTrap || isFYLEvent || isKYDEvent;
+                        bool hasOrientation = selectedRaceType == "Race MP";
+                        bool hasDistance = isRace || isEliminator || isTimeAttack;
+                        bool hasLaps = isRace || isEliminator || isTimeAttack; // Laps for race-related types
+                        bool hasTrackLapRecord = isRace || isEliminator || isTimeAttack;
+                        bool hasScore = isSpeedEvent || isSpeedTrap || isFYLEvent || isKYDEvent;
+
+                        // Update the headers and visibility of the UI elements based on the selected race type
+                        TrackLapRecordGroupbox.Header = hasTrackLapRecord ? "Track Lap Record" : "Fastest Time";
+                        TrackLapRecordGroupbox.Visibility = hasTrackLapRecord ? Visibility.Visible : Visibility.Collapsed;
+                        OrientationGroupBox.Visibility = hasOrientation ? Visibility.Visible : Visibility.Collapsed;
+                        LapLengthGroupBox.Visibility = hasDistance ? Visibility.Visible : Visibility.Collapsed;
+                        LapsGroupBox.Visibility = hasLaps ? Visibility.Visible : Visibility.Collapsed;
+                        RaceLengthGroupBox.Visibility = hasDistance ? Visibility.Visible : Visibility.Collapsed;
+
+                        // Correct visibility logic for Speed Event types
+                        MinimumSpeedGroupBox.Visibility = isSpeedEvent ? Visibility.Visible : Visibility.Collapsed;
+                        PointsGroupBox.Visibility = isSpeedEvent ? Visibility.Visible : Visibility.Collapsed;
+                        CheckPointsGroupBox.Visibility = isSpeedTrap ? Visibility.Visible : Visibility.Collapsed;
+                        VehicleRestrictionTextBlock.Visibility = hasRestrictedVehicle ? Visibility.Visible : Visibility.Collapsed;
+                        ClassRestictionGroupBox.Visibility = hasRestrictedVehicle ? Visibility.Visible : Visibility.Collapsed;
+
+                        isCalculated++;
+                        // Show a message box with the details and visibility status for debugging purposes
+                        //MessageBox.Show(
+                        //    $"Race type: {selectedRaceType}\n" +
+                        //    $"Is Class Restricted? {hasRestrictedClass} (Visibility: {(ClassRestictionGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
+                        //    $"Is Vehicle Restricted? {hasRestrictedVehicle} (Visibility: {(VehicleRestictionGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
+                        //    $"Is it Race? {isRace} (Visibility: {(RaceLengthGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
+                        //    $"Is it Eliminator? {isEliminator}\n" +
+                        //    $"Is it Time Attack? {isTimeAttack}\n" +
+                        //    $"Is it Speed Event? {isSpeedEvent} (Visibility: {(MinimumSpeedGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
+                        //    $"Is it Speed Trap? {isSpeedTrap} (Visibility: {(CheckPointsdGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
+                        //    $"Is it Follow Your Leader? {isFYLEvent}\n" +
+                        //    $"Is it Keep Your Distance? {isKYDEvent}\n" +
+                        //    $"Has Lap Record? {hasTrackLapRecord} (Visibility: {(TrackLapRecordGroupbox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
+                        //    $"Has Orientation? {hasOrientation} (Visibility: {(OrientationGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
+                        //    $"Has Distance? {hasDistance} (Visibility: {(LapLengthGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})");
+                    }
+                }
+            }
+        }
+
+        // Updates the track-related UI elements based on the selected system of units.
+        private void UpdateTrackUI()
+        {
+            bool isMetric = SI == "Metric"; // Determine if the selected system is Metric
+
+            // Enable/disable buttons based on the system of units
             btn_loadrec_Metric.IsEnabled = isMetric;
             btn_loadrec_Imperial.IsEnabled = !isMetric;
 
+            // Uncheck both buttons initially
             btn_loadrec_Metric.IsChecked = false;
             btn_loadrec_Imperial.IsChecked = false;
 
-            if (combo_Class.SelectedIndex <= 0)
+            // Set button content based on the selected class and system of units
+            if (combo_Class.SelectedIndex < 0)
             {
-                if (isMetric)
-                {
-                    btn_loadrec_Metric.Content = "Load Track Records";
-                }
-                else
-                {
-                    btn_loadrec_Imperial.Content = "Load Track Records";
-                }
+                string buttonText = "Load Track Records";
+                btn_loadrec_Metric.Content = isMetric ? buttonText : btn_loadrec_Metric.Content;
+                btn_loadrec_Imperial.Content = !isMetric ? buttonText : btn_loadrec_Imperial.Content;
             }
 
-            ViewEntries_Metric.Visibility = isMetric ? Visibility.Collapsed : ViewEntries_Metric.Visibility;
-            ViewEntries_Imperial.Visibility = !isMetric ? Visibility.Collapsed : ViewEntries_Imperial.Visibility;
+            //// Adjust visibility based on the system of units
+            //ViewEntries_Metric.Visibility = isMetric ? Visibility.Collapsed : Visibility.Visible;
+            //ViewEntries_Imperial.Visibility = isMetric ? Visibility.Visible : Visibility.Collapsed;
         }
+
+        // Final adjustments to the UI after updating track information.
+        private void FinalizeUI()
+        {
+            calc_Lap_Length();   // Calculates the lap length based on the selected track
+            CheckProgress();     // Checks the current progress or state of the race/track
+            loadLapRecord();     // Loads the lap record for the selected track
+        }
+
+        // Fetches and displays vehicle data based on the selected track and vehicle.
+        // Fetches and displays vehicle data based on the selected track and vehicle.
+        private void FetchAndDisplayVehicleData()
+        {
+            // Checks if a valid vehicle and track are selected
+            if (string.IsNullOrEmpty(combo_Vehicle.Text) || string.IsNullOrEmpty(combo_Track.Text)) return;
+
+            int conditions = cb_conditions.IsChecked == true ? 1 : 0;
+            int orientation = cb_orientation.IsChecked == false ? 0 : 1;
+            string veh = combo_Vehicle.Text.Replace("'", "''");
+            int trackId = Convert.ToInt32(combo_Track.SelectedValue);
+            string odoColumn = SI == "Metric" ? "Odometer_Metric" : "Odometer_Imperial";
+            double conversionFactor = SI == "Imperial" ? 1.60934 : 1.0;
+
+            // SQL query to fetch odometer reading, fastest lap, and the number of records for the vehicle and track
+            string query = $@"
+                            SELECT 
+                            (SELECT {odoColumn} FROM vehicles WHERE Name = '{veh}'),
+                            (SELECT Fastest_Lap FROM records WHERE carName = '{veh}' AND trackId = {trackId}),
+                            (SELECT COUNT(*) FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = {conditions} AND orientation = {orientation})";
+
+            try
+            {
+                // Execute the query and fetch data from the database
+                using (var dbConn = new SQLiteConnection(connectionString))
+                {
+                    dbConn.Open();
+                    using (var dbCmd = new SQLiteCommand(query, dbConn))
+                    {
+                        using (var reader = dbCmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                // Update the UI with the fetched data
+                                if (!reader.IsDBNull(0))
+                                {
+                                    double value = reader.GetDouble(0) * conversionFactor;
+                                    txt_odometer.Text = Math.Round(value, 2).ToString();
+                                }
+                                else
+                                {
+                                    txt_odometer.Text = "0";
+                                }
+
+                                txt_carPB.Text = reader.IsDBNull(1) ? "No Record" : reader.GetString(1);
+                                txt_rRan.Text = reader.GetInt32(2).ToString();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display an error message if the database query fails
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+
 
         private void ResetWindowState()
         {
             Application.Current.MainWindow.Height = 500;
         }
 
-        private void FetchAndDisplayVehicleData() 
-        {
-            int conditions = cb_conditions.IsChecked == true ? 1 : 0;
-            int orientation = cb_orientation.IsChecked == false ? 0 : 1;
-            string veh = combo_Vehicle.Text.Replace("'", "''");
-            int trackId = combo_Track.SelectedIndex + 1;
-
-            string odoColumn = SI == "Metric" ? "Odometer_Metric" : "Odometer_Imperial";
-            double conversionFactor = 1.60934; // Conversion factor for miles to kilometers
-
-            string query = $@"
-                             SELECT 
-                             (SELECT {odoColumn} AS Odometer FROM vehicles WHERE Name = '{veh}') ,
-                             (SELECT Fastest_Lap AS FastestLap FROM records WHERE carName = '{veh}' AND trackId = {trackId}) ,
-                             (SELECT COUNT(*) AS RecordCount FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = {conditions} AND orientation = {orientation})";
-
-            try
-            {
-                using (var dbConn = new SQLiteConnection(connectionString))
-                {
-                    dbConn.Open();
-                    using (var dbCmd = new SQLiteCommand(query, dbConn))
-                    using (var reader = dbCmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            if (!reader.IsDBNull(0))
-                            {
-                                double value = reader.GetDouble(0);
-                                if (SI == "Imperial")
-                                {
-                                    value = Math.Round(value * conversionFactor, 2);
-                                }
-                                txt_odometer.Text = value.ToString();
-                            }
-
-                            txt_carPB.Text = reader.IsDBNull(1) ? "No Record" : reader.GetString(1);
-                            txt_rRan.Text = reader.GetInt32(2).ToString();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error: " + ex.ToString());
-            }
-        }
 
 
         private void CheckProgress()
@@ -1389,11 +1433,15 @@ namespace TDU2_Track_Records
             txt_Progress_1.Text = "";
             txt_Progress_2.Text = "";
             if (string.IsNullOrEmpty(combo_Track.Text)) { return; }
-
+            int trackId = Convert.ToInt32(combo_Track.SelectedValue);
             int conditions = cb_conditions.IsChecked == true ? 1 : 0;
             int orientation = cb_orientation.IsChecked == true ? 1 : 0;
-            int trackId = combo_Track.SelectedIndex + 1;
-            string param = combo_Class.Text;
+            string param ="";
+            if (ClassRestrictionTextBlock.Visibility == Visibility.Visible && ClassRestrictionTextBlock.Text.Length > 0)
+            {
+                param = ClassRestrictionTextBlock.Text;
+            }
+            double percentage;
 
             try
             {
@@ -1401,14 +1449,22 @@ namespace TDU2_Track_Records
                 {
                     dbConn.Open();
 
-                    int recordsCount = GetRecordCount(dbConn, trackId, conditions, orientation,param);
-                    txt_Progress_1.Text = recordsCount.ToString();
+                    int recordsCount = GetRecordCount(dbConn, trackId, conditions, orientation, param);
 
                     int carsCount = GetCarsCount(dbConn, param);
-                    double percentage = (recordsCount / (double)carsCount) * 100;
 
-                    txt_Progress_1.Text = $"{recordsCount} / {carsCount}";
-                    txt_Progress_2.Text = $"{Math.Round(percentage, 2)}%";
+                        percentage = (recordsCount / (double)carsCount) * 100;
+
+                    if (recordsCount > 0)
+                    {
+                        txt_Progress_1.Text = $"{recordsCount} / {carsCount}";
+                        txt_Progress_2.Text = $"{Math.Round(percentage, 2)}%";
+                    }
+                    else
+                    {
+                        txt_Progress_1.Text = $"0/"+carsCount;
+                        txt_Progress_2.Text = "0%";
+                    }
                 }
             }
             catch (Exception ex)
@@ -1503,7 +1559,7 @@ namespace TDU2_Track_Records
 
             //int removeIndex = lap_Length.Text.Length - 2;
             double lapLength = Convert.ToDouble(lap_Length.Text) * 1000; //.Text.Remove(removeIndex)
-            lap_distance_unit.Visibility = Visibility.Visible;
+            LapLengthGroupBox.Visibility = Visibility.Visible;
             int msLength = msTextBox.Text.Length;
 
             if (msLength == 1)
@@ -1592,17 +1648,38 @@ namespace TDU2_Track_Records
 
         private void Btn_TrackInfo_Click(object sender, MouseButtonEventArgs e)
         {
-            if (combo_Track.SelectedIndex == -1) {
-                MessageBox.Show("No Track Selected","Error",MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return; }
+            if (combo_Track.SelectedIndex == -1)
+            {
+                MessageBox.Show("No Track Selected", "Error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                return;
+            }
 
-            int trackId = combo_Track.SelectedIndex + 1;
+            if (string.IsNullOrEmpty(combo_Track.Text)) { return; }
+            int trackId = Convert.ToInt32(combo_Track.SelectedValue);
             using (var dbConn = new SQLiteConnection(connectionString))
             {
                 dbConn.Open();
                 try
                 {
-                    string query = $"SELECT * FROM [tracks] WHERE id = '{trackId}'";
+                    string query = $@"SELECT Name,
+                                            Runs,
+                                            Record_A1,
+                                            Record_A2,
+                                            Record_A3,
+                                            Record_A4,
+                                            Record_A5,
+                                            Record_A6,
+                                            Record_A7,
+                                            Record_B1,
+                                            Record_B2,
+                                            Record_B3,
+                                            Record_B4,
+                                            Record_C1,
+                                            Record_C2,
+                                            Record_C3,
+                                            Record_C4,
+                                            Record_MA1,
+                                            Record_MA2 FROM [tracks] WHERE id = '{trackId}'";
                     using (var dbCmd = new SQLiteCommand(query, dbConn))
                     using (var reader = dbCmd.ExecuteReader())
                     {
@@ -1611,12 +1688,12 @@ namespace TDU2_Track_Records
                             var labels = new[]
                             {
                         "Record A1", "Record A2", "Record A3", "Record A4", "Record A5", "Record A6", "Record A7",
-                        "Record B2", "Record B3", "Record B4", "Record C1", "Record C2", "Record C3", "Record C4",
+                        "Record B1", "Record B2", "Record B3", "Record B4", "Record C1", "Record C2", "Record C3", "Record C4",
                         "Record MA1", "Record MA2"
                     };
 
                             var values = new List<string>();
-                            for (int i = 4; i < reader.FieldCount && i < 20; i++)
+                            for (int i = 0; i < reader.FieldCount && i < 20; i++)
                             {
                                 if (!reader.IsDBNull(i))
                                 {
@@ -1635,10 +1712,10 @@ namespace TDU2_Track_Records
                             }
 
                             var sb = new StringBuilder();
-                            sb.AppendLine($"Track Name: {reader[1]}")
-                              .AppendLine($"Total Runs: {reader[3]}");
+                            sb.AppendLine($"Track Name: {reader[0]}")
+                              .AppendLine($"Total Runs: {reader[1]}");
 
-                            for (int i = 0; i < labels.Length; i++)
+                            for (int i = 2; i < labels.Length; i++)
                             {
                                 string value = values[i] == string.Empty ? "No Record Yet" : values[i];
                                 sb.AppendLine($"-----------------\n{labels[i]}:\n{value}");
@@ -1662,7 +1739,8 @@ namespace TDU2_Track_Records
             int conditions = cb_conditions.IsChecked == true ? 1 : 0;
             int orientation = cb_orientation.IsChecked == true ? 1 : 0;
 
-            int track = combo_Track.SelectedIndex + 1;
+            if (string.IsNullOrEmpty(combo_Track.Text)) { return; }
+            int trackId = Convert.ToInt32(combo_Track.SelectedValue);
             string carClass = combo_Class.Text;
             string dbTable = "records";
 
@@ -1701,7 +1779,7 @@ namespace TDU2_Track_Records
 
                     using (var dbCmd = new SQLiteCommand(query, dbConn))
                     {
-                        dbCmd.Parameters.AddWithValue("@track", track);
+                        dbCmd.Parameters.AddWithValue("@track", trackId);
                         dbCmd.Parameters.AddWithValue("@conditions", conditions);
                         dbCmd.Parameters.AddWithValue("@orientation", orientation);
                         if (!string.IsNullOrEmpty(combo_Class.Text))
@@ -1751,9 +1829,9 @@ namespace TDU2_Track_Records
                 cb_weather.IsChecked = true;
             }
         }
-        private void cb_orientation_StateChanged(object sender, RoutedEventArgs e) 
+        private void cb_orientation_StateChanged(object sender, RoutedEventArgs e)
         {
-            if(cb_orientation.IsChecked == false)
+            if (cb_orientation.IsChecked == false)
             {
                 txt_orientation.IsChecked = false;
             }
@@ -1765,10 +1843,12 @@ namespace TDU2_Track_Records
 
         private void cb_weather_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(cb_conditions.IsChecked == false)
-            { 
-                cb_conditions.IsChecked = true; 
-            } else {
+            if (cb_conditions.IsChecked == false)
+            {
+                cb_conditions.IsChecked = true;
+            }
+            else
+            {
                 cb_conditions.IsChecked = false;
             }
 
@@ -1838,7 +1918,7 @@ namespace TDU2_Track_Records
         }
 
         private void Combo_Track_Loaded(object sender, RoutedEventArgs e)
-        { 
+        {
             combo_Track.SelectionChanged += Combo_Track_SelectionChanged;
         }
 
@@ -1849,8 +1929,9 @@ namespace TDU2_Track_Records
 
                 keep.IsChecked = true;
             }
-            else {
-                keep.IsChecked = false; 
+            else
+            {
+                keep.IsChecked = false;
             }
 
         }
@@ -1895,6 +1976,8 @@ namespace TDU2_Track_Records
         private void Settings_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             // Prompt the user before closing the main window
+            Popup = Popup + 1;
+            if (Popup == 1) { 
             MessageBoxResult result = MessageBox.Show(
                 "Changing the settings will reload the main window, and any unsaved data will be lost. Do you want to continue?",
                 "Warning",
@@ -1904,11 +1987,19 @@ namespace TDU2_Track_Records
             if (result == MessageBoxResult.Yes)
             {
                 var settingsWindow = new SettingsWindow();
+
+                settingsWindow.Left = this.Left + this.Width + 10;
+                settingsWindow.Top = this.Top;
                 settingsWindow.ShowDialog();
+            }
             }
             else
             {
-                // User canceled the operation, do nothing
+                var settingsWindow = new SettingsWindow();
+
+                settingsWindow.Left = this.Left + this.Width + 10;
+                settingsWindow.Top = this.Top;
+                settingsWindow.ShowDialog();
             }
         }
 
@@ -1930,26 +2021,78 @@ namespace TDU2_Track_Records
 
         private void Objectives_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            var objectives = new objectives();
+            objectives.Show();
         }
 
         private void Houses_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            var houses = new houses();
+            houses.Show();
         }
 
         private void Dealership_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            var dealerships = new dealerships();
+            dealerships.Show();
         }
 
         private void tracks_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var tracks = new tracks();
+
+            // Get the screen dimensions
+            var screenWidth = SystemParameters.PrimaryScreenWidth;
+            var screenHeight = SystemParameters.PrimaryScreenHeight;
+
+            // Set the position to the stored values, or default to the main window position if not set
+            double targetLeft = lastTracksLeft != 0 ? lastTracksLeft : this.Left + this.Width + 10;
+            double targetTop = lastTracksTop != 0 ? lastTracksTop : this.Top + (this.Height - tracks.Height) / 2;
+
+            // Adjust if the window would be positioned outside the screen bounds
+            if (targetLeft + tracks.Width > screenWidth)
+            {
+                targetLeft = screenWidth - tracks.Width;
+            }
+            if (targetTop + tracks.Height > screenHeight)
+            {
+                targetTop = screenHeight - tracks.Height;
+            }
+            if (targetLeft < 0)
+            {
+                targetLeft = 0;
+            }
+            if (targetTop < 0)
+            {
+                targetTop = 0;
+            }
+
+            // Set the window position
+            tracks.Left = targetLeft;
+            tracks.Top = targetTop;
+
+            tracks.Closed += tracks_Closed;
             tracks.Show();
+
+        }
+
+        private void tracks_Closed(object sender, EventArgs e)
+        {
+                var tracks = sender as Window;
+                if (tracks != null)
+                {
+                    lastTracksLeft = tracks.Left;
+                    lastTracksTop = tracks.Top;
+                }
+            FillComboBoxWithTracks(combo_Track);
+        }
+
+        private void carCard_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var vehicleCard = new vehicleCard();
+            vehicleCard.Show();
         }
     }
-
 }
 public class DataGridBehavior
 {

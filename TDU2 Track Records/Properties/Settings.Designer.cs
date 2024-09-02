@@ -121,7 +121,7 @@ namespace TDU2_Track_Records.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("cc")]
         public string engineSize {
             get {
                 return ((string)(this["engineSize"]));
@@ -145,7 +145,7 @@ namespace TDU2_Track_Records.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("BHP")]
+        [global::System.Configuration.DefaultSettingValueAttribute("bhp")]
         public string horsepower {
             get {
                 return ((string)(this["horsepower"]));
@@ -164,6 +164,18 @@ namespace TDU2_Track_Records.Properties {
             }
             set {
                 this["BGOpacity"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Points")]
+        public string Points {
+            get {
+                return ((string)(this["Points"]));
+            }
+            set {
+                this["Points"] = value;
             }
         }
     }
