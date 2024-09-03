@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using TDU2_Track_Records.Classes;
 using TDU2_Track_Records.ViewModels;
 
 namespace TDU2_Track_Records
@@ -11,12 +13,14 @@ namespace TDU2_Track_Records
     /// </summary>
     public partial class vehicleCard : Window
     {
+        //private vehicleCardViewModel viewModel;
+
         public vehicleCard()
         {
             InitializeComponent();
-
-            DataContext = new vehicleCardViewModel();
-            //DataContext = this; // Set the DataContext for binding
+            //viewModel = new vehicleCardViewModel();
+            //DataContext = new vehicleCardViewModel();
+            //DataContext = viewModel;
         }
 
         // Example properties for binding
@@ -52,6 +56,12 @@ namespace TDU2_Track_Records
             {
                 this.DragMove();
             }
+        }
+
+        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            //int vehicleId = 192; // or get this ID dynamically as per your requirement
+            ////viewModel.LoadVehicleById(vehicleId);
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -254,13 +253,13 @@ namespace TDU2_Track_Records
                     }
                     else
                     {
-                        //ClassRestictionGroupBox.Visibility= Visibility.Collapsed;
+                        ClassRestictionGroupBox.Visibility= Visibility.Collapsed;
                         ClassRestrictionTextBlock.Text = null;
                         combo_Class.IsEnabled = true;
                     }
                     if (!string.IsNullOrEmpty(VehicleRestriction))
                     {
-                        //VehicleRestictionGroupBox.Visibility = Visibility.Visible;
+                        VehicleRestictionGroupBox.Visibility = Visibility.Visible;
                         VehicleRestrictionTextBlock.Text = VehicleRestriction; // Assuming carClass holds the value like "A1", "B2", etc.
 
                         string valued = VehicleRestrictionTextBlock.Text;
@@ -272,7 +271,7 @@ namespace TDU2_Track_Records
                     }
                     else
                     {
-                        //VehicleRestictionGroupBox.Visibility = Visibility.Collapsed;
+                        VehicleRestictionGroupBox.Visibility = Visibility.Collapsed;
                         VehicleRestrictionTextBlock.Text = null;
                         combo_Vehicle.IsEnabled = true;
                     }
@@ -307,16 +306,16 @@ namespace TDU2_Track_Records
                             LapsTextBlock.Text = "N/A";
                             race_Length.Text = value.ToString() + distance;
                         }
-                        //LapsGroupBox.Visibility = Visibility.Visible;
-                        //RaceLengthGroupBox.Visibility = Visibility.Visible;
-                        //RaceLengthGroupBox.Visibility = Visibility.Visible;
-                        //TrackLapRecordGroupbox.Visibility = Visibility.Visible;
+                        LapsGroupBox.Visibility = Visibility.Visible;
+                        RaceLengthGroupBox.Visibility = Visibility.Visible;
+                        RaceLengthGroupBox.Visibility = Visibility.Visible;
+                        TrackLapRecordGroupbox.Visibility = Visibility.Visible;
                     }
                     else
                     {
-                        //LapsGroupBox.Visibility = Visibility.Collapsed;
-                        //RaceLengthGroupBox.Visibility = Visibility.Collapsed;
-                        //TrackLapRecordGroupbox.Visibility = Visibility.Collapsed;
+                        LapsGroupBox.Visibility = Visibility.Collapsed;
+                        RaceLengthGroupBox.Visibility = Visibility.Collapsed;
+                        TrackLapRecordGroupbox.Visibility = Visibility.Collapsed;
                     }
                 }
             }

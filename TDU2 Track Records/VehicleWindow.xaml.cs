@@ -176,32 +176,58 @@ namespace TDU2_Track_Records
                             {
                                 var vehicle = new VehicleManagement
                                 {
-                                    Id = reader.IsDBNull(0) ? default : reader.GetInt32(0),
-                                    Name = reader.IsDBNull(1) ? null : reader.GetString(1),
-                                    Brand = reader.IsDBNull(2) ? null : reader.GetString(2),
-                                    Model = reader.IsDBNull(3) ? null : reader.GetString(3),
-                                    Class = reader.IsDBNull(4) ? null : reader.GetString(4),
-                                    RacesRan = reader.IsDBNull(5) ? default : reader.GetInt32(5),
-                                    OdometerMetric = reader.IsDBNull(6) ? default : reader.GetDouble(6),
-                                    OdometerImperial = reader.IsDBNull(7) ? default : reader.GetDouble(7),
-                                    Active = reader.IsDBNull(8) ? default : reader.GetInt32(8),
-                                    Owned = reader.IsDBNull(9) ? default : reader.GetInt32(9),
-                                    Price = reader.IsDBNull(10) ? default : reader.GetString(10),
-                                    AccelerationStat = reader.IsDBNull(11) ? default : reader.GetInt32(11),
-                                    SpeedStat = reader.IsDBNull(12) ? default : reader.GetInt32(12),
-                                    BrakingStat = reader.IsDBNull(13) ? default : reader.GetInt32(13),
-                                    DifficultyStat = reader.IsDBNull(14) ? default : reader.GetInt32(14),
-                                    TopSpeed = reader.IsDBNull(15) ? default : reader.GetInt32(15),
-                                    AccelerationTime = reader.IsDBNull(16) ? default : reader.GetDouble(16),
-                                    Engine = reader.IsDBNull(17) ? default : reader.GetString(17),
-                                    EngineLayout = reader.IsDBNull(18) ? null : reader.GetString(18),
-                                    Gearbox = reader.IsDBNull(19) ? null : reader.GetString(19),
-                                    MaxTorque = reader.IsDBNull(20) ? default : reader.GetInt32(20),
-                                    MaxTorqueRPM = reader.IsDBNull(21) ? default : reader.GetInt32(21),
-                                    MaxPower = reader.IsDBNull(22) ? default : reader.GetInt32(22),
-                                    MaxPowerRPM = reader.IsDBNull(23) ? default : reader.GetInt32(23),
-                                    Weight = reader.IsDBNull(24) ? default : reader.GetInt32(24),
-                                    Image = reader.IsDBNull(25) ? null : (byte[])reader["Image"] // Load image data
+                                    Id = reader.IsDBNull(0) ? default : reader.GetInt32(0), // 0
+
+                                    // String properties
+                                    Name = reader.IsDBNull(1) ? null : reader.GetString(1), // 1
+                                    Brand = reader.IsDBNull(2) ? null : reader.GetString(2), // 2
+                                    Model = reader.IsDBNull(3) ? null : reader.GetString(3), // 3
+                                    Class = reader.IsDBNull(4) ? null : reader.GetString(4), // 4
+                                    Price = reader.IsDBNull(5) ? null : reader.GetString(5), // 5
+                                    Engine = reader.IsDBNull(6) ? null : reader.GetString(6), // 6
+                                    EngineLayout = reader.IsDBNull(7) ? null : reader.GetString(7), // 7
+                                    EnginePosition = reader.IsDBNull(8) ? null : reader.GetString(8), // 8
+                                    Gearbox = reader.IsDBNull(9) ? null : reader.GetString(9), // 9
+                                    GearboxType = reader.IsDBNull(10) ? null : reader.GetString(10), // 10
+                                    GearboxMTAT = reader.IsDBNull(11) ? null : reader.GetString(11), // 11
+                                    Tag = reader.IsDBNull(12) ? null : reader.GetString(12), // 12
+                                    RegionTag = reader.IsDBNull(13) ? null : reader.GetString(13), // 13
+                                    DealershipIdIbiza = reader.IsDBNull(14) ? null : reader.GetString(14), // 14
+                                    DealershipIdHawaii = reader.IsDBNull(15) ? null : reader.GetString(15), // 15
+                                    FrontTyres = reader.IsDBNull(16) ? null : reader.GetString(16), // 16
+                                    RearTyres = reader.IsDBNull(17) ? null : reader.GetString(17), // 17
+                                    WheelDrive = reader.IsDBNull(18) ? null : reader.GetString(18), // 18
+                                    FrontBrakes = reader.IsDBNull(19) ? null : reader.GetString(19), // 19
+                                    RearBrakes = reader.IsDBNull(20) ? null : reader.GetString(20), // 20
+
+                                    // Integer properties
+                                    UpgradeLevel = reader.IsDBNull(21) ? default : reader.GetInt32(21), // 21
+                                    RacesRan = reader.IsDBNull(22) ? default : reader.GetInt32(22), // 22
+                                    Active = reader.IsDBNull(23) ? default : reader.GetInt32(23), // 23
+                                    Owned = reader.IsDBNull(24) ? default : reader.GetInt32(24), // 24
+                                    AccelerationStat = reader.IsDBNull(25) ? default : reader.GetInt32(25), // 25
+                                    SpeedStat = reader.IsDBNull(26) ? default : reader.GetInt32(26), // 26
+                                    BrakingStat = reader.IsDBNull(27) ? default : reader.GetInt32(27), // 27
+                                    DifficultyStat = reader.IsDBNull(28) ? default : reader.GetInt32(28), // 28
+                                    TopSpeed = reader.IsDBNull(29) ? default : reader.GetInt32(29), // 29
+                                    MaxTorque = reader.IsDBNull(30) ? default : reader.GetInt32(30), // 30
+                                    MaxTorqueRPM = reader.IsDBNull(31) ? default : reader.GetInt32(31), // 31
+                                    MaxPower = reader.IsDBNull(32) ? default : reader.GetInt32(32), // 32
+                                    MaxPowerRPM = reader.IsDBNull(33) ? default : reader.GetInt32(33), // 33
+                                    Weight = reader.IsDBNull(34) ? default : reader.GetInt32(34), // 34
+                                    InGarage = reader.IsDBNull(35) ? default : reader.GetInt32(35), // 35
+                                    CanVehiclePaint = reader.IsDBNull(36) ? default : reader.GetInt32(36), // 36
+                                    CanVehicleSticker = reader.IsDBNull(37) ? default : reader.GetInt32(37), // 37
+                                    CanVehicleUpgrade = reader.IsDBNull(38) ? default : reader.GetInt32(38), // 38
+
+                                    // Double properties
+                                    OdometerMetric = reader.IsDBNull(39) ? default : reader.GetDouble(39), // 39
+                                    OdometerImperial = reader.IsDBNull(40) ? default : reader.GetDouble(40), // 40
+                                    AccelerationTime = reader.IsDBNull(41) ? default : reader.GetDouble(41), // 41
+                                    PowerWeightRatio = reader.IsDBNull(42) ? default : reader.GetDouble(42), // 42
+
+                                    // Image property
+                                    Image = reader.IsDBNull(43) ? null : (byte[])reader["Image"] // 43
                                 };
 
                                 _vehicles.Add(vehicle);
@@ -226,7 +252,14 @@ namespace TDU2_Track_Records
         }
         private void VehicleSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (VehicleSelection.SelectedItem == null) return;
+            if (VehicleSelection.SelectedItem == null)
+            {
+                return;
+            }
+            else
+            {
+                AddVehicle.IsEnabled = false;
+            }
             GarageGroupBox.Visibility = Visibility.Collapsed;
             if (!(VehicleSelection.SelectedItem is VehicleManagement selectedVehicle)) return;
 
@@ -386,6 +419,7 @@ namespace TDU2_Track_Records
                         });
 
                         MessageBox.Show("Vehicle details updated successfully.");
+                        AddVehicle.IsEnabled = true;
                         BindComboBoxes(); // Refresh the ComboBoxes
                         LoadVehicles();  // Refresh the list
                     }
@@ -994,6 +1028,7 @@ namespace TDU2_Track_Records
 
                 // Recurse into child elements
                 ResetControls(child);
+                AddVehicle.IsEnabled = true;
             }
         }
     }

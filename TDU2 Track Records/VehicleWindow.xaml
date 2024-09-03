@@ -24,7 +24,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
-            <RowDefinition Height="42"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
@@ -33,14 +33,13 @@
             <Button Content="Photo Section" Click="ToggleButton_Click" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="8" Margin="0,0,5,0"/>
             <Image x:Name="Minimize_Button" MouseLeftButtonDown="Minimize_MouseLeftButtonDown"
                        Margin="0,0,5,0"
-                       Width="32" Height="32" MinWidth="32" MinHeight="32"
                        ToolTip="Minimize Application" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image.Style>
                     <Style TargetType="{x:Type Image}">
-                        <Setter Property="Source" Value="Images/minimize.png"/>
+                        <Setter Property="Source" Value="Images/ico/navigation/minimize.png"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Source" Value="Images/minimize_over.png"/>
+                                <Setter Property="Source" Value="Images/ico/navigation/minimize_over.png"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -48,14 +47,13 @@
             </Image>
             <Image x:Name="Close_Button" MouseLeftButtonDown="Close_Button_MouseLeftButtonDown"
                        Margin="0,0,5,0"
-                       Width="32" Height="32" MinWidth="32" MinHeight="32"
                        ToolTip="Close Application" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Image.Style>
                     <Style TargetType="{x:Type Image}">
-                        <Setter Property="Source" Value="Images/close.png"/>
+                        <Setter Property="Source" Value="Images/ico/navigation/close.png"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Source" Value="Images/close_over.png"/>
+                                <Setter Property="Source" Value="Images/ico/navigation/close_over.png"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>

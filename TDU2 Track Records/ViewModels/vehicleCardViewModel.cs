@@ -1,108 +1,127 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data.SQLite;
-using TDU2_Track_Records.Classes;
-using TDU2_Track_Records.Properties;
+﻿//using System;
+//using System.Collections.ObjectModel;
+//using System.ComponentModel;
+//using System.Data.SQLite;
+//using System.Windows;
+//using TDU2_Track_Records.Classes;
+//using TDU2_Track_Records.Properties;
 
-namespace TDU2_Track_Records.ViewModels
-{
-    internal class vehicleCardViewModel : INotifyPropertyChanged
-    {
-        public ObservableCollection<DVLA> Vehicles { get; set; }
-        private readonly string connectionString;
+//namespace TDU2_Track_Records.ViewModels
+//{
+//    internal class SKATACardViewModel
+//    {
+//        public ObservableCollection<DVLA> SKATA{ get; set; }
+//        private readonly string connectionString;
 
-        public vehicleCardViewModel()
-        {
-            connectionString = Settings.Default.connectionString;
-            Vehicles = new ObservableCollection<DVLA>();
-            // Example: Load a vehicle with a specific ID
-            LoadVehicleById(192);
-        }
+//        public SKATACardViewModel()
+//        {
+//            connectionString = Settings.Default.connectionString;
+//            SKATA = new ObservableCollection<DVLA>();
+//            // Example: Load a vehicle with a specific ID
+//        }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+//        public void LoadSKATAById(int SKATAId)
+//        {
+//            using (var connection = new SQLiteConnection(connectionString))
+//            {
+//                connection.Open();
 
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+//                string query = "SELECT * FROM vehicles WHERE id = @id";
+//                using (var command = new SQLiteCommand(query, connection))
+//                {
+//                    command.Parameters.AddWithValue("@id", SKATAId);
 
-        private void LoadVehicleById(int vehicleId)
-        {
-            using (var connection = new SQLiteConnection(connectionString))
-            {
-                connection.Open();
+//                    using (var reader = command.ExecuteReader())
+//                    {
+//                        if (reader.Read())
+//                        {
+//                            var vehicle = new DVLA();
 
-                string query = "SELECT * FROM vehicles WHERE id = @id";
-                using (var command = new SQLiteCommand(query, connection))
-                {
-                    command.Parameters.AddWithValue("@id", vehicleId);
+//                            // Define an array of column names
+//                            string[] columns = {
+//    "Name", "Brand", "Model", "Class", "Races_Ran", "Odometer_Metric",
+//    "Odometer_Imperial", "Price", "Acceleration_Stat", "Speed_Stat",
+//    "Braking_Stat", "Difficulty_Stat", "Top_Speed", "Acceleration_Time",
+//    "Engine", "Engine_Layout", "EnginePlacement", "Gearbox",
+//    "GearboxType", "GearboxMTAT", "Max_Torque", "Max_TorqueRPM",
+//    "Max_Power", "Max_PowerRPM", "Weight", "PowerWeightRatio",
+//    "Tag", "RegionTag", "DealershipIdIbiza", "DealershipIdHawaii",
+//    "FrontTyres", "RearTyres", "WheelDrive", "EnginePosition",
+//    "FrontBrakes", "RearBrakes"
+//};
 
-                    using (var reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            var vehicle = new DVLA
-                            {
-                                Id = reader.GetInt32(reader.GetOrdinal("id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
-                                Brand = reader.GetString(reader.GetOrdinal("Brand")),
-                                Model = reader.GetString(reader.GetOrdinal("Model")),
-                                Class = reader.GetString(reader.GetOrdinal("Class")),
-                                RacesRan = reader.GetString(reader.GetOrdinal("Races_Ran")),
-                                OdometerMetric = reader.GetString(reader.GetOrdinal("Odometer_Metric")),
-                                OdometerImperial = reader.GetString(reader.GetOrdinal("Odometer_Imperial")),
-                                Active = reader.GetString(reader.GetOrdinal("Active")) == "1" ? "Yes" : "No",
-                                Owned = reader.GetString(reader.GetOrdinal("Owned")) == "1" ? "Yes" : "No",
-                                Price = reader.GetString(reader.GetOrdinal("Price")),
-                                AccelerationStat = reader.GetString(reader.GetOrdinal("Acceleration_Stat")),
-                                SpeedStat = reader.GetString(reader.GetOrdinal("Speed_Stat")),
-                                BrakingStat = reader.GetString(reader.GetOrdinal("Braking_Stat")),
-                                DifficultyStat = reader.GetString(reader.GetOrdinal("Difficulty_Stat")),
-                                TopSpeed = reader.GetString(reader.GetOrdinal("Top_Speed")),
-                                AccelerationTime = reader.GetString(reader.GetOrdinal("Acceleration_Time")),
-                                Engine = reader.IsDBNull(reader.GetOrdinal("Engine")) ? null : reader.GetString(reader.GetOrdinal("Engine")),
-                                EngineLayout = reader.IsDBNull(reader.GetOrdinal("Engine_Layout")) ? null : reader.GetString(reader.GetOrdinal("Engine_Layout")),
-                                EnginePlacement = reader.IsDBNull(reader.GetOrdinal("EnginePlacement")) ? null : reader.GetString(reader.GetOrdinal("EnginePlacement")),
-                                Gearbox = reader.IsDBNull(reader.GetOrdinal("Gearbox")) ? null : reader.GetString(reader.GetOrdinal("Gearbox")),
-                                GearboxType = reader.IsDBNull(reader.GetOrdinal("GearboxType")) ? null : reader.GetString(reader.GetOrdinal("GearboxType")),
-                                GearboxMTAT = reader.IsDBNull(reader.GetOrdinal("GearboxMTAT")) ? null : reader.GetString(reader.GetOrdinal("GearboxMTAT")),
-                                MaxTorque = reader.IsDBNull(reader.GetOrdinal("Max_Torque")) ? null : reader.GetString(reader.GetOrdinal("Max_Torque")),
-                                MaxTorqueRPM = reader.IsDBNull(reader.GetOrdinal("Max_TorqueRPM")) ? null : reader.GetString(reader.GetOrdinal("Max_TorqueRPM")),
-                                MaxPower = reader.IsDBNull(reader.GetOrdinal("Max_Power")) ? null : reader.GetString(reader.GetOrdinal("Max_Power")),
-                                MaxPowerRPM = reader.IsDBNull(reader.GetOrdinal("Max_PowerRPM")) ? null : reader.GetString(reader.GetOrdinal("Max_PowerRPM")),
-                                Weight = reader.IsDBNull(reader.GetOrdinal("Weight")) ? null : reader.GetString(reader.GetOrdinal("Weight")),
-                                PowerWeightRatio = reader.IsDBNull(reader.GetOrdinal("PowerWeightRatio")) ? null : reader.GetString(reader.GetOrdinal("PowerWeightRatio")),
-                                Image = reader["Image"] as byte[], // Handle BLOB data
-                                Tag = reader.IsDBNull(reader.GetOrdinal("Tag")) ? null : reader.GetString(reader.GetOrdinal("Tag")),
-                                RegionTag = reader.IsDBNull(reader.GetOrdinal("RegionTag")) ? null : reader.GetString(reader.GetOrdinal("RegionTag")),
-                                InGarage = reader.GetString(reader.GetOrdinal("InGarage")) == "1" ? "Yes" : "No",
-                                DealershipIdIbiza = reader.IsDBNull(reader.GetOrdinal("DealershipIdIbiza")) ? null : reader.GetString(reader.GetOrdinal("DealershipIdIbiza")),
-                                DealershipIdHawaii = reader.IsDBNull(reader.GetOrdinal("DealershipIdHawaii")) ? null : reader.GetString(reader.GetOrdinal("DealershipIdHawaii")),
-                                CanVehiclePaint = reader.GetString(reader.GetOrdinal("CanVehiclePaint")) == "1" ? "Yes" : "No",
-                                CanVehicleSticker = reader.GetString(reader.GetOrdinal("CanVehicleSticker")) == "1" ? "Yes" : "No",
-                                CanVehicleUpgrade = reader.GetString(reader.GetOrdinal("CanVehicleUpgrade")) == "1" ? "Yes" : "No",
-                                FrontTyres = reader.IsDBNull(reader.GetOrdinal("FrontTyres")) ? null : reader.GetString(reader.GetOrdinal("FrontTyres")),
-                                RearTyres = reader.IsDBNull(reader.GetOrdinal("RearTyres")) ? null : reader.GetString(reader.GetOrdinal("RearTyres")),
-                                WheelDrive = reader.IsDBNull(reader.GetOrdinal("WheelDrive")) ? null : reader.GetString(reader.GetOrdinal("WheelDrive")),
-                                EnginePosition = reader.IsDBNull(reader.GetOrdinal("EnginePosition")) ? null : reader.GetString(reader.GetOrdinal("EnginePosition")),
-                                FrontBrakes = reader.IsDBNull(reader.GetOrdinal("FrontBrakes")) ? null : reader.GetString(reader.GetOrdinal("FrontBrakes")),
-                                RearBrakes = reader.IsDBNull(reader.GetOrdinal("RearBrakes")) ? null : reader.GetString(reader.GetOrdinal("RearBrakes")),
-                            };
+//                            // Use a loop to retrieve the values
+//                            foreach (var column in columns)
+//                            {
+//                                // Retrieve the value as a string or handle DBNull
+//                                var value = reader.IsDBNull(reader.GetOrdinal(column)) ? string.Empty : reader.GetString(reader.GetOrdinal(column));
 
-                            Vehicles.Clear();
-                            Vehicles.Add(vehicle);
-                        }
-                        else
-                        {
-                            // Handle case where no vehicle was found for the given ID
-                            Console.WriteLine("Vehicle not found.");
-                        }
-                    }
-                }
-            }
-        }
+//                                // Set the property on the vehicle object using a switch
+//                                switch (column)
+//                                {
+//                                    case "Name": vehicle.Name = value; break;
+//                                    case "Brand": vehicle.Brand = value; break;
+//                                    case "Model": vehicle.Model = value; break;
+//                                    case "Class": vehicle.Class = value; break;
+//                                    case "Races_Ran": vehicle.RacesRan = value; break;
+//                                    case "Odometer_Metric": vehicle.OdometerMetric = value; break;
+//                                    case "Odometer_Imperial": vehicle.OdometerImperial = value; break;
+//                                    case "Price": vehicle.Price = value; break;
+//                                    case "Acceleration_Stat": vehicle.AccelerationStat = value; break;
+//                                    case "Speed_Stat": vehicle.SpeedStat = value; break;
+//                                    case "Braking_Stat": vehicle.BrakingStat = value; break;
+//                                    case "Difficulty_Stat": vehicle.DifficultyStat = value; break;
+//                                    case "Top_Speed": vehicle.TopSpeed = value; break;
+//                                    case "Acceleration_Time": vehicle.AccelerationTime = value; break;
+//                                    case "Engine": vehicle.Engine = value; break;
+//                                    case "Engine_Layout": vehicle.EngineLayout = value; break;
+//                                    case "EnginePlacement": vehicle.EnginePlacement = value; break;
+//                                    case "Gearbox": vehicle.Gearbox = value; break;
+//                                    case "GearboxType": vehicle.GearboxType = value; break;
+//                                    case "GearboxMTAT": vehicle.GearboxMTAT = value; break;
+//                                    case "Max_Torque": vehicle.MaxTorque = value; break;
+//                                    case "Max_TorqueRPM": vehicle.MaxTorqueRPM = value; break;
+//                                    case "Max_Power": vehicle.MaxPower = value; break;
+//                                    case "Max_PowerRPM": vehicle.MaxPowerRPM = value; break;
+//                                    case "Weight": vehicle.Weight = value; break;
+//                                    case "PowerWeightRatio": vehicle.PowerWeightRatio = value; break;
+//                                    case "Tag": vehicle.Tag = value; break;
+//                                    case "RegionTag": vehicle.RegionTag = value; break;
+//                                    case "DealershipIdIbiza": vehicle.DealershipIdIbiza = value; break;
+//                                    case "DealershipIdHawaii": vehicle.DealershipIdHawaii = value; break;
+//                                    case "FrontTyres": vehicle.FrontTyres = value; break;
+//                                    case "RearTyres": vehicle.RearTyres = value; break;
+//                                    case "WheelDrive": vehicle.WheelDrive = value; break;
+//                                    case "EnginePosition": vehicle.EnginePosition = value; break;
+//                                    case "FrontBrakes": vehicle.FrontBrakes = value; break;
+//                                    case "RearBrakes": vehicle.RearBrakes = value; break;
+//                                }
+//                            }
 
+//                            // Handle special cases outside of the loop
+//                            vehicle.Id = reader.GetInt32(reader.GetOrdinal("id"));
+//                            vehicle.Active = reader.GetString(reader.GetOrdinal("Active")) == "1" ? "Yes" : "No";
+//                            vehicle.Owned = reader.GetString(reader.GetOrdinal("Owned")) == "1" ? "Yes" : "No";
+//                            vehicle.InGarage = reader.GetString(reader.GetOrdinal("InGarage")) == "1" ? "Yes" : "No";
+//                            vehicle.CanVehiclePaint = reader.GetString(reader.GetOrdinal("CanVehiclePaint")) == "1" ? "Yes" : "No";
+//                            vehicle.CanVehicleSticker = reader.GetString(reader.GetOrdinal("CanVehicleSticker")) == "1" ? "Yes" : "No";
+//                            vehicle.CanVehicleUpgrade = reader.GetString(reader.GetOrdinal("CanVehicleUpgrade")) == "1" ? "Yes" : "No";
 
-    }
-}
+//                            // Handle BLOB data for Image
+//                            vehicle.Image = reader["Image"] as byte[];
+
+//                            SKATA.Clear();
+//                            SKATA.Add(vehicle);
+
+//                        }
+//                        else
+//                        {
+//                            // Handle case where no vehicle was found for the given ID
+//                            MessageBox.Show("Vehicle not found.");
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
