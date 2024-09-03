@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
         xmlns:local="clr-namespace:TDU2_Track_Records"
-        mc:Ignorable="d" FontFamily="Adobe Gothic Std B" FontSize="20" MinWidth="1600" MinHeight="900" 
+        mc:Ignorable="d" FontFamily="Adobe Gothic Std B" FontSize="20" MaxWidth="1600" MaxHeight="900" 
         Title="Database Vehicle Management" WindowStyle="None" AllowsTransparency="True" 
         Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
         Background="{x:Null}"
@@ -14,13 +14,13 @@
     <Grid>
         <!-- Background Image -->
         <Grid.Background>
-            <ImageBrush ImageSource="/Images/dealershipbg.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}" Stretch="UniformToFill"/>
+            <ImageBrush ImageSource="/Images/backgrounds/dealership1.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}" Stretch="UniformToFill"/>
         </Grid.Background>
 
         <!-- Column and Row Definitions -->
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="Auto" MinWidth="400"/>
+            <ColumnDefinition Width="Auto" MinWidth="500"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="20"/>
@@ -51,12 +51,12 @@
         </StackPanel>
 
         <!-- Dealership List -->
-        <StackPanel x:Name="DealershipList" Grid.Column="1" Grid.Row="2" Grid.RowSpan="3">
+        <StackPanel x:Name="DealershipList" Grid.Column="1" Grid.Row="1" Grid.RowSpan="3">
 
         </StackPanel>
 
         <!-- Vehicles Display -->
-        <ScrollViewer Grid.Column="2" Grid.Row="2" Grid.RowSpan="4" x:Name="VehiclesScrollViewer" HorizontalAlignment="Left" VerticalAlignment="Top"
+        <ScrollViewer Grid.Column="2" Grid.Row="1" Grid.RowSpan="4" x:Name="VehiclesScrollViewer" HorizontalAlignment="Left" VerticalAlignment="Top"
               Margin="10,10,10,10" Width="900" Height="800">
             <Grid x:Name="VehiclesStackPanel">
                 <!-- Define two columns in the Grid -->
