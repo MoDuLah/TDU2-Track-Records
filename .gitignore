@@ -362,3 +362,4 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /TDU2 Track Records/Images/psd
+TDU2 Track Records/DBCarStats.csv

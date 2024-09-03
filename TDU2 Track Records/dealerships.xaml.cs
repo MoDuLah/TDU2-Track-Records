@@ -22,11 +22,13 @@ namespace TDU2_Track_Records
 
         private void IslandComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (DealershipListBox.Visibility == Visibility.Collapsed) { DealershipListBox.Visibility = Visibility.Visible; }
             string selectedIsland = IslandComboBox.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(selectedIsland))
             {
                 LoadDealerships(selectedIsland);
             }
+
         }
 
 
@@ -115,13 +117,15 @@ namespace TDU2_Track_Records
                             vehicle = new VehicleManagement
                             {
                                 Id = Convert.ToInt32(reader["Id"]),
-                                Name = reader["Name"].ToString(),
-                                Brand = reader["Brand"].ToString(),
-                                Model = reader["Model"].ToString(),
-                                Price = reader["Price"].ToString(),
-                                Class = reader["Class"].ToString(),
+                                VehicleName = reader["Name"].ToString(),
+                                VehicleBrand = reader["Brand"].ToString(),
+                                VehicleModel = reader["Model"].ToString(),
+                                VehiclePrice = reader["Price"].ToString(),
+                                VehicleClass = reader["Class"].ToString(),
+                                VehicleOwned = Convert.ToInt32(reader["Owned"].ToString()),
                                 // Check if the "Image" column is DBNull before casting
-                                Image = reader["Image"] != DBNull.Value ? (byte[])reader["Image"] : null
+                                VehicleImage = reader["Image"] != DBNull.Value ? (byte[])reader["Image"] : null
+
                             };
                         }
                     }
@@ -130,12 +134,13 @@ namespace TDU2_Track_Records
             return vehicle;
         }
 
+  
         private void AddVehicleToUI(VehicleManagement vehicle, int slotIndex)
         {
             // Create the main GroupBox for the vehicle
             GroupBox vehicleGroupBox = new GroupBox
             {
-                Header = vehicle.Name, // Set the vehicle name as the header
+                Header = vehicle.VehicleName, // Set the vehicle name as the header
                 Margin = new Thickness(10),
                 BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(100, 100, 100)),
                 BorderThickness = new Thickness(2),
@@ -149,7 +154,7 @@ namespace TDU2_Track_Records
             Image vehicleImage = new Image
             {
                 Width = 300,
-                Source = LoadImage(vehicle.Image) // Convert byte[] to ImageSource
+                Source = LoadImage(vehicle.VehicleImage) // Convert byte[] to ImageSource
             };
             contentStack.Children.Add(vehicleImage);
 
@@ -168,7 +173,7 @@ namespace TDU2_Track_Records
             };
             priceBox.Content = new TextBlock
             {
-                Text = vehicle.Price,
+                Text = vehicle.VehiclePrice,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FontSize = 18
             };
@@ -182,8 +187,8 @@ namespace TDU2_Track_Records
             };
             Image classImage = new Image
             {
-                Width = 60,
-                Source = new BitmapImage(new Uri("/Images/carClasses/" + vehicle.Class + ".png", UriKind.Relative))
+                Width = 50,
+                Source = new BitmapImage(new Uri("/Images/carClasses/" + vehicle.VehicleClass + ".png", UriKind.Relative))
             };
             classBox.Content = classImage;
             infoStack.Children.Add(classBox);
@@ -196,7 +201,7 @@ namespace TDU2_Track_Records
             };
             CheckBox ownedCheckBox = new CheckBox
             {
-                IsChecked = vehicle.Owned == 1,
+                IsChecked = vehicle.VehicleOwned == 1,
                 VerticalAlignment = VerticalAlignment.Center
             };
             TextBlock ownedText = new TextBlock
@@ -205,11 +210,24 @@ namespace TDU2_Track_Records
                 FontSize = 16,
                 VerticalAlignment = VerticalAlignment.Center
             };
+
+
             DockPanel statusPanel = new DockPanel();
             statusPanel.Children.Add(ownedCheckBox);
             statusPanel.Children.Add(ownedText);
             statusBox.Content = statusPanel;
             infoStack.Children.Add(statusBox);
+
+            // Add a button to open the vehicle card window
+            Button viewDetailsButton = new Button
+            {
+                Content = "View Details",
+                Width = 100,
+                Margin = new Thickness(10),
+                Tag = vehicle // Store the vehicle object in the button's Tag
+            };
+            viewDetailsButton.Click += ViewDetailsButton_Click;
+            infoStack.Children.Add(viewDetailsButton);
 
             // Add the infoStack to contentStack
             contentStack.Children.Add(infoStack);
@@ -251,6 +269,19 @@ namespace TDU2_Track_Records
             grid.Children.Add(vehicleGroupBox);
         }
 
+        private void ViewDetailsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                VehicleManagement vehicle = button.Tag as VehicleManagement;
+                if (vehicle != null)
+                {
+                    vehicleCard vehicleWindow = new vehicleCard(vehicle);
+                    vehicleWindow.Show();
+                }
+            }
+        }
 
 
         private BitmapImage LoadImage(byte[] imageData)
@@ -260,7 +291,7 @@ namespace TDU2_Track_Records
                 // Return a placeholder image if imageData is null or empty
                 var placeholderImage = new BitmapImage();
                 placeholderImage.BeginInit();
-                placeholderImage.UriSource = new Uri("pack://application:,,,/Images/Offline.png", UriKind.Absolute);
+                placeholderImage.UriSource = new Uri("pack://application:,,,/Images/vehicles/placeholder.png", UriKind.Absolute);
                 placeholderImage.DecodePixelWidth = 300; // Set max width
                 placeholderImage.DecodePixelHeight = 150; // Set max height
                 placeholderImage.CacheOption = BitmapCacheOption.OnLoad;
@@ -282,7 +313,7 @@ namespace TDU2_Track_Records
         }
 
 
-        private void dealerships_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void dealerships_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)
             {

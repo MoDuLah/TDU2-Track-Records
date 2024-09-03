@@ -15,25 +15,22 @@ namespace TDU2_Track_Records
     {
         //private vehicleCardViewModel viewModel;
 
-        public vehicleCard()
+        public vehicleCard(VehicleManagement vehicle)
         {
             InitializeComponent();
-            //viewModel = new vehicleCardViewModel();
-            //DataContext = new vehicleCardViewModel();
-            //DataContext = viewModel;
+
+            VehicleNameTextBlock.Text = vehicle.VehicleName;
+            //VehicleBrandTextBlock.Text = vehicle.VehicleBrand;
+            //VehicleModelTextBlock.Text = vehicle.VehicleModel;
+            //VehiclePriceTextBlock.Text = vehicle.VehiclePrice;
+            //VehicleClassTextBlock.Text = vehicle.VehicleClass;
+            //Blah.text = vehicle.VehicleAccelerationTime;
+
+            //// Set the vehicle image
+            //VehicleImage.Source = LoadImage(vehicle.VehicleImage);
         }
 
-        // Example properties for binding
  
-        // Example of loading an image from a file path
-        private BitmapImage LoadImage(string filePath)
-        {
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri(filePath, UriKind.RelativeOrAbsolute);
-            bitmap.EndInit();
-            return bitmap;
-        }
 
         // If you have specific actions, you can define event handlers here
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)

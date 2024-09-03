@@ -179,26 +179,26 @@ namespace TDU2_Track_Records
                                     Id = reader.IsDBNull(0) ? default : reader.GetInt32(0), // 0
 
                                     // String properties
-                                    Name = reader.IsDBNull(1) ? null : reader.GetString(1), // 1
-                                    Brand = reader.IsDBNull(2) ? null : reader.GetString(2), // 2
-                                    Model = reader.IsDBNull(3) ? null : reader.GetString(3), // 3
-                                    Class = reader.IsDBNull(4) ? null : reader.GetString(4), // 4
-                                    Price = reader.IsDBNull(5) ? null : reader.GetString(5), // 5
-                                    Engine = reader.IsDBNull(6) ? null : reader.GetString(6), // 6
-                                    EngineLayout = reader.IsDBNull(7) ? null : reader.GetString(7), // 7
-                                    EnginePosition = reader.IsDBNull(8) ? null : reader.GetString(8), // 8
-                                    Gearbox = reader.IsDBNull(9) ? null : reader.GetString(9), // 9
-                                    GearboxType = reader.IsDBNull(10) ? null : reader.GetString(10), // 10
-                                    GearboxMTAT = reader.IsDBNull(11) ? null : reader.GetString(11), // 11
-                                    Tag = reader.IsDBNull(12) ? null : reader.GetString(12), // 12
-                                    RegionTag = reader.IsDBNull(13) ? null : reader.GetString(13), // 13
-                                    DealershipIdIbiza = reader.IsDBNull(14) ? null : reader.GetString(14), // 14
-                                    DealershipIdHawaii = reader.IsDBNull(15) ? null : reader.GetString(15), // 15
-                                    FrontTyres = reader.IsDBNull(16) ? null : reader.GetString(16), // 16
-                                    RearTyres = reader.IsDBNull(17) ? null : reader.GetString(17), // 17
-                                    WheelDrive = reader.IsDBNull(18) ? null : reader.GetString(18), // 18
-                                    FrontBrakes = reader.IsDBNull(19) ? null : reader.GetString(19), // 19
-                                    RearBrakes = reader.IsDBNull(20) ? null : reader.GetString(20), // 20
+                                    VehicleName = reader.IsDBNull(1) ? null : reader.GetString(1), // 1
+                                    VehicleBrand = reader.IsDBNull(2) ? null : reader.GetString(2), // 2
+                                    VehicleModel = reader.IsDBNull(3) ? null : reader.GetString(3), // 3
+                                    VehicleClass = reader.IsDBNull(4) ? null : reader.GetString(4), // 4
+                                    VehiclePrice = reader.IsDBNull(5) ? null : reader.GetString(5), // 5
+                                    VehicleEngineType = reader.IsDBNull(6) ? null : reader.GetString(6), // 6
+                                    VehicleEngineLayout = reader.IsDBNull(7) ? null : reader.GetString(7), // 7
+                                    VehicleEnginePosition = reader.IsDBNull(8) ? null : reader.GetString(8), // 8
+                                    VehicleGearbox = reader.IsDBNull(9) ? null : reader.GetString(9), // 9
+                                    VehicleGearboxType = reader.IsDBNull(10) ? null : reader.GetString(10), // 10
+                                    VehicleGearboxMTAT = reader.IsDBNull(11) ? null : reader.GetString(11), // 11
+                                    VehicleTag = reader.IsDBNull(12) ? null : reader.GetString(12), // 12
+                                    VehicleRegionTag = reader.IsDBNull(13) ? null : reader.GetString(13), // 13
+                                    VehicleDealershipIdIbiza = reader.IsDBNull(14) ? null : reader.GetString(14), // 14
+                                    VehicleDealershipIdHawaii = reader.IsDBNull(15) ? null : reader.GetString(15), // 15
+                                    VehicleFrontTyres = reader.IsDBNull(16) ? null : reader.GetString(16), // 16
+                                    VehicleRearTyres = reader.IsDBNull(17) ? null : reader.GetString(17), // 17
+                                    VehicleWheelDrive = reader.IsDBNull(18) ? null : reader.GetString(18), // 18
+                                    VehicleFrontBrakes = reader.IsDBNull(19) ? null : reader.GetString(19), // 19
+                                    VehicleRearBrakes = reader.IsDBNull(20) ? null : reader.GetString(20), // 20
 
                                     // Integer properties
                                     UpgradeLevel = reader.IsDBNull(21) ? default : reader.GetInt32(21), // 21

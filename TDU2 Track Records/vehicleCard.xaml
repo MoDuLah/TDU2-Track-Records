@@ -108,26 +108,24 @@
             <!-- Car Header -->
             <Border Grid.Row="0" Grid.ColumnSpan="2" Background="#333" Margin="5" Padding="5">
                 <Grid>
-                    <!--<Grid.Background>
-                        <ImageBrush ImageSource="{Binding Image, Converter={StaticResource ByteArrayToImageSourceConverter}}"/>
-                    </Grid.Background>-->
                     <Grid.Background>
                         <ImageBrush ImageSource="{Binding Image, Converter={StaticResource ByteArrayToImageSourceConverter}}" Stretch="UniformToFill" TileMode="None" AlignmentX="Center" AlignmentY="Center"/>
                     </Grid.Background>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock x:Name="CarName" Foreground="#fff" FontSize="20" Padding="20" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
+                        <TextBlock x:Name="VehicleNameTextBlock" Foreground="#fff" FontSize="20" Padding="20" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
                             <TextBlock.Background>
                                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                     <GradientStop Color="#66797979"/>
                                     <GradientStop Color="#995A5A5A" Offset="1"/>
                                 </LinearGradientBrush>
                             </TextBlock.Background>
-                            <Run Text="{Binding Brand}"/>
-                            <Run Text="{Binding Model}"/>
+                            <Run Text="{Binding VehicleBrand}"/>
+                            <Run Text=" "/>
+                            <Run Text="{Binding VehicleModel}"/>
                         </TextBlock>
-                        <Image Source="/Images/carClasses/A7.png" Width="30" Margin="5" MouseLeftButtonDown="Image_MouseLeftButtonDown"/>
-                        <Image Source="/Images/vehicleCard/Tune0.png" Width="30" Margin="5"/>
+                        <Image Source="{Binding VehicleClass}" Width="30" Margin="5"/>
+                        <Image Source="{Binding VehicleLevel}" Width="30" Margin="5"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -138,7 +136,7 @@
                     <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
                         <Grid>
                             <Image Grid.Row="0" Source="/Images/vehicleCard/numback.png" Margin="0,10,0,0" Panel.ZIndex="1"/>
-                            <TextBox x:Name="AcceleratingTextBlock" Grid.Row="0" Grid.Column="0" Text="{Binding AccelerationStat}" Foreground="White" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Panel.ZIndex="2" Margin="0,0,0,2" FocusVisualStyle="{x:Null}"  Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF993322"/>
+                            <TextBlock x:Name="AcceleratingTextBlock" Grid.Row="0" Grid.Column="0" Text="{Binding VehicleAccelerationStat}" Foreground="White" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Panel.ZIndex="2" Margin="0,0,0,2" FocusVisualStyle="{x:Null}"  Background="{x:Null}" />
                         </Grid>
                         <Grid>
                             <StackPanel x:Name="AccelerationPanel">
@@ -159,7 +157,7 @@
                     <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
                         <Grid>
                             <Image Grid.Row="0" Source="/Images/vehicleCard/numback.png" Margin="0,10,0,0" Panel.ZIndex="1"/>
-                            <TextBox x:Name="SpeedTextBlock" Grid.Row="0" Grid.Column="0" Text="{Binding SpeedStat}" Foreground="White" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Panel.ZIndex="2" Margin="0,0,0,2" FocusVisualStyle="{x:Null}"  Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF993322"/>
+                            <TextBlock x:Name="SpeedTextBlock" Grid.Row="0" Grid.Column="0" Text="{Binding VehicleSpeedStat}" Foreground="White" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Panel.ZIndex="2" Margin="0,0,0,2" FocusVisualStyle="{x:Null}"  Background="{x:Null}" />
                         </Grid>
                         <Grid>
                             <StackPanel x:Name="SpeedPanel">
@@ -179,7 +177,7 @@
                     <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
                         <Grid>
                             <Image Grid.Row="0" Source="/Images/vehicleCard/numback.png" Margin="0,10,0,0" Panel.ZIndex="1"/>
-                            <TextBox x:Name="BrakingTextBlock" Grid.Row="0" Grid.Column="0" Text="{Binding BrakingStat}" Foreground="White" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Panel.ZIndex="2" Margin="0,0,0,2" FocusVisualStyle="{x:Null}"  Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="#FF993322"/>
+                            <TextBlock x:Name="BrakingTextBlock" Grid.Row="0" Grid.Column="0" Text="{Binding VehicleBrakingStat}" Foreground="White" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center" Panel.ZIndex="2" Margin="0,0,0,2" FocusVisualStyle="{x:Null}"  Background="{x:Null}" />
                         </Grid>
                         <Grid>
                             <StackPanel x:Name="BrakingPanel">
@@ -201,16 +199,19 @@
                         <StackPanel HorizontalAlignment="Center">
                             <TextBlock Text="Difficulty" FontWeight="Bold" FontSize="18" Foreground="#999" TextAlignment="Center"/>
                             <StackPanel x:Name="WheelsStackPanel" Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Image Source="/Images/vehicleCard/wheel_green.png" Margin="2"/>
-                                <Image Source="/Images/vehicleCard/wheel_off.png" Margin="2"/>
-                                <Image Source="/Images/vehicleCard/wheel_off.png" Margin="2"/>
-                                <Image Source="/Images/vehicleCard/wheel_off.png" Margin="2"/>
-                                <Image Source="/Images/vehicleCard/wheel_off.png" Margin="2"/>
+                                <Image x:Name="VehicleDifficulty1" Source="/Images/vehicleCard/wheel_green.png" Margin="2"/>
+                                <Image x:Name="VehicleDifficulty2" Source="/Images/vehicleCard/wheel_off.png" Margin="2"/>
+                                <Image x:Name="VehicleDifficulty3" Source="/Images/vehicleCard/wheel_off.png" Margin="2"/>
+                                <Image x:Name="VehicleDifficulty4" Source="/Images/vehicleCard/wheel_off.png" Margin="2"/>
+                                <Image x:Name="VehicleDifficulty5" Source="/Images/vehicleCard/wheel_off.png" Margin="2"/>
                             </StackPanel>
                         </StackPanel>
                         <StackPanel HorizontalAlignment="Center" Margin="20,0,0,0" Orientation="Horizontal">
-                            <Image Source="/Images/vehicleCard/can_paint.png" Margin="4"/>
+                            <Image Source="/Images/vehicleCard/cant_paint.png" Margin="4,4,-64,4" Panel.ZIndex="10" Visibility="Visible"/>
+                            <Image Source="/Images/vehicleCard/can_paint.png" Margin="4" Visibility="Visible"/>
+                            <Image Source="/Images/vehicleCard/cant_sticker.png" Margin="4,4,-64,4" Panel.ZIndex="10" Visibility="Visible"/>
                             <Image Source="/Images/vehicleCard/can_sticker.png" Margin="4"/>
+                            <Image Source="/Images/vehicleCard/cant_tune.png" Margin="4,4,-64,4" Panel.ZIndex="10" Visibility="Visible"/>
                             <Image Source="/Images/vehicleCard/can_tune.png" Margin="4"/>
                         </StackPanel>
                     </StackPanel>
@@ -238,24 +239,24 @@
                         <Image Grid.Row="1" Grid.Column="0" Source="/Images/vehicleCard/engine.png" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                         <StackPanel Grid.Row="1" Grid.Column="1" >
                             <TextBlock x:Name="EngineCC" Foreground="#fff" FontSize="16">
-                            <Run Text="{Binding Engine}"/>
+                            <Run Text="{Binding VehicleEngine}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=engineSize, Mode=OneWay}"/>
                             </TextBlock>
                             <TextBlock x:Name="EngineLayout" Text="{Binding EngineLayout}" Foreground="#fff" FontSize="16"/>
                         </StackPanel>
                         <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="Max. torque" Foreground="#999" FontWeight="Bold" Margin="0,10,0,0"/>
                         <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#fff" FontSize="16">
-                            <Run Text="{Binding MaxTorque}"/>
+                            <Run Text="{Binding VehicleMaxTorque}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}"/>
                             <Run Text="@"/>
-                            <Run Text="{Binding MaxTorqueRPM}"/>
+                            <Run Text="{Binding VehicleMaxTorqueRPM}"/>
                             <Run Text="RPM"/>
                         </TextBlock>
                         <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="Max. power" Foreground="#999" FontWeight="Bold" Margin="0,10,0,0"/>
                         <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#fff" FontSize="16">
-                                <Run Text="{Binding MaxPower}"/>
+                                <Run Text="{Binding VehicleMaxPower}"/>
                                  <Run Text="bhp @"/>
-                                 <Run Text="{Binding MaxPowerRPM}"/>
+                                 <Run Text="{Binding VehicleMaxPowerRPM}"/>
                                  <Run Text="RPM"/>
                         </TextBlock>
                     </Grid>
@@ -265,43 +266,57 @@
             <Border Grid.Row="2" Grid.Column="0" Background="#333" Padding="5,5,5,5" Margin="5">
                 <StackPanel x:Name="chassisPanel" Margin="5,10,0,10">
                     <TextBlock Text="Chassis" Foreground="#999" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
-                    <StackPanel Orientation="Horizontal" Height="120" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                         <StackPanel x:Name="TirePanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0">
-                            <TextBlock Text="{Binding FrontTyres}" Foreground="#fff"/>
+                            <TextBlock Text="{Binding VehicleFrontTyres}" Foreground="#fff"/>
                             <StackPanel Orientation="Vertical">
                                 <Image Source="/Images/vehicleCard/tire.png" Width="60" Height="60"/>
                             </StackPanel>
-                            <TextBlock Text="{Binding RearTyres}" Foreground="#fff" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding VehicleRearTyres}" Foreground="#fff" HorizontalAlignment="Center"/>
                         </StackPanel>
-                        <Grid Margin="16,0">
-                            <StackPanel x:Name="ChassisPanel" Orientation="Vertical" Width="75" Height="120">
-                                <Image Source="/Images/vehicleCard/chassis-base.png"/>
-                            </StackPanel>
+                        <Grid Margin="16,0" Width="119" Height="156">
+                            <Grid.Background>
+                                <ImageBrush ImageSource="/Images/vehicleCard/chassis-base.png"/>
+                            </Grid.Background>
                             <StackPanel x:Name="stackpanelFWD" Panel.ZIndex="1" Visibility="Hidden">
                                 <Image Source="/Images/vehicleCard/chassis-fwd.png" />
                             </StackPanel>
                             <StackPanel x:Name="stackpanelAWD" Panel.ZIndex="1" Visibility="Hidden">
                                 <Image Source="/Images/vehicleCard/chassis-4wd.png" />
                             </StackPanel>
-                            <StackPanel x:Name="stackpanelRWD" Panel.ZIndex="1" Visibility="Hidden">
+                            <StackPanel x:Name="stackpanelRWD" Panel.ZIndex="1" Visibility="Visible">
                                 <Image Source="/Images/vehicleCard/chassis-rwd.png"/>
                             </StackPanel>
-                            <StackPanel x:Name="stackpanelFENG" Panel.ZIndex="2" Visibility="Hidden">
+                            <StackPanel x:Name="stackpanelFENG" Panel.ZIndex="2" Visibility="Visible">
                                 <Image Source="/Images/vehicleCard/chassis-feng.png"/>
                             </StackPanel>
-                            <StackPanel x:Name="stackpanelMENG" Panel.ZIndex="2" Visibility="Hidden">
+                            <StackPanel x:Name="stackpanelMENG" Panel.ZIndex="2" Visibility="Visible" Margin="-1,2,0,0">
                                 <Image Source="/Images/vehicleCard/chassis-meng.png"/>
                             </StackPanel>
-                            <StackPanel x:Name="stackpanelRENG" Panel.ZIndex="2" Visibility="Hidden">
+                            <StackPanel x:Name="stackpanelRENG" Panel.ZIndex="2" Visibility="Visible">
                                 <Image Source="/Images/vehicleCard/chassis-reng.png"/>
+                            </StackPanel>
+                            <StackPanel x:Name="StackPanelVehicleLength" Panel.ZIndex="3" VerticalAlignment="Center" HorizontalAlignment="left" RenderTransformOrigin="0.5,0.5">
+                                <StackPanel.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform/>
+                                        <SkewTransform/>
+                                        <RotateTransform Angle="270"/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </StackPanel.RenderTransform>
+                                <TextBlock Text="4466mm" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,-10,14"/>
+                            </StackPanel>
+                            <StackPanel x:Name="stackpanelWidth" Panel.ZIndex="3" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                                <TextBlock Text="2345mm" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,0,4"/>
                             </StackPanel>
                         </Grid>
                         <StackPanel x:Name="BrakePanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0">
-                            <TextBlock Text="{Binding FrontBrakes}" Foreground="#fff"/>
+                            <TextBlock Text="{Binding VehicleFrontBrakesDesc}" Foreground="#fff"/>
                             <StackPanel Orientation="Vertical">
                                 <Image Source="/Images/vehicleCard/brake.png" Width="60" Height="60"/>
                             </StackPanel>
-                            <TextBlock Text="{Binding RearBrakes}" Foreground="#fff" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding VecicleRearBrakesDesc}" Foreground="#fff" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -322,7 +337,7 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,5,0,5">
                         <Image Source="/Images/vehicleCard/speedo.png" Width="40" HorizontalAlignment="Left" />
                         <TextBlock Foreground="#fff" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0">
-                        <Run Text="{Binding TopSpeed}"/>
+                        <Run Text="{Binding VehicleTopSpeed}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}"/>
                         </TextBlock>
                     </StackPanel>
@@ -335,27 +350,27 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-            <Border Grid.Row="3" Background="#333" Grid.ColumnSpan="2" HorizontalAlignment="Center" Padding="10" Margin="5">
+            <Border Grid.Row="4" Background="#333" Grid.ColumnSpan="2" HorizontalAlignment="Center" Padding="10" Margin="5">
                 <StackPanel Orientation="Vertical" >
                     <StackPanel Orientation="Horizontal">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="/Images/vehicleCard/mass.png" Margin="4"/>
                             <TextBlock Foreground="#fff" VerticalAlignment="Center" FontSize="16">
-                            <Run Text="{Binding Weight}"/>
+                            <Run Text="{Binding VehicleWeight}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}"/>
                             </TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                             <Image Source="/Images/vehicleCard/power.png" Margin="4"/>
                             <TextBlock Foreground="#fff" VerticalAlignment="Center" FontSize="16">
-                                <Run Text="{Binding Power}"/>
+                                <Run Text="{Binding VehiclePower}"/>
                                 <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=horsepower, Mode=OneWay}"/>
                             </TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                             <Image Source="/Images/vehicleCard/mass_power.png" Margin="4"/>
                             <TextBlock Foreground="#fff" VerticalAlignment="Center" FontSize="16">
-                            <Run Text="{Binding PowerWeightRatio, Mode=OneWay,StringFormat={}{0:0.00}}"/>
+                            <Run Text="{Binding VehiclePowerWeightRatio, Mode=OneWay,StringFormat={}{0:0.00}}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}"/>
                             <Run Text="/"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=horsepower, Mode=OneWay}"/>
@@ -366,16 +381,16 @@
                         <TextBlock Foreground="#FFB9B9B9" Text="Price: " FontWeight="Bold" />
                         <TextBlock Foreground="#ffffffff" Margin="0,0,0,0">
                             <Run Text="$"/>
-                            <Run Text="{Binding Price}"/>
+                            <Run Text="{Binding VehiclePrice}"/>
                         </TextBlock>
                     </StackPanel>
                     <StackPanel Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
                         <TextBlock Foreground="#FFB9B9B9" FontWeight="Bold" Text="Source: " />
-                        <TextBlock Foreground="#ffffffff" Margin="0,0,0,0"  Text="{Binding DealershipIdIbiza}" />
+                        <TextBlock Foreground="#ffffffff" Margin="0,0,0,0"  Text="{Binding VehicleDealershipIdIbiza}" />
                     </StackPanel>
                     <StackPanel Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
                         <TextBlock Foreground="#FFB9B9B9" FontWeight="Bold" Text="Stored: " />
-                        <TextBlock Foreground="#ffffffff" Margin="0,0,0,0"  Text="{Binding InGarage}" />
+                        <TextBlock Foreground="#ffffffff" Margin="0,0,0,0"  Text="{Binding VehicleInGarage}" />
                     </StackPanel>
                 </StackPanel>
             </Border>
