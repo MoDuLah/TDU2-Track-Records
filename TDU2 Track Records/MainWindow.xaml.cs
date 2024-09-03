@@ -23,6 +23,7 @@ namespace TDU2_Track_Records
         public int RecordsOn = 0;
         public int Popup = 0;
         int isCalculated = 0;
+        int vehicle = 0;
         readonly string connectionString = Settings.Default.connectionString;
         public string distance = Settings.Default.distance;
         public string speed = Settings.Default.speed;
@@ -2084,12 +2085,6 @@ namespace TDU2_Track_Records
                     lastTracksTop = tracks.Top;
                 }
             FillComboBoxWithTracks(combo_Track);
-        }
-
-        private void carCard_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            var vehicleCard = new vehicleCard();
-            vehicleCard.Show();
         }
     }
 }

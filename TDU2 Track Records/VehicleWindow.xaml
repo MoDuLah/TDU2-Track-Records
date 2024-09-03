@@ -252,29 +252,31 @@
                                 <TextBlock Text="cc" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
                             </DockPanel>
                         </GroupBox>
-                        <GroupBox Header="Engine Layout"  Margin="5">
+                        <GroupBox Header="Layout" Margin="5">
                             <ComboBox x:Name="EngineLayoutComboBox" Margin="5" VerticalAlignment="Stretch">
-                                <ComboBoxItem>Inline-1</ComboBoxItem>
-                                <ComboBoxItem>Inline-2</ComboBoxItem>
-                                <ComboBoxItem>Inline-3</ComboBoxItem>
-                                <ComboBoxItem>Inline-4</ComboBoxItem>
-                                <ComboBoxItem>Inline-5</ComboBoxItem>
-                                <ComboBoxItem>Inline-6</ComboBoxItem>
-                                <ComboBoxItem>V2</ComboBoxItem>
-                                <ComboBoxItem>V4</ComboBoxItem>
-                                <ComboBoxItem>V6</ComboBoxItem>
-                                <ComboBoxItem>V8</ComboBoxItem>
-                                <ComboBoxItem>V10</ComboBoxItem>
-                                <ComboBoxItem>V12</ComboBoxItem>
-                                <ComboBoxItem>Flat-2</ComboBoxItem>
-                                <ComboBoxItem>Flat-4</ComboBoxItem>
-                                <ComboBoxItem>Flat-6</ComboBoxItem>
-                                <ComboBoxItem>W8</ComboBoxItem>
-                                <ComboBoxItem>W12</ComboBoxItem>
-                                <ComboBoxItem>W16</ComboBoxItem>
-                                <ComboBoxItem>Wankel Rotary</ComboBoxItem>
-                                <ComboBoxItem>Opposed-Piston</ComboBoxItem>
-                                <ComboBoxItem>H Engine</ComboBoxItem>
+                                <ComboBoxItem Content="4-stroke, Liquid-Cooled DOHC" Tag="0"/>
+                                <ComboBoxItem Content="Flat 4-cylinder" Tag="1"/>
+                                <ComboBoxItem Content="flathead 6-cylinder" Tag="2"/>
+                                <ComboBoxItem Content="inline 3-cylinder" Tag="3"/>
+                                <ComboBoxItem Content="inline 4-cylinder" Tag="4"/>
+                                <ComboBoxItem Content="inline 5-cylinder" Tag="5"/>
+                                <ComboBoxItem Content="inline 6-cylinder" Tag="6"/>
+                                <ComboBoxItem Content="L-twin" Tag="7"/>
+                                <ComboBoxItem Content="Rotary engine" Tag="8"/>
+                                <ComboBoxItem Content="V10" Tag="9"/>
+                                <ComboBoxItem Content="V12" Tag="10"/>
+                                <ComboBoxItem Content="V6" Tag="11"/>
+                                <ComboBoxItem Content="V8" Tag="12"/>
+                                <ComboBoxItem Content="V-twin" Tag="13"/>
+                                <ComboBoxItem Content="W12" Tag="14"/>
+                                <ComboBoxItem Content="W16" Tag="15"/>
+                            </ComboBox>
+                        </GroupBox>
+                        <GroupBox Header="Placement" Margin="5">
+                            <ComboBox x:Name="EnginePlacementComboBox" Margin="5" VerticalAlignment="Stretch">
+                                <ComboBoxItem Content="Front-Wheel Drive" Tag="FWD"/>
+                                <ComboBoxItem Content="All-Wheel Drive" Tag="AWD"/>
+                                <ComboBoxItem Content="Rear-Wheel Drive" Tag="RWD"/>
                             </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Max Torque" Margin="5">
@@ -301,30 +303,20 @@
                     <StackPanel>
                         <GroupBox x:Name="Gearbox" Header="Gearbox" Margin="5">
                             <ComboBox x:Name="GearboxComboBox" Margin="5" VerticalAlignment="Stretch">
-                                <ComboBoxItem>3-Speed Manual</ComboBoxItem>
-                                <ComboBoxItem>4-Speed Manual</ComboBoxItem>
-                                <ComboBoxItem>5-Speed Manual</ComboBoxItem>
-                                <ComboBoxItem>6-Speed Manual</ComboBoxItem>
-                                <ComboBoxItem>7-Speed Manual</ComboBoxItem>
-                                <ComboBoxItem>Sequential Manual</ComboBoxItem>
-                                <ComboBoxItem>Dog-Box Manual</ComboBoxItem>
-
-                                <!-- Automatic Transmissions -->
-                                <ComboBoxItem>3-Speed Automatic</ComboBoxItem>
-                                <ComboBoxItem>4-Speed Automatic</ComboBoxItem>
-                                <ComboBoxItem>5-Speed Automatic</ComboBoxItem>
-                                <ComboBoxItem>6-Speed Automatic</ComboBoxItem>
-                                <ComboBoxItem>7-Speed Automatic</ComboBoxItem>
-                                <ComboBoxItem>8-Speed Automatic</ComboBoxItem>
-                                <ComboBoxItem>Continuously Variable Transmission (CVT)</ComboBoxItem>
-                                <ComboBoxItem>Dual-Clutch Transmission (DCT)</ComboBoxItem>
-                                <ComboBoxItem>Semi-Automatic Transmission</ComboBoxItem>
-
-                                <!-- Motorcycle Transmissions -->
-                                <ComboBoxItem>5-Speed Manual</ComboBoxItem>
-                                <ComboBoxItem>6-Speed Manual</ComboBoxItem>
-                                <ComboBoxItem>Sequential Manual</ComboBoxItem>
-                                <ComboBoxItem>Dual-Clutch Transmission (DCT)</ComboBoxItem>
+                                <ComboBoxItem Content="Automatic" Tag="Auto"/>
+                                <ComboBoxItem Content="Mechanical" Tag="Mech"/>
+                                <ComboBoxItem Content="Sequential" Tag="Seq"/>
+                            </ComboBox>
+                        </GroupBox>
+                        <GroupBox x:Name="Gears" Header="# Gears" Margin="5">
+                            <ComboBox x:Name="GearsComboBox" Margin="5" VerticalAlignment="Stretch">
+                                <ComboBoxItem Content="7"/>
+                                <ComboBoxItem Content="6"/>
+                                <ComboBoxItem Content="5"/>
+                                <ComboBoxItem Content="4"/>
+                                <ComboBoxItem Content="3"/>
+                                <ComboBoxItem Content="2"/>
+                                <ComboBoxItem Content="1"/>
                             </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Top Speed" Margin="5">

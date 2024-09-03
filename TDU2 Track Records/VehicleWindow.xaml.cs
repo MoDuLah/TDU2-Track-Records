@@ -197,37 +197,37 @@ namespace TDU2_Track_Records
                                     VehicleFrontTyres = reader.IsDBNull(16) ? null : reader.GetString(16), // 16
                                     VehicleRearTyres = reader.IsDBNull(17) ? null : reader.GetString(17), // 17
                                     VehicleWheelDrive = reader.IsDBNull(18) ? null : reader.GetString(18), // 18
-                                    VehicleFrontBrakes = reader.IsDBNull(19) ? null : reader.GetString(19), // 19
-                                    VehicleRearBrakes = reader.IsDBNull(20) ? null : reader.GetString(20), // 20
+                                    VehicleFrontBrakesDesc = reader.IsDBNull(19) ? null : reader.GetString(19), // 19
+                                    VehicleRearBrakesDesc = reader.IsDBNull(20) ? null : reader.GetString(20), // 20
 
                                     // Integer properties
-                                    UpgradeLevel = reader.IsDBNull(21) ? default : reader.GetInt32(21), // 21
-                                    RacesRan = reader.IsDBNull(22) ? default : reader.GetInt32(22), // 22
-                                    Active = reader.IsDBNull(23) ? default : reader.GetInt32(23), // 23
-                                    Owned = reader.IsDBNull(24) ? default : reader.GetInt32(24), // 24
-                                    AccelerationStat = reader.IsDBNull(25) ? default : reader.GetInt32(25), // 25
-                                    SpeedStat = reader.IsDBNull(26) ? default : reader.GetInt32(26), // 26
-                                    BrakingStat = reader.IsDBNull(27) ? default : reader.GetInt32(27), // 27
-                                    DifficultyStat = reader.IsDBNull(28) ? default : reader.GetInt32(28), // 28
-                                    TopSpeed = reader.IsDBNull(29) ? default : reader.GetInt32(29), // 29
-                                    MaxTorque = reader.IsDBNull(30) ? default : reader.GetInt32(30), // 30
-                                    MaxTorqueRPM = reader.IsDBNull(31) ? default : reader.GetInt32(31), // 31
-                                    MaxPower = reader.IsDBNull(32) ? default : reader.GetInt32(32), // 32
-                                    MaxPowerRPM = reader.IsDBNull(33) ? default : reader.GetInt32(33), // 33
-                                    Weight = reader.IsDBNull(34) ? default : reader.GetInt32(34), // 34
-                                    InGarage = reader.IsDBNull(35) ? default : reader.GetInt32(35), // 35
-                                    CanVehiclePaint = reader.IsDBNull(36) ? default : reader.GetInt32(36), // 36
-                                    CanVehicleSticker = reader.IsDBNull(37) ? default : reader.GetInt32(37), // 37
-                                    CanVehicleUpgrade = reader.IsDBNull(38) ? default : reader.GetInt32(38), // 38
+                                    VehicleUpgradeLevel = reader.IsDBNull(21) ? default : reader.GetInt32(21), // 21
+                                    VehicleRacesRan = reader.IsDBNull(22) ? default : reader.GetInt32(22), // 22
+                                    VehicleActive = reader.IsDBNull(23) ? default : reader.GetInt32(23), // 23
+                                    VehicleOwned = reader.IsDBNull(24) ? default : reader.GetInt32(24), // 24
+                                    VehicleAccelerationStat = reader.IsDBNull(25) ? default : reader.GetInt32(25), // 25
+                                    VehicleSpeedStat = reader.IsDBNull(26) ? default : reader.GetInt32(26), // 26
+                                    VehicleBrakingStat = reader.IsDBNull(27) ? default : reader.GetInt32(27), // 27
+                                    VehicleDifficultyStat = reader.IsDBNull(28) ? default : reader.GetInt32(28), // 28
+                                    VehicleTopSpeed = reader.IsDBNull(29) ? default : reader.GetInt32(29), // 29
+                                    VehicleMaxTorque = reader.IsDBNull(30) ? default : reader.GetInt32(30), // 30
+                                    VehicleMaxTorqueRPM = reader.IsDBNull(31) ? default : reader.GetInt32(31), // 31
+                                    VehicleMaxPower = reader.IsDBNull(32) ? default : reader.GetInt32(32), // 32
+                                    VehicleMaxPowerRPM = reader.IsDBNull(33) ? default : reader.GetInt32(33), // 33
+                                    VehicleWeight = reader.IsDBNull(34) ? default : reader.GetInt32(34), // 34
+                                    VehicleInGarage = reader.IsDBNull(35) ? default : reader.GetInt32(35), // 35
+                                    VehicleCanPaint = reader.IsDBNull(36) ? default : reader.GetInt32(36), // 36
+                                    VehicleCanSticker = reader.IsDBNull(37) ? default : reader.GetInt32(37), // 37
+                                    VehicleCanUpgrade = reader.IsDBNull(38) ? default : reader.GetInt32(38), // 38
 
                                     // Double properties
-                                    OdometerMetric = reader.IsDBNull(39) ? default : reader.GetDouble(39), // 39
-                                    OdometerImperial = reader.IsDBNull(40) ? default : reader.GetDouble(40), // 40
-                                    AccelerationTime = reader.IsDBNull(41) ? default : reader.GetDouble(41), // 41
-                                    PowerWeightRatio = reader.IsDBNull(42) ? default : reader.GetDouble(42), // 42
+                                    VehicleOdometerMetric = reader.IsDBNull(39) ? default : reader.GetDouble(39), // 39
+                                    VehicleOdometerImperial = reader.IsDBNull(40) ? default : reader.GetDouble(40), // 40
+                                    VehicleAccelerationTime = reader.IsDBNull(41) ? default : reader.GetDouble(41), // 41
+                                    VehiclePowerWeightRatio = reader.IsDBNull(42) ? default : reader.GetDouble(42), // 42
 
                                     // Image property
-                                    Image = reader.IsDBNull(43) ? null : (byte[])reader["Image"] // 43
+                                    VehicleImage = reader.IsDBNull(43) ? null : (byte[])reader["Image"] // 43
                                 };
 
                                 _vehicles.Add(vehicle);
@@ -264,9 +264,9 @@ namespace TDU2_Track_Records
             if (!(VehicleSelection.SelectedItem is VehicleManagement selectedVehicle)) return;
 
             // Load and display the image if available
-            if (selectedVehicle.Image != null && selectedVehicle.Image.Length > 0)
+            if (selectedVehicle.VehicleImage != null && selectedVehicle.VehicleImage.Length > 0)
             {
-                using (var ms = new MemoryStream(selectedVehicle.Image))
+                using (var ms = new MemoryStream(selectedVehicle.VehicleImage))
                 {
                     BitmapImage bitmapImage = new BitmapImage();
                     bitmapImage.BeginInit();
@@ -291,47 +291,49 @@ namespace TDU2_Track_Records
             string selectedWeightUnit = Settings.Default.weight;
             if (VehicleBrandComboBox.Visibility == Visibility.Visible)
             {
-                VehicleBrandComboBox.Text = selectedVehicle.Brand;
+                VehicleBrandComboBox.Text = selectedVehicle.VehicleBrand;
             }
             else
             {
-                VehicleBrandTextBox.Text = selectedVehicle.Brand;
+                VehicleBrandTextBox.Text = selectedVehicle.VehicleBrand;
             }
 
-            VehicleModelTextBox.Text = selectedVehicle.Model;
-            VehicleClassComboBox.Text = selectedVehicle.Class;
+            VehicleModelTextBox.Text = selectedVehicle.VehicleModel;
+            VehicleClassComboBox.Text = selectedVehicle.VehicleClass;
 
             if (SI == "Metric")
             {
-                Odometer_Metric.Text = selectedVehicle.OdometerMetric.ToString();
+                Odometer_Metric.Text = selectedVehicle.VehicleOdometerMetric.ToString();
                 Odometer_Metric.Visibility = Visibility.Visible;
                 Odometer_Imperial.Visibility = Visibility.Collapsed;
             }
             else
             {
-                Odometer_Imperial.Text = selectedVehicle.OdometerImperial.ToString();
+                Odometer_Imperial.Text = selectedVehicle.VehicleOdometerImperial.ToString();
                 Odometer_Metric.Visibility = Visibility.Collapsed;
                 Odometer_Imperial.Visibility = Visibility.Visible;
             }
 
-            VehiclePriceTextBox.Text = selectedVehicle.Price;
-            VehicleActiveCheckBox.IsChecked = Convert.ToBoolean(selectedVehicle.Active);
-            VehicleOwnedCheckBox.IsChecked = Convert.ToBoolean(selectedVehicle.Owned);
+            VehiclePriceTextBox.Text = selectedVehicle.VehiclePrice;
+            VehicleActiveCheckBox.IsChecked = Convert.ToBoolean(selectedVehicle.VehicleActive);
+            VehicleOwnedCheckBox.IsChecked = Convert.ToBoolean(selectedVehicle.VehicleOwned);
             VehicleOwnedCheckBoxChange();
-            AccelerationStatSlider.Value = selectedVehicle.AccelerationStat;
-            SpeedStatSlider.Value = selectedVehicle.SpeedStat;
-            BrakingStatSlider.Value = selectedVehicle.BrakingStat;
-            DifficultyStatSlider.Value = selectedVehicle.DifficultyStat;
-            TopSpeedTextBox.Text = ConvertSpeedToSelectedUnit(selectedVehicle.TopSpeed, selectedSpeedUnit).ToString();
-            AccelerationTextBox.Text = selectedVehicle.AccelerationTime.ToString();
-            EngineSizeTextBox.Text = selectedVehicle.Engine;
-            EngineLayoutComboBox.Text = selectedVehicle.EngineLayout;
-            GearboxComboBox.Text = selectedVehicle.Gearbox;
-            MaxTorqueTextBox.Text = selectedVehicle.MaxTorque.ToString();
-            MaxTorqueRPMTextBox.Text = selectedVehicle.MaxTorqueRPM.ToString();
-            MaxPowerTextBox.Text = selectedVehicle.MaxPower.ToString();
-            MaxPowerRPMTextBox.Text = selectedVehicle.MaxPowerRPM.ToString();
-            WeightTextBox.Text = ConvertWeightToSelectedUnit(selectedVehicle.Weight, selectedWeightUnit).ToString();
+            AccelerationStatSlider.Value = selectedVehicle.VehicleAccelerationStat;
+            SpeedStatSlider.Value = selectedVehicle.VehicleSpeedStat;
+            BrakingStatSlider.Value = selectedVehicle.VehicleBrakingStat;
+            DifficultyStatSlider.Value = selectedVehicle.VehicleDifficultyStat;
+            TopSpeedTextBox.Text = ConvertSpeedToSelectedUnit(selectedVehicle.VehicleTopSpeed, selectedSpeedUnit).ToString();
+            AccelerationTextBox.Text = selectedVehicle.VehicleAccelerationTime.ToString();
+            EngineSizeTextBox.Text = selectedVehicle.VehicleEngineDisplacement;
+            EngineLayoutComboBox.Text = selectedVehicle.VehicleEngineLayout;
+            EnginePlacementComboBox.Text = selectedVehicle.VehicleEnginePosition;
+            GearboxComboBox.Text = selectedVehicle.VehicleGearbox;
+            GearsComboBox.Text = selectedVehicle.VehicleGearNumbers.ToString();
+            MaxTorqueTextBox.Text = selectedVehicle.VehicleMaxTorque.ToString();
+            MaxTorqueRPMTextBox.Text = selectedVehicle.VehicleMaxTorqueRPM.ToString();
+            MaxPowerTextBox.Text = selectedVehicle.VehicleMaxPower.ToString();
+            MaxPowerRPMTextBox.Text = selectedVehicle.VehicleMaxPowerRPM.ToString();
+            WeightTextBox.Text = ConvertWeightToSelectedUnit(selectedVehicle.VehicleWeight, selectedWeightUnit).ToString();
         }
 
         private void ExecuteNonQuery(string query, Action<SQLiteCommand> setParameters)
@@ -571,69 +573,69 @@ namespace TDU2_Track_Records
                                         double accelerationTime, int maxPower, int maxPowerRPM, int maxTorque,
                                         int maxTorqueRPM, int weight)
         {
-            vehicle.Name = VehicleBrandComboBox.Visibility == Visibility.Visible
+            vehicle.VehicleName = VehicleBrandComboBox.Visibility == Visibility.Visible
                 ? VehicleBrandComboBox.Text + " " + VehicleModelTextBox.Text
                 : VehicleBrandTextBox.Text + " " + VehicleModelTextBox.Text;
-            vehicle.Brand = VehicleBrandComboBox.Text;
-            vehicle.Model = VehicleModelTextBox.Text;
-            vehicle.Class = VehicleClassComboBox.Text;
+            vehicle.VehicleBrand = VehicleBrandComboBox.Text;
+            vehicle.VehicleModel = VehicleModelTextBox.Text;
+            vehicle.VehicleClass = VehicleClassComboBox.Text;
 
             if (SI == "Metric")
             {
-                vehicle.OdometerMetric = mileage;
-                vehicle.OdometerImperial = Math.Round(mileage * 0.621371,1);
+                vehicle.VehicleOdometerMetric = mileage;
+                vehicle.VehicleOdometerImperial = Math.Round(mileage * 0.621371,1);
             }
             else
             {
-                vehicle.OdometerImperial = mileage;
-                vehicle.OdometerMetric = Math.Round(mileage * 1.60934,1);
+                vehicle.VehicleOdometerImperial = mileage;
+                vehicle.VehicleOdometerMetric = Math.Round(mileage * 1.60934,1);
             }
 
-            vehicle.Owned = VehicleOwnedCheckBox.IsChecked == true ? 1 : 0;
-            vehicle.Active = VehicleActiveCheckBox.IsChecked == true ? 1 : 0;
-            vehicle.Price = price;
-            vehicle.AccelerationStat = accelerationStat;
-            vehicle.SpeedStat = speedStat;
-            vehicle.BrakingStat = brakingStat;
-            vehicle.DifficultyStat = difficultyStat;
-            vehicle.AccelerationTime = accelerationTime;
-            vehicle.TopSpeed = topSpeed;
-            vehicle.Engine = EngineSizeTextBox.Text;
-            vehicle.EngineLayout = EngineLayoutComboBox.Text;
-            vehicle.Gearbox = GearboxComboBox.Text;
-            vehicle.MaxPower = maxPower;
-            vehicle.MaxPowerRPM = maxPowerRPM;
-            vehicle.MaxTorque = maxTorque;
-            vehicle.MaxTorqueRPM = maxTorqueRPM;
-            vehicle.Weight = weight;
+            vehicle.VehicleOwned = VehicleOwnedCheckBox.IsChecked == true ? 1 : 0;
+            vehicle.VehicleActive = VehicleActiveCheckBox.IsChecked == true ? 1 : 0;
+            vehicle.VehiclePrice = price;
+            vehicle.VehicleAccelerationStat = accelerationStat;
+            vehicle.VehicleSpeedStat = speedStat;
+            vehicle.VehicleBrakingStat = brakingStat;
+            vehicle.VehicleDifficultyStat = difficultyStat;
+            vehicle.VehicleAccelerationTime = accelerationTime;
+            vehicle.VehicleTopSpeed = topSpeed;
+            vehicle.VehicleEngineDisplacement = EngineSizeTextBox.Text;
+            vehicle.VehicleEngineLayout = EngineLayoutComboBox.Text;
+            vehicle.VehicleGearbox = GearboxComboBox.Text;
+            vehicle.VehicleMaxPower = maxPower;
+            vehicle.VehicleMaxPowerRPM = maxPowerRPM;
+            vehicle.VehicleMaxTorque = maxTorque;
+            vehicle.VehicleMaxTorqueRPM = maxTorqueRPM;
+            vehicle.VehicleWeight = weight;
 
         }
 
         private void AddParameters(SQLiteCommand cmd, VehicleManagement vehicle, byte[] image)
         {
-            cmd.Parameters.AddWithValue("@name", vehicle.Name ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@brand", vehicle.Brand ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@model", vehicle.Model ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@class", vehicle.Class ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@odometerMetric", vehicle.OdometerMetric);
-            cmd.Parameters.AddWithValue("@odometerImperial", vehicle.OdometerImperial);
-            cmd.Parameters.AddWithValue("@owned", vehicle.Owned);
-            cmd.Parameters.AddWithValue("@active", vehicle.Active);
-            cmd.Parameters.AddWithValue("@price", vehicle.Price);
-            cmd.Parameters.AddWithValue("@accelerationStat", vehicle.AccelerationStat);
-            cmd.Parameters.AddWithValue("@speedStat", vehicle.SpeedStat);
-            cmd.Parameters.AddWithValue("@brakingStat", vehicle.BrakingStat);
-            cmd.Parameters.AddWithValue("@difficultyStat", vehicle.DifficultyStat);
-            cmd.Parameters.AddWithValue("@topSpeed", vehicle.TopSpeed);
-            cmd.Parameters.AddWithValue("@accelerationTime", vehicle.AccelerationTime);
-            cmd.Parameters.AddWithValue("@engine", vehicle.Engine ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@layout", vehicle.EngineLayout ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@gearbox", vehicle.Gearbox ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@maxPower", vehicle.MaxPower);
-            cmd.Parameters.AddWithValue("@maxPowerRPM", vehicle.MaxPowerRPM);
-            cmd.Parameters.AddWithValue("@maxTorque", vehicle.MaxTorque);
-            cmd.Parameters.AddWithValue("@maxTorqueRPM", vehicle.MaxTorqueRPM);
-            cmd.Parameters.AddWithValue("@weight", vehicle.Weight);
+            cmd.Parameters.AddWithValue("@name", vehicle.VehicleName ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@brand", vehicle.VehicleBrand ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@model", vehicle.VehicleModel ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@class", vehicle.VehicleClass ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@odometerMetric", vehicle.VehicleOdometerMetric);
+            cmd.Parameters.AddWithValue("@odometerImperial", vehicle.VehicleOdometerImperial);
+            cmd.Parameters.AddWithValue("@owned", vehicle.VehicleOwned);
+            cmd.Parameters.AddWithValue("@active", vehicle.VehicleActive);
+            cmd.Parameters.AddWithValue("@price", vehicle.VehiclePrice);
+            cmd.Parameters.AddWithValue("@accelerationStat", vehicle.VehicleAccelerationStat);
+            cmd.Parameters.AddWithValue("@speedStat", vehicle.VehicleSpeedStat);
+            cmd.Parameters.AddWithValue("@brakingStat", vehicle.VehicleBrakingStat);
+            cmd.Parameters.AddWithValue("@difficultyStat", vehicle.VehicleDifficultyStat);
+            cmd.Parameters.AddWithValue("@topSpeed", vehicle.VehicleTopSpeed);
+            cmd.Parameters.AddWithValue("@accelerationTime", vehicle.VehicleAccelerationTime);
+            cmd.Parameters.AddWithValue("@engine", vehicle.VehicleEngineDisplacement ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@layout", vehicle.VehicleEngineLayout ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@gearbox", vehicle.VehicleGearbox ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@maxPower", vehicle.VehicleMaxPower);
+            cmd.Parameters.AddWithValue("@maxPowerRPM", vehicle.VehicleMaxPowerRPM);
+            cmd.Parameters.AddWithValue("@maxTorque", vehicle.VehicleMaxTorque);
+            cmd.Parameters.AddWithValue("@maxTorqueRPM", vehicle.VehicleMaxTorqueRPM);
+            cmd.Parameters.AddWithValue("@weight", vehicle.VehicleWeight);
             cmd.Parameters.AddWithValue("@image", image ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@id", vehicle.Id);
         }

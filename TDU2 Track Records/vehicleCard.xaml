@@ -207,12 +207,12 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel HorizontalAlignment="Center" Margin="20,0,0,0" Orientation="Horizontal">
-                            <Image Source="/Images/vehicleCard/cant_paint.png" Margin="4,4,-64,4" Panel.ZIndex="10" Visibility="Visible"/>
+                            <Image Source="/Images/vehicleCard/cant_paint.png" Margin="4,4,-64,4" Panel.ZIndex="10" Visibility="Hidden"/>
                             <Image Source="/Images/vehicleCard/can_paint.png" Margin="4" Visibility="Visible"/>
-                            <Image Source="/Images/vehicleCard/cant_sticker.png" Margin="4,4,-64,4" Panel.ZIndex="10" Visibility="Visible"/>
-                            <Image Source="/Images/vehicleCard/can_sticker.png" Margin="4"/>
-                            <Image Source="/Images/vehicleCard/cant_tune.png" Margin="4,4,-64,4" Panel.ZIndex="10" Visibility="Visible"/>
-                            <Image Source="/Images/vehicleCard/can_tune.png" Margin="4"/>
+                            <Image Source="/Images/vehicleCard/cant_sticker.png" Margin="4,4,-64,4" Panel.ZIndex="10" Visibility="Hidden"/>
+                            <Image Source="/Images/vehicleCard/can_sticker.png" Margin="4" Visibility="Visible"/>
+                            <Image Source="/Images/vehicleCard/cant_tune.png" Margin="4,4,-64,4" Panel.ZIndex="10" Visibility="Hidden"/>
+                            <Image Source="/Images/vehicleCard/can_tune.png" Margin="4" Visibility="Visible"/>
                         </StackPanel>
                     </StackPanel>
 
@@ -284,16 +284,16 @@
                             <StackPanel x:Name="stackpanelAWD" Panel.ZIndex="1" Visibility="Hidden">
                                 <Image Source="/Images/vehicleCard/chassis-4wd.png" />
                             </StackPanel>
-                            <StackPanel x:Name="stackpanelRWD" Panel.ZIndex="1" Visibility="Visible">
+                            <StackPanel x:Name="stackpanelRWD" Panel.ZIndex="1" Visibility="Hidden">
                                 <Image Source="/Images/vehicleCard/chassis-rwd.png"/>
                             </StackPanel>
-                            <StackPanel x:Name="stackpanelFENG" Panel.ZIndex="2" Visibility="Visible">
+                            <StackPanel x:Name="stackpanelFENG" Panel.ZIndex="2" Visibility="Hidden">
                                 <Image Source="/Images/vehicleCard/chassis-feng.png"/>
                             </StackPanel>
-                            <StackPanel x:Name="stackpanelMENG" Panel.ZIndex="2" Visibility="Visible" Margin="-1,2,0,0">
+                            <StackPanel x:Name="stackpanelMENG" Panel.ZIndex="2" Visibility="Hidden" Margin="-1,2,0,0">
                                 <Image Source="/Images/vehicleCard/chassis-meng.png"/>
                             </StackPanel>
-                            <StackPanel x:Name="stackpanelRENG" Panel.ZIndex="2" Visibility="Visible">
+                            <StackPanel x:Name="stackpanelRENG" Panel.ZIndex="2" Visibility="Hidden">
                                 <Image Source="/Images/vehicleCard/chassis-reng.png"/>
                             </StackPanel>
                             <StackPanel x:Name="StackPanelVehicleLength" Panel.ZIndex="3" VerticalAlignment="Center" HorizontalAlignment="left" RenderTransformOrigin="0.5,0.5">
@@ -305,10 +305,10 @@
                                         <TranslateTransform/>
                                     </TransformGroup>
                                 </StackPanel.RenderTransform>
-                                <TextBlock Text="4466mm" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,-10,14"/>
+                                <TextBlock x:Name="VehicleLengthTextBlock" Text="{Binding VehicleLength}" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,-10,14"/>
                             </StackPanel>
-                            <StackPanel x:Name="stackpanelWidth" Panel.ZIndex="3" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                                <TextBlock Text="2345mm" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,0,4"/>
+                            <StackPanel x:Name="StackPanelVehicleWidth" Panel.ZIndex="3" VerticalAlignment="Bottom" HorizontalAlignment="Center">
+                                <TextBlock x:Name="VehicleWidthTextBlock" Text="{Binding VehicleWidth}" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,0,4"/>
                             </StackPanel>
                         </Grid>
                         <StackPanel x:Name="BrakePanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0">

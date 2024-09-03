@@ -20,17 +20,30 @@ namespace TDU2_Track_Records
             InitializeComponent();
 
             VehicleNameTextBlock.Text = vehicle.VehicleName;
+            VehicleLengthTextBlock.Text = vehicle.VehicleLength;
+            VehicleWidthTextBlock.Text = vehicle.VehicleWidth;
             //VehicleBrandTextBlock.Text = vehicle.VehicleBrand;
             //VehicleModelTextBlock.Text = vehicle.VehicleModel;
             //VehiclePriceTextBlock.Text = vehicle.VehiclePrice;
             //VehicleClassTextBlock.Text = vehicle.VehicleClass;
             //Blah.text = vehicle.VehicleAccelerationTime;
+            UpdateDisplay(vehicle.VehicleEnginePosition, vehicle.VehicleWheelDrive);
 
             //// Set the vehicle image
             //VehicleImage.Source = LoadImage(vehicle.VehicleImage);
         }
 
- 
+        private void UpdateDisplay(string chassisType, string wheeldrive)
+        {
+            // Example logic to show/hide chassis components
+            stackpanelFWD.Visibility = wheeldrive == "FWD" ? Visibility.Visible : Visibility.Hidden;
+            stackpanelAWD.Visibility = wheeldrive == "AWD" ? Visibility.Visible : Visibility.Hidden;
+            stackpanelRWD.Visibility = wheeldrive == "RWD" ? Visibility.Visible : Visibility.Hidden;
+            stackpanelFENG.Visibility = chassisType == "FENG" ? Visibility.Visible : Visibility.Hidden;
+            stackpanelMENG.Visibility = chassisType == "MENG" ? Visibility.Visible : Visibility.Hidden;
+            stackpanelRENG.Visibility = chassisType == "RENG" ? Visibility.Visible : Visibility.Hidden;
+        }
+
 
         // If you have specific actions, you can define event handlers here
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)
