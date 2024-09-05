@@ -462,7 +462,7 @@
                         <TextBlock.ToolTip>
                             <ToolTip>
                                 <StackPanel>
-                                    <TextBlock Text="Keeps Trackname and Class the same," FontWeight="Bold"/>
+                                    <TextBlock Text="Keeps Trackname and _vehiclecategory_name the same," FontWeight="Bold"/>
                                     <TextBlock Text="Car goes to next in line when submit." FontStyle="Italic"/>
                                 </StackPanel>
                             </ToolTip>

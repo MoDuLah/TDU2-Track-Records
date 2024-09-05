@@ -10,7 +10,7 @@
 //{
 //    internal class SKATACardViewModel
 //    {
-//        public ObservableCollection<DVLA> SKATA{ get; set; }
+//        public ObservableCollection<DVLA> SKATA { get; set; }
 //        private readonly string connectionString;
 
 //        public SKATACardViewModel()
@@ -35,12 +35,12 @@
 //                    {
 //                        if (reader.Read())
 //                        {
-//                            var vehicle = new DVLA();
+//                            var vehicle = new Vehicle();
 
 //                            // Define an array of column names
 //                            string[] columns = {
-//    "Name", "Brand", "Model", "Class", "Races_Ran", "Odometer_Metric",
-//    "Odometer_Imperial", "Price", "Acceleration_Stat", "Speed_Stat",
+//    "Name", "Brand", "Model", "Class", "Races_Ran", "_odometer_metric",
+//    "_odometer_imperial", "Price", "Acceleration_Stat", "Speed_Stat",
 //    "Braking_Stat", "Difficulty_Stat", "Top_Speed", "Acceleration_Time",
 //    "Engine", "Engine_Layout", "EnginePlacement", "Gearbox",
 //    "GearboxType", "GearboxMTAT", "Max_Torque", "Max_TorqueRPM",
@@ -64,8 +64,8 @@
 //                                    case "Model": vehicle.Model = value; break;
 //                                    case "Class": vehicle.Class = value; break;
 //                                    case "Races_Ran": vehicle.RacesRan = value; break;
-//                                    case "Odometer_Metric": vehicle.OdometerMetric = value; break;
-//                                    case "Odometer_Imperial": vehicle.OdometerImperial = value; break;
+//                                    case "_odometer_metric": vehicle.OdometerMetric = value; break;
+//                                    case "_odometer_imperial": vehicle.OdometerImperial = value; break;
 //                                    case "Price": vehicle.Price = value; break;
 //                                    case "Acceleration_Stat": vehicle.AccelerationStat = value; break;
 //                                    case "Speed_Stat": vehicle.SpeedStat = value; break;
@@ -100,15 +100,15 @@
 
 //                            // Handle special cases outside of the loop
 //                            vehicle.Id = reader.GetInt32(reader.GetOrdinal("id"));
-//                            vehicle.Active = reader.GetString(reader.GetOrdinal("Active")) == "1" ? "Yes" : "No";
-//                            vehicle.Owned = reader.GetString(reader.GetOrdinal("Owned")) == "1" ? "Yes" : "No";
+//                            vehicle._is_active = reader.GetString(reader.GetOrdinal("Active")) == "1" ? "Yes" : "No";
+//                            vehicle._is_owned = reader.GetString(reader.GetOrdinal("Owned")) == "1" ? "Yes" : "No";
 //                            vehicle.InGarage = reader.GetString(reader.GetOrdinal("InGarage")) == "1" ? "Yes" : "No";
 //                            vehicle.CanVehiclePaint = reader.GetString(reader.GetOrdinal("CanVehiclePaint")) == "1" ? "Yes" : "No";
 //                            vehicle.CanVehicleSticker = reader.GetString(reader.GetOrdinal("CanVehicleSticker")) == "1" ? "Yes" : "No";
 //                            vehicle.CanVehicleUpgrade = reader.GetString(reader.GetOrdinal("CanVehicleUpgrade")) == "1" ? "Yes" : "No";
 
 //                            // Handle BLOB data for Image
-//                            vehicle.Image = reader["Image"] as byte[];
+//                            vehicle.Image = reader["_vehicle_image"] as byte[];
 
 //                            SKATA.Clear();
 //                            SKATA.Add(vehicle);

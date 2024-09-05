@@ -120,12 +120,12 @@
                                     <GradientStop Color="#995A5A5A" Offset="1"/>
                                 </LinearGradientBrush>
                             </TextBlock.Background>
-                            <Run Text="{Binding VehicleBrand}"/>
+                            <Run Text="{Binding Vehicle.VehicleName}"/>
                             <Run Text=" "/>
                             <Run Text="{Binding VehicleModel}"/>
                         </TextBlock>
                         <Image Source="{Binding VehicleClass}" Width="30" Margin="5"/>
-                        <Image Source="{Binding VehicleLevel}" Width="30" Margin="5"/>
+                        <!--<Image Source="{Binding VehicleLevel}" Width="30" Margin="5"/>-->
                     </StackPanel>
                 </Grid>
             </Border>
@@ -239,24 +239,24 @@
                         <Image Grid.Row="1" Grid.Column="0" Source="/Images/vehicleCard/engine.png" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                         <StackPanel Grid.Row="1" Grid.Column="1" >
                             <TextBlock x:Name="EngineCC" Foreground="#fff" FontSize="16">
-                            <Run Text="{Binding VehicleEngine}"/>
+                            <Run Text="{Binding VehicleEngine, StringFormat=N0}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=engineSize, Mode=OneWay}"/>
                             </TextBlock>
                             <TextBlock x:Name="EngineLayout" Text="{Binding EngineLayout}" Foreground="#fff" FontSize="16"/>
                         </StackPanel>
                         <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Text="Max. torque" Foreground="#999" FontWeight="Bold" Margin="0,10,0,0"/>
                         <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#fff" FontSize="16">
-                            <Run Text="{Binding VehicleMaxTorque}"/>
+                            <Run Text="{Binding VehicleMaxTorque, StringFormat=N0}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}"/>
                             <Run Text="@"/>
-                            <Run Text="{Binding VehicleMaxTorqueRPM}"/>
+                            <Run Text="{Binding VehicleMaxTorqueRPM, StringFormat=N0}"/>
                             <Run Text="RPM"/>
                         </TextBlock>
                         <TextBlock Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Text="Max. power" Foreground="#999" FontWeight="Bold" Margin="0,10,0,0"/>
                         <TextBlock Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Foreground="#fff" FontSize="16">
-                                <Run Text="{Binding VehicleMaxPower}"/>
+                                <Run Text="{Binding VehicleMaxPower, StringFormat=N0}"/>
                                  <Run Text="bhp @"/>
-                                 <Run Text="{Binding VehicleMaxPowerRPM}"/>
+                                 <Run Text="{Binding VehicleMaxPowerRPM, StringFormat=N0}"/>
                                  <Run Text="RPM"/>
                         </TextBlock>
                     </Grid>
@@ -305,10 +305,10 @@
                                         <TranslateTransform/>
                                     </TransformGroup>
                                 </StackPanel.RenderTransform>
-                                <TextBlock x:Name="VehicleLengthTextBlock" Text="{Binding VehicleLength}" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,-10,14"/>
+                                <TextBlock x:Name="VehicleLengthTextBlock" Text="{Binding VehicleLength, StringFormat=N0}" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,-10,14"/>
                             </StackPanel>
                             <StackPanel x:Name="StackPanelVehicleWidth" Panel.ZIndex="3" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                                <TextBlock x:Name="VehicleWidthTextBlock" Text="{Binding VehicleWidth}" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,0,4"/>
+                                <TextBlock x:Name="VehicleWidthTextBlock" Text="{Binding VehicleWidth, StringFormat=N0}" VerticalAlignment="Bottom" Foreground="White" FontSize="11" Margin="0,0,0,4"/>
                             </StackPanel>
                         </Grid>
                         <StackPanel x:Name="BrakePanel" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,15,0">
@@ -337,14 +337,14 @@
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,5,0,5">
                         <Image Source="/Images/vehicleCard/speedo.png" Width="40" HorizontalAlignment="Left" />
                         <TextBlock Foreground="#fff" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0">
-                        <Run Text="{Binding VehicleTopSpeed}"/>
+                        <Run Text="{Binding VehicleTopSpeed, StringFormat=N0}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}"/>
                         </TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,5,0,5">
                         <Image Source="/Images/vehicleCard/accel2.png" Width="40" HorizontalAlignment="Left" />
                         <TextBlock Foreground="#fff" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0">
-                        <Run Text="{Binding AccelerationTime}"/>
+                        <Run Text="{Binding AccelerationTime, StringFormat=N2}"/>
                         <Run Text="Sec."/>
                         </TextBlock>
                     </StackPanel>
@@ -356,21 +356,21 @@
                         <StackPanel Orientation="Horizontal">
                             <Image Source="/Images/vehicleCard/mass.png" Margin="4"/>
                             <TextBlock Foreground="#fff" VerticalAlignment="Center" FontSize="16">
-                            <Run Text="{Binding VehicleWeight}"/>
+                            <Run Text="{Binding VehicleWeight, StringFormat=N0}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}"/>
                             </TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                             <Image Source="/Images/vehicleCard/power.png" Margin="4"/>
                             <TextBlock Foreground="#fff" VerticalAlignment="Center" FontSize="16">
-                                <Run Text="{Binding VehiclePower}"/>
+                                <Run Text="{Binding VehiclePower, StringFormat=N0}"/>
                                 <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=horsepower, Mode=OneWay}"/>
                             </TextBlock>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="20,0,0,0">
                             <Image Source="/Images/vehicleCard/mass_power.png" Margin="4"/>
                             <TextBlock Foreground="#fff" VerticalAlignment="Center" FontSize="16">
-                            <Run Text="{Binding VehiclePowerWeightRatio, Mode=OneWay,StringFormat={}{0:0.00}}"/>
+                            <Run Text="{Binding VehiclePowerWeightRatio, StringFormat=N2}"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}"/>
                             <Run Text="/"/>
                             <Run Text="{Binding Source={x:Static p:Settings.Default}, Path=horsepower, Mode=OneWay}"/>

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Data.SQLite;
+using System;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
-using TDU2_Track_Records.Classes;
-using TDU2_Track_Records.ViewModels;
+using TDU2_Track_Records.Properties;
 
 namespace TDU2_Track_Records
 {
@@ -13,37 +11,41 @@ namespace TDU2_Track_Records
     /// </summary>
     public partial class vehicleCard : Window
     {
-        //private vehicleCardViewModel viewModel;
+        readonly string connectionString = Settings.Default.connectionString;
+        public string distance, speed;
+        readonly string SI = Settings.Default.system;
 
         public vehicleCard(VehicleManagement vehicle)
         {
             InitializeComponent();
 
-            VehicleNameTextBlock.Text = vehicle.VehicleName;
-            VehicleLengthTextBlock.Text = vehicle.VehicleLength;
-            VehicleWidthTextBlock.Text = vehicle.VehicleWidth;
-            //VehicleBrandTextBlock.Text = vehicle.VehicleBrand;
-            //VehicleModelTextBlock.Text = vehicle.VehicleModel;
-            //VehiclePriceTextBlock.Text = vehicle.VehiclePrice;
-            //VehicleClassTextBlock.Text = vehicle.VehicleClass;
-            //Blah.text = vehicle.VehicleAccelerationTime;
-            UpdateDisplay(vehicle.VehicleEnginePosition, vehicle.VehicleWheelDrive);
-
-            //// Set the vehicle image
-            //VehicleImage.Source = LoadImage(vehicle.VehicleImage);
+            GetVehicleDetails(vehicle.id);
         }
-
-        private void UpdateDisplay(string chassisType, string wheeldrive)
+        private VehicleManagement GetVehicleDetails(int vehicleId)
         {
-            // Example logic to show/hide chassis components
-            stackpanelFWD.Visibility = wheeldrive == "FWD" ? Visibility.Visible : Visibility.Hidden;
-            stackpanelAWD.Visibility = wheeldrive == "AWD" ? Visibility.Visible : Visibility.Hidden;
-            stackpanelRWD.Visibility = wheeldrive == "RWD" ? Visibility.Visible : Visibility.Hidden;
-            stackpanelFENG.Visibility = chassisType == "FENG" ? Visibility.Visible : Visibility.Hidden;
-            stackpanelMENG.Visibility = chassisType == "MENG" ? Visibility.Visible : Visibility.Hidden;
-            stackpanelRENG.Visibility = chassisType == "RENG" ? Visibility.Visible : Visibility.Hidden;
+            VehicleManagement vehicle = null;
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                string query = $"SELECT * FROM vehicles WHERE id = '{vehicleId}'";
+                MessageBox.Show(query);
+                using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Id", vehicleId);
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            vehicle = new VehicleManagement
+                            {
+                                VehicleName = reader["Name"].ToString(),
+                            };
+                        }
+                    }
+                }
+            }
+            return vehicle;
         }
-
 
         // If you have specific actions, you can define event handlers here
         private void OnCloseButtonClick(object sender, RoutedEventArgs e)
@@ -66,12 +68,6 @@ namespace TDU2_Track_Records
             {
                 this.DragMove();
             }
-        }
-
-        private void Image_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            //int vehicleId = 192; // or get this ID dynamically as per your requirement
-            ////viewModel.LoadVehicleById(vehicleId);
         }
     }
 }

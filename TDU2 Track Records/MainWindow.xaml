@@ -12,7 +12,7 @@
         WindowStartupLocation="CenterScreen"
         Icon="/TDU2TR.ico" FontFamily="Adobe Gothic Std B" FontSize="16" 
         Background="{x:Null}"
-        Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" >
+        Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" MouseLeftButtonDown="Window_MouseLeftButtonDown" >
     <Window.Resources>
         <!--<local:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
         <local:StringToDoubleConverter x:Key="StringToDoubleConverter"/>-->
@@ -121,7 +121,7 @@
                 </Image>
                 <Image x:Name="VehicleManager_Button" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown"
                        Margin="0,0,5,0" Width="32" Height="32"
-                       ToolTip="Vehicle Management">
+                       ToolTip="Vehicle Management" Visibility="Collapsed" >
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/ico/navigation/cars.png"/>
@@ -372,7 +372,7 @@
                                 <TextBlock.ToolTip>
                                     <ToolTip>
                                         <StackPanel>
-                                            <TextBlock Text="Keeps Trackname and Class the same," FontWeight="Bold"/>
+                                            <TextBlock Text="Keeps Trackname and _vehiclecategory_name the same," FontWeight="Bold"/>
                                             <TextBlock Text="Car goes to next in line when submit." FontStyle="Italic"/>
                                         </StackPanel>
                                     </ToolTip>

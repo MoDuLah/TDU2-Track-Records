@@ -71,8 +71,8 @@ namespace TDU2_Track_Records
                 new ComboBoxItem { ImagePath = "Images/carClasses/C2.png", Description = "Classic 2", Value = "C2" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/C3.png", Description = "Classic 3", Value = "C3" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/C4.png", Description = "Classic 4", Value = "C4" },
-                new ComboBoxItem { ImagePath = "Images/carClasses/MA1.png", Description = "Motorcycles 1", Value = "MA1" },
-                new ComboBoxItem { ImagePath = "Images/carClasses/MA2.png", Description = "Motorcycles 2", Value = "MA2" }
+                new ComboBoxItem { ImagePath = "Images/carClasses/MA1.png", Description = "Motorcycles 1", Value = "mA1" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/MA2.png", Description = "Motorcycles 2", Value = "mA2" }
             };
 
             RestrictedClassComboBox.ItemsSource = items;
@@ -119,26 +119,26 @@ namespace TDU2_Track_Records
         private void BindVehicleComboBox(ComboBox comboBox)
         {
             ComboBoxItem selectedItem = (ComboBoxItem)RestrictedClassComboBox.SelectedItem;
-            string query = "SELECT * FROM vehicles WHERE Active = '1' AND Owned = '1'";
+            string query = "SELECT * FROM vehicles WHERE _is_available = 'true'";
 
             if (RestrictedClassComboBox.SelectedIndex > 0)
             {
                 string selectedValue = selectedItem.Value;
                 if (selectedValue != "None")
                 {
-                    query += $" AND Class = '{selectedValue}' ORDER BY Name ASC;";
+                    query += $" AND _vehiclecategory_name = '{selectedValue}' ORDER BY _vehicle_name ASC;";
                 }
             }
             else
             {
-                query += " ORDER BY Name ASC;";
+                query += " ORDER BY _vehicle_name ASC;";
             }
 
             ExecuteQuery(query, "vehicles", dataSet =>
             {
                 if (dataSet.Tables[0].Rows.Count > 0)
                 {
-                    SetComboBoxSource(comboBox, dataSet, "Name", "id");
+                    SetComboBoxSource(comboBox, dataSet, "_vehicle_name", "id");
                 }
                 else
                 {
@@ -188,7 +188,7 @@ namespace TDU2_Track_Records
             {
                 comboBox.ItemsSource = dataSet.Tables[0].DefaultView;
                 if (comboBox.Name == "RestrictedCarComboBox") {
-                    comboBox.DisplayMemberPath = "Name";  // or whichever column is displayed
+                    comboBox.DisplayMemberPath = "_vehicle_name";  // or whichever column is displayed
                     comboBox.SelectedValuePath = "id";    // Ensure this is the ID column
                 }
                 else

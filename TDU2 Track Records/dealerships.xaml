@@ -47,7 +47,7 @@
             </ComboBox>
             <ListBox Visibility="Visible" x:Name="DealershipListBox" 
                      HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0" MinWidth="200"
-                 SelectionChanged="DealershipListBox_SelectionChanged" Background="#FF8A8A8A" Foreground="Black" d:ItemsSource="{d:SampleData ItemCount=25}" FontSize="14">
+                 SelectionChanged="DealershipListBox_SelectionChanged" Background="#FF8A8A8A" Foreground="Black" d:ItemsSource="{d:SampleData ItemCount=10}" FontSize="14">
 
             </ListBox>
         </StackPanel>

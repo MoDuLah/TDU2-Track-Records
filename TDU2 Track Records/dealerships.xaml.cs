@@ -13,6 +13,7 @@ namespace TDU2_Track_Records
     {
         readonly string connectionString = Settings.Default.connectionString;
         public string distance, speed;
+        public string slotColumn;
         readonly string SI = Settings.Default.system;
 
         public dealerships()
@@ -39,7 +40,7 @@ namespace TDU2_Track_Records
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT * FROM dealerships WHERE Island = @Island";
+                string query = "SELECT * FROM dealerships WHERE Island = @Island ORDER BY Name ASC";
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Island", island);
@@ -80,15 +81,17 @@ namespace TDU2_Track_Records
                     {
                         if (reader.Read())
                         {
-                            for (int i = 1; i <= 8; i++)
+                            for (int i = 1; i <= 8; i++) // Loop through all 8 slots
                             {
-                                string vehicleId = reader[$"slot{i}_vehicleId"].ToString();
+                                string slotColumn = $"Slot{i}_VehicleId";
+                                string vehicleId = reader[slotColumn]?.ToString();
                                 if (!string.IsNullOrEmpty(vehicleId))
                                 {
                                     var vehicle = GetVehicleDetails(vehicleId);
                                     if (vehicle != null)
                                     {
-                                        AddVehicleToUI(vehicle, slotIndex);
+                                        // Pass the slotColumn to AddVehicleToUI
+                                        AddVehicleToUI(vehicle, slotIndex, slotColumn);
                                         slotIndex++;
                                     }
                                 }
@@ -98,6 +101,7 @@ namespace TDU2_Track_Records
                 }
             }
         }
+
 
 
         private VehicleManagement GetVehicleDetails(string vehicleId)
@@ -116,15 +120,15 @@ namespace TDU2_Track_Records
                         {
                             vehicle = new VehicleManagement
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
-                                VehicleName = reader["Name"].ToString(),
-                                VehicleBrand = reader["Brand"].ToString(),
-                                VehicleModel = reader["Model"].ToString(),
-                                VehiclePrice = reader["Price"].ToString(),
-                                VehicleClass = reader["Class"].ToString(),
-                                VehicleOwned = Convert.ToInt32(reader["Owned"].ToString()),
+                                id = Convert.ToInt32(reader["id"]),
+                                VehicleName = reader["_vehicle_name"].ToString(),
+                                VehicleBrand = reader["_brand_name"].ToString(),
+                                VehicleModel = reader["_modelfull_name"].ToString(),
+                                VehiclePrice = Convert.ToInt32(reader["_price"].ToString()),
+                                VehicleCategory = reader["_vehiclecategory_name"].ToString(),
+                                VehicleOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
                                 // Check if the "Image" column is DBNull before casting
-                                VehicleImage = reader["Image"] != DBNull.Value ? (byte[])reader["Image"] : null
+                                VehicleImage = reader["_vehicle_image"] != DBNull.Value ? (byte[])reader["_vehicle_image"] : null
 
                             };
                         }
@@ -134,10 +138,10 @@ namespace TDU2_Track_Records
             return vehicle;
         }
 
-  
-        private void AddVehicleToUI(VehicleManagement vehicle, int slotIndex)
+
+        private void AddVehicleToUI(VehicleManagement vehicle, int slotIndex, string slotColumn)
         {
-            // Create the main GroupBox for the vehicle
+            // Create the main GroupBox for the vehicle (existing code)
             GroupBox vehicleGroupBox = new GroupBox
             {
                 Header = vehicle.VehicleName, // Set the vehicle name as the header
@@ -173,7 +177,7 @@ namespace TDU2_Track_Records
             };
             priceBox.Content = new TextBlock
             {
-                Text = vehicle.VehiclePrice,
+                Text = vehicle.VehiclePrice.ToString(),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 FontSize = 18
             };
@@ -187,8 +191,9 @@ namespace TDU2_Track_Records
             };
             Image classImage = new Image
             {
-                Width = 50,
-                Source = new BitmapImage(new Uri("/Images/carClasses/" + vehicle.VehicleClass + ".png", UriKind.Relative))
+                Width = 32,
+                Height = 32,
+                Source = new BitmapImage(new Uri("/Images/carClasses/" + vehicle.VehicleCategory + ".png", UriKind.Relative))
             };
             classBox.Content = classImage;
             infoStack.Children.Add(classBox);
@@ -201,7 +206,7 @@ namespace TDU2_Track_Records
             };
             CheckBox ownedCheckBox = new CheckBox
             {
-                IsChecked = vehicle.VehicleOwned == 1,
+                IsChecked = vehicle.VehicleOwned == true,
                 VerticalAlignment = VerticalAlignment.Center
             };
             TextBlock ownedText = new TextBlock
@@ -210,7 +215,6 @@ namespace TDU2_Track_Records
                 FontSize = 16,
                 VerticalAlignment = VerticalAlignment.Center
             };
-
 
             DockPanel statusPanel = new DockPanel();
             statusPanel.Children.Add(ownedCheckBox);
@@ -221,13 +225,29 @@ namespace TDU2_Track_Records
             // Add a button to open the vehicle card window
             Button viewDetailsButton = new Button
             {
-                Content = "View Details",
-                Width = 100,
+                Content = "View Card",
+                //Width = 100,
+                VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(10),
-                Tag = vehicle // Store the vehicle object in the button's Tag
+                Tag = vehicle.id // Store the vehicle object in the button's Tag
             };
             viewDetailsButton.Click += ViewDetailsButton_Click;
             infoStack.Children.Add(viewDetailsButton);
+
+            // Determine the slot column name based on slotIndex (mapping logic)
+
+            // Add a delete button for each vehicle
+            // Add a delete button for each vehicle and store the actual column name in the Tag property
+            Button deleteButton = new Button
+            {
+                Content = "Delete",
+                Margin = new Thickness(10),
+                Tag = slotColumn // Store the actual column name (e.g., "Slot1_VehicleId")
+            };
+            deleteButton.Click += DeleteVehicleButton_Click;
+
+            // Add the delete button to the infoStack
+            infoStack.Children.Add(deleteButton);
 
             // Add the infoStack to contentStack
             contentStack.Children.Add(infoStack);
@@ -278,7 +298,43 @@ namespace TDU2_Track_Records
                 if (vehicle != null)
                 {
                     vehicleCard vehicleWindow = new vehicleCard(vehicle);
-                    vehicleWindow.Show();
+                    vehicleWindow.ShowDialog();
+                }
+            }
+        }
+
+        // Event handler for the Delete button
+        private void DeleteVehicleButton_Click(object sender, RoutedEventArgs e)
+        {
+            Button deleteButton = sender as Button;
+            if (deleteButton != null)
+            {
+                // Retrieve the actual column name from the Tag property
+                string slotColumn = deleteButton.Tag.ToString();
+
+                // Remove the vehicle from the dealership using the column name
+                RemoveVehicleFromSlot(slotColumn);
+
+                // Refresh the UI after deletion
+                LoadVehicles(DealershipListBox.SelectedItem.ToString());
+            }
+        }
+
+        private void RemoveVehicleFromSlot(string slotColumn)
+        {
+            string dealershipName = DealershipListBox.SelectedItem.ToString();
+
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+
+                // Use the column name directly in the SQL query to set it to NULL
+                string query = $"UPDATE dealerships SET {slotColumn} = NULL WHERE Name = @Name";
+
+                using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@Name", dealershipName);
+                    cmd.ExecuteNonQuery();
                 }
             }
         }

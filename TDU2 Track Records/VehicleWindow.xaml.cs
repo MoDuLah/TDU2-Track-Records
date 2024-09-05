@@ -29,7 +29,6 @@ namespace TDU2_Track_Records
         {
             InitializeComponent();
             BindComboBoxes();
-            LoadVehicles();
             GarageGroupBox.Visibility = Visibility.Collapsed;
         }
 
@@ -57,8 +56,8 @@ namespace TDU2_Track_Records
         {
             // Bind VehicleBrandComboBox and VehicleSelection without any filter
             BindComboBox(VehicleBrandComboBox);
-            BindComboBox(VehicleSelection);
-
+            BindComboBox(VehicleComboBox);
+            LoadVehicles();
             // Initially bind the HouseComboBox without any filter
             BindComboBox(HouseComboBox);
         }
@@ -95,6 +94,7 @@ namespace TDU2_Track_Records
                         comboBox.ItemsSource = ds.Tables[0].DefaultView;
                         comboBox.DisplayMemberPath = GetDisplayMemberPath(comboBox);
                         comboBox.SelectedValuePath = "id";
+
                     }
                 }
             }
@@ -113,14 +113,14 @@ namespace TDU2_Track_Records
             if (comboBox == VehicleBrandComboBox)
             {
                 return @"
-            SELECT MIN(id) AS id, Brand
+            SELECT MIN(id) AS id, _brand_name
             FROM vehicles 
-            GROUP BY Brand 
-            ORDER BY Brand ASC;";
+            GROUP BY _brand_name 
+            ORDER BY _brand_name ASC;";
             }
-            else if (comboBox == VehicleSelection)
+            else if (comboBox == VehicleComboBox)
             {
-                return "SELECT id, Name FROM vehicles ORDER BY Name ASC;";
+                return "SELECT id, _vehicle_name FROM vehicles ORDER BY _vehicle_name ASC;";
             }
             else if (comboBox == HouseComboBox)
             {
@@ -139,7 +139,7 @@ namespace TDU2_Track_Records
 
         private string GetDisplayMemberPath(ComboBox comboBox)
         {
-            return comboBox == VehicleBrandComboBox ? "Brand" : "Name";
+            return comboBox == VehicleBrandComboBox ? "_brand_name" : "_vehicle_name";
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -157,86 +157,96 @@ namespace TDU2_Track_Records
         {
             return unit == "lbs" ? Math.Round(weight * 2.20462,0) : weight;  // Convert to lbs if selected
         }
-  
+
         private void LoadVehicles()
         {
+            string errorMSG = "";
             try
             {
                 using (var conn = new SQLiteConnection(connectionString))
                 {
                     conn.Open();
-                    string query = "SELECT * FROM vehicles ORDER BY Name ASC; ";
+                    string query = $"SELECT * FROM vehicles ORDER BY _vehicle_name ASC;";
                     using (var cmd = new SQLiteCommand(query, conn))
                     {
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
                             _vehicles.Clear(); // Clear the list before reloading data.
-
+            
+                            // Retrieve column indices once
+                            var columnIndices = GetColumnIndices(reader);
+            
+                            // Log all column names for debugging
+                            errorMSG = ("Available columns:\n");
+                            foreach (var col in columnIndices)
+                            {
+                                errorMSG += ($"{col.Key} => {col.Value}\n");
+                            }
+            
                             while (reader.Read())
                             {
                                 var vehicle = new VehicleManagement
                                 {
-                                    Id = reader.IsDBNull(0) ? default : reader.GetInt32(0), // 0
-
-                                    // String properties
-                                    VehicleName = reader.IsDBNull(1) ? null : reader.GetString(1), // 1
-                                    VehicleBrand = reader.IsDBNull(2) ? null : reader.GetString(2), // 2
-                                    VehicleModel = reader.IsDBNull(3) ? null : reader.GetString(3), // 3
-                                    VehicleClass = reader.IsDBNull(4) ? null : reader.GetString(4), // 4
-                                    VehiclePrice = reader.IsDBNull(5) ? null : reader.GetString(5), // 5
-                                    VehicleEngineType = reader.IsDBNull(6) ? null : reader.GetString(6), // 6
-                                    VehicleEngineLayout = reader.IsDBNull(7) ? null : reader.GetString(7), // 7
-                                    VehicleEnginePosition = reader.IsDBNull(8) ? null : reader.GetString(8), // 8
-                                    VehicleGearbox = reader.IsDBNull(9) ? null : reader.GetString(9), // 9
-                                    VehicleGearboxType = reader.IsDBNull(10) ? null : reader.GetString(10), // 10
-                                    VehicleGearboxMTAT = reader.IsDBNull(11) ? null : reader.GetString(11), // 11
-                                    VehicleTag = reader.IsDBNull(12) ? null : reader.GetString(12), // 12
-                                    VehicleRegionTag = reader.IsDBNull(13) ? null : reader.GetString(13), // 13
-                                    VehicleDealershipIdIbiza = reader.IsDBNull(14) ? null : reader.GetString(14), // 14
-                                    VehicleDealershipIdHawaii = reader.IsDBNull(15) ? null : reader.GetString(15), // 15
-                                    VehicleFrontTyres = reader.IsDBNull(16) ? null : reader.GetString(16), // 16
-                                    VehicleRearTyres = reader.IsDBNull(17) ? null : reader.GetString(17), // 17
-                                    VehicleWheelDrive = reader.IsDBNull(18) ? null : reader.GetString(18), // 18
-                                    VehicleFrontBrakesDesc = reader.IsDBNull(19) ? null : reader.GetString(19), // 19
-                                    VehicleRearBrakesDesc = reader.IsDBNull(20) ? null : reader.GetString(20), // 20
-
+                                    id = GetInt(reader, columnIndices["_id_car"]),
+                                    VehicleName = GetString(reader, columnIndices["_vehicle_name"]),
+                                    VehicleBrand = GetString(reader, columnIndices["_brand_name"]),
+                                    VehicleModel = GetString(reader, columnIndices["_modelfull_name"]),
+                                    VehicleTags = GetString(reader, columnIndices["_vehicle_tags"]),
+                                    VehicleCategory = GetString(reader, columnIndices["_vehiclecategory_name"]),
+                                    EnginePositionName = GetString(reader, columnIndices["_engine_position_name"]),
+                                    GearboxName = GetString(reader, columnIndices["_gearbox_name"]),
+                                    DriveName = GetString(reader, columnIndices["_drive_name"]),
+                                    FrontBrakesDesc = GetString(reader, columnIndices["_brakes_characteristics_front"]),
+                                    RearBrakesDesc = GetString(reader, columnIndices["_brakes_characteristics_rear"]),
+                                    HouseStoredName = GetString(reader, columnIndices["_house_stored_name"]),
+                                    VehicleEnginePosition = GetString(reader, columnIndices["_engine_position"]),
+            
                                     // Integer properties
-                                    VehicleUpgradeLevel = reader.IsDBNull(21) ? default : reader.GetInt32(21), // 21
-                                    VehicleRacesRan = reader.IsDBNull(22) ? default : reader.GetInt32(22), // 22
-                                    VehicleActive = reader.IsDBNull(23) ? default : reader.GetInt32(23), // 23
-                                    VehicleOwned = reader.IsDBNull(24) ? default : reader.GetInt32(24), // 24
-                                    VehicleAccelerationStat = reader.IsDBNull(25) ? default : reader.GetInt32(25), // 25
-                                    VehicleSpeedStat = reader.IsDBNull(26) ? default : reader.GetInt32(26), // 26
-                                    VehicleBrakingStat = reader.IsDBNull(27) ? default : reader.GetInt32(27), // 27
-                                    VehicleDifficultyStat = reader.IsDBNull(28) ? default : reader.GetInt32(28), // 28
-                                    VehicleTopSpeed = reader.IsDBNull(29) ? default : reader.GetInt32(29), // 29
-                                    VehicleMaxTorque = reader.IsDBNull(30) ? default : reader.GetInt32(30), // 30
-                                    VehicleMaxTorqueRPM = reader.IsDBNull(31) ? default : reader.GetInt32(31), // 31
-                                    VehicleMaxPower = reader.IsDBNull(32) ? default : reader.GetInt32(32), // 32
-                                    VehicleMaxPowerRPM = reader.IsDBNull(33) ? default : reader.GetInt32(33), // 33
-                                    VehicleWeight = reader.IsDBNull(34) ? default : reader.GetInt32(34), // 34
-                                    VehicleInGarage = reader.IsDBNull(35) ? default : reader.GetInt32(35), // 35
-                                    VehicleCanPaint = reader.IsDBNull(36) ? default : reader.GetInt32(36), // 36
-                                    VehicleCanSticker = reader.IsDBNull(37) ? default : reader.GetInt32(37), // 37
-                                    VehicleCanUpgrade = reader.IsDBNull(38) ? default : reader.GetInt32(38), // 38
-
+                                    VehiclePrice = GetInt(reader, columnIndices["_price"]),
+                                    VehicleEngineDisplacement = GetInt(reader, columnIndices["_displacement"]),
+                                    VehicleGearboxType = GetInt(reader, columnIndices["_gearbox_id"]),
+                                    VehicleNbGears = GetInt(reader, columnIndices["_nb_gears"]),
+                                    VehicleDealershipIdIbiza = GetInt(reader, columnIndices["_dealership_id_in_ibiza"]),
+                                    VehicleDealershipIdHawaii = GetInt(reader, columnIndices["_dealership_id_in_hawaii"]),
+                                    VehicleFrontTires = GetString(reader, columnIndices["_default_front_tire_description"]),
+                                    VehicleRearTires = GetString(reader, columnIndices["_default_rear_tire_description"]),
+                                    VehicleInGarage = GetInt(reader, columnIndices["_house_stored_slot"]),
+                                    VehicleUpgradeLevel = GetInt(reader, columnIndices["_vehicle_can_upgrade"]),
+                                    VehicleRacesRan = GetInt(reader, columnIndices["_races_ran"]),
+                                    VehicleAccelerationStat = GetInt(reader, columnIndices["_stat_acc"]),
+                                    VehicleSpeedStat = GetInt(reader, columnIndices["_stat_speed"]),
+                                    VehicleBrakingStat = GetInt(reader, columnIndices["_stat_break"]),
+                                    VehicleDifficultyStat = GetInt(reader, columnIndices["_difficulty"]),
+                                    VehicleTopSpeed = GetInt(reader, columnIndices["_max_theorical_speed"]),
+                                    VehicleMaxTorque = GetInt(reader, columnIndices["_torque_nm"]),
+                                    VehicleMaxTorqueRPM = GetInt(reader, columnIndices["_torque_rpm"]),
+                                    VehicleMaxPower = GetInt(reader, columnIndices["_power_bhp"]),
+                                    VehicleMaxPowerRPM = GetInt(reader, columnIndices["_power_rpm"]),
+                                    VehicleWeight = GetInt(reader, columnIndices["_mass"]),
+            
                                     // Double properties
-                                    VehicleOdometerMetric = reader.IsDBNull(39) ? default : reader.GetDouble(39), // 39
-                                    VehicleOdometerImperial = reader.IsDBNull(40) ? default : reader.GetDouble(40), // 40
-                                    VehicleAccelerationTime = reader.IsDBNull(41) ? default : reader.GetDouble(41), // 41
-                                    VehiclePowerWeightRatio = reader.IsDBNull(42) ? default : reader.GetDouble(42), // 42
-
+                                    VehicleOdometerMetric = GetDouble(reader, columnIndices["_odometer_metric"]),
+                                    VehicleOdometerImperial = GetDouble(reader, columnIndices["_odometer_imperial"]),
+                                    VehicleAccelerationTime = GetDouble(reader, columnIndices["_acceleration_0_100_kmh"]),
+                                    VehiclePowerWeightRatio = GetDouble(reader, columnIndices["_power_bhp"]) /
+                                        (GetDouble(reader, columnIndices["_mass"]) == 0 ? 1 : GetDouble(reader, columnIndices["_mass"])),
+            
+                                    // Boolean properties
+                                    VehicleActive = GetBoolean(reader, columnIndices["_is_active"]),
+                                    VehicleOwned = GetBoolean(reader, columnIndices["_is_owned"]),
+                                    VehicleAvailable = GetBoolean(reader, columnIndices["_is_available"]),
+            
                                     // Image property
-                                    VehicleImage = reader.IsDBNull(43) ? null : (byte[])reader["Image"] // 43
+                                    VehicleImage = reader.IsDBNull(columnIndices["_vehicle_image"]) ? null : (byte[])reader["_vehicle_image"], // Adjusted to retrieve BLOB data
                                 };
-
+            
                                 _vehicles.Add(vehicle);
                             }
-
+            
                             // Bind the vehicles list to the ComboBox
-                            VehicleSelection.ItemsSource = _vehicles;
-                            VehicleSelection.DisplayMemberPath = "Name"; // Or another property to display
-                            VehicleSelection.SelectedValuePath = "Id"; // Optional, use if you need to bind the Id
+                            VehicleComboBox.ItemsSource = _vehicles;
+                            VehicleComboBox.DisplayMemberPath = "VehicleName"; // Or another property to display
+                            VehicleComboBox.SelectedValuePath = "id"; // Optional, use if you need to bind the Id
                         }
                     }
                 }
@@ -245,25 +255,102 @@ namespace TDU2_Track_Records
             {
                 MessageBox.Show($"Invalid cast: {ex.Message}");
             }
+            catch (KeyNotFoundException ex)
+            {
+                MessageBox.Show($"Key not found: {ex.Message}");
+                MessageBox.Show(errorMSG);
+            }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}");
             }
+            
         }
-        private void VehicleSelection_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private bool GetBoolean(SQLiteDataReader reader, int columnIndex)
         {
-            if (VehicleSelection.SelectedItem == null)
+            return reader.GetInt32(columnIndex) == 1;
+        }
+
+        private Dictionary<string, int> GetColumnIndices(SQLiteDataReader reader)
+        {
+            var indices = new Dictionary<string, int>();
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                indices[reader.GetName(i)] = i;
+            }
+            return indices;
+        }
+
+        private int GetInt(SQLiteDataReader reader, int index) => reader.IsDBNull(index) ? default : reader.GetInt32(index);
+        private string GetString(SQLiteDataReader reader, int index) => reader.IsDBNull(index) ? null : reader.GetString(index);
+        private double GetDouble(SQLiteDataReader reader, int index) => reader.IsDBNull(index) ? default : reader.GetDouble(index);
+
+
+        private void VehicleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (VehicleComboBox.SelectedItem == null)
             {
                 return;
             }
             else
             {
                 AddVehicle.IsEnabled = false;
-            }
-            GarageGroupBox.Visibility = Visibility.Collapsed;
-            if (!(VehicleSelection.SelectedItem is VehicleManagement selectedVehicle)) return;
+                var selectedVehicle = VehicleComboBox.SelectedItem as VehicleManagement;
 
-            // Load and display the image if available
+                if (selectedVehicle != null)
+                {
+                    // Populate the UI fields with the selected vehicle's details
+                    PopulateVehicleDetails(selectedVehicle);
+
+                    // Update the display of the selected vehicle ID
+                    VehicleComboBoxSelectionDisplay.Text = selectedVehicle.id.ToString();
+                }
+            }
+        }
+
+
+        private void PopulateVehicleDetails(VehicleManagement selectedVehicle)
+        {
+            string selectedSpeedUnit = Settings.Default.speed;
+            string selectedWeightUnit = Settings.Default.weight;
+
+            // Set Vehicle Brand
+            VehicleBrandComboBox.Text = selectedVehicle.VehicleBrand ?? string.Empty;
+
+            // Set Vehicle Model and Category
+            VehicleModelTextBox.Text = selectedVehicle.VehicleModel ?? string.Empty;
+            VehicleClassComboBox.Text = selectedVehicle.VehicleCategory ?? string.Empty;
+
+            // Set Odometer visibility and text
+            if (SI == "Metric")
+            {
+                _odometer_metric.Text = selectedVehicle.VehicleOdometerMetric.ToString("F2");
+                _odometer_metric.Visibility = Visibility.Visible;
+                _odometer_imperial.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                _odometer_imperial.Text = selectedVehicle.VehicleOdometerImperial.ToString("F2");
+                _odometer_metric.Visibility = Visibility.Collapsed;
+                _odometer_imperial.Visibility = Visibility.Visible;
+            }
+
+            // Set other vehicle details
+            VehiclePriceTextBox.Text = selectedVehicle.VehiclePrice.ToString();
+            VehicleActiveCheckBox.IsChecked = selectedVehicle.VehicleActive;
+            VehicleOwnedCheckBox.IsChecked = selectedVehicle.VehicleOwned;
+
+            AccelerationStatSlider.Value = selectedVehicle.VehicleAccelerationStat;
+            SpeedStatSlider.Value = selectedVehicle.VehicleSpeedStat;
+            BrakingStatSlider.Value = selectedVehicle.VehicleBrakingStat;
+            DifficultyStatSlider.Value = selectedVehicle.VehicleDifficultyStat;
+
+            TopSpeedTextBox.Text = selectedVehicle.VehicleTopSpeed.ToString();
+            MaxPowerTextBox.Text = selectedVehicle.VehicleMaxPower.ToString();
+            WeightTextBox.Text = selectedVehicle.VehicleWeight.ToString();
+
+            // Set the vehicle image if available
             if (selectedVehicle.VehicleImage != null && selectedVehicle.VehicleImage.Length > 0)
             {
                 using (var ms = new MemoryStream(selectedVehicle.VehicleImage))
@@ -278,63 +365,10 @@ namespace TDU2_Track_Records
             }
             else
             {
-                // Set a default image or clear the image control if no image is available
                 UploadedImage.Source = null;
             }
-
-            PopulateVehicleDetails(selectedVehicle);
         }
 
-        private void PopulateVehicleDetails(VehicleManagement selectedVehicle)
-        {
-            string selectedSpeedUnit = Settings.Default.speed;
-            string selectedWeightUnit = Settings.Default.weight;
-            if (VehicleBrandComboBox.Visibility == Visibility.Visible)
-            {
-                VehicleBrandComboBox.Text = selectedVehicle.VehicleBrand;
-            }
-            else
-            {
-                VehicleBrandTextBox.Text = selectedVehicle.VehicleBrand;
-            }
-
-            VehicleModelTextBox.Text = selectedVehicle.VehicleModel;
-            VehicleClassComboBox.Text = selectedVehicle.VehicleClass;
-
-            if (SI == "Metric")
-            {
-                Odometer_Metric.Text = selectedVehicle.VehicleOdometerMetric.ToString();
-                Odometer_Metric.Visibility = Visibility.Visible;
-                Odometer_Imperial.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                Odometer_Imperial.Text = selectedVehicle.VehicleOdometerImperial.ToString();
-                Odometer_Metric.Visibility = Visibility.Collapsed;
-                Odometer_Imperial.Visibility = Visibility.Visible;
-            }
-
-            VehiclePriceTextBox.Text = selectedVehicle.VehiclePrice;
-            VehicleActiveCheckBox.IsChecked = Convert.ToBoolean(selectedVehicle.VehicleActive);
-            VehicleOwnedCheckBox.IsChecked = Convert.ToBoolean(selectedVehicle.VehicleOwned);
-            VehicleOwnedCheckBoxChange();
-            AccelerationStatSlider.Value = selectedVehicle.VehicleAccelerationStat;
-            SpeedStatSlider.Value = selectedVehicle.VehicleSpeedStat;
-            BrakingStatSlider.Value = selectedVehicle.VehicleBrakingStat;
-            DifficultyStatSlider.Value = selectedVehicle.VehicleDifficultyStat;
-            TopSpeedTextBox.Text = ConvertSpeedToSelectedUnit(selectedVehicle.VehicleTopSpeed, selectedSpeedUnit).ToString();
-            AccelerationTextBox.Text = selectedVehicle.VehicleAccelerationTime.ToString();
-            EngineSizeTextBox.Text = selectedVehicle.VehicleEngineDisplacement;
-            EngineLayoutComboBox.Text = selectedVehicle.VehicleEngineLayout;
-            EnginePlacementComboBox.Text = selectedVehicle.VehicleEnginePosition;
-            GearboxComboBox.Text = selectedVehicle.VehicleGearbox;
-            GearsComboBox.Text = selectedVehicle.VehicleGearNumbers.ToString();
-            MaxTorqueTextBox.Text = selectedVehicle.VehicleMaxTorque.ToString();
-            MaxTorqueRPMTextBox.Text = selectedVehicle.VehicleMaxTorqueRPM.ToString();
-            MaxPowerTextBox.Text = selectedVehicle.VehicleMaxPower.ToString();
-            MaxPowerRPMTextBox.Text = selectedVehicle.VehicleMaxPowerRPM.ToString();
-            WeightTextBox.Text = ConvertWeightToSelectedUnit(selectedVehicle.VehicleWeight, selectedWeightUnit).ToString();
-        }
 
         private void ExecuteNonQuery(string query, Action<SQLiteCommand> setParameters)
         {
@@ -356,8 +390,8 @@ namespace TDU2_Track_Records
         private void UpdateVehicleDetails()
         {
             double mileage;
-            string price;
-            int topSpeed, accelerationStat, speedStat, brakingStat, difficultyStat, maxPower, maxPowerRPM, maxTorque, maxTorqueRPM, weight;
+            
+            int price, topSpeed, accelerationStat, speedStat, brakingStat, difficultyStat, maxPower, maxPowerRPM, maxTorque, maxTorqueRPM, weight;
             double accelerationTime;
 
             List<string> errors = ValidateInputs(out mileage, out price, out topSpeed,
@@ -376,7 +410,7 @@ namespace TDU2_Track_Records
             else
             {
 
-                if (VehicleSelection.SelectedItem is VehicleManagement selectedVehicle)
+                if (VehicleComboBox.SelectedItem is VehicleManagement selectedVehicle)
                 {
                     SetVehicleDetails(selectedVehicle, mileage, price, topSpeed, accelerationStat,
                                       speedStat, brakingStat, difficultyStat, accelerationTime,
@@ -386,15 +420,15 @@ namespace TDU2_Track_Records
                     byte[] imageBytes = ConvertImageToByteArray(UploadedImage.Source as BitmapImage);
 
                     string query = @"
-                            UPDATE Vehicles SET 
+                            UPDATE vehicles SET 
                             Name = @name,
                             Brand = @brand,
                             Model = @model,
-                            Class = @class,
-                            Odometer_Metric = @odometerMetric,
-                            Odometer_Imperial = @odometerImperial,
-                            Owned = @owned,
-                            Active = @active,
+                            _vehiclecategory_name = @class,
+                            _odometer_metric = @odometerMetric,
+                            _odometer_imperial = @odometerImperial,
+                            _is_owned = @owned,
+                            _is_active = @active,
                             Price = @price, 
                             Acceleration_Stat = @accelerationStat,
                             Speed_Stat = @speedStat,
@@ -442,7 +476,7 @@ namespace TDU2_Track_Records
                 return ms.ToArray();
             }
         }
-        private List<string> ValidateInputs(out double mileage, out string price, out int topSpeed,
+        private List<string> ValidateInputs(out double mileage, out int price, out int topSpeed,
                                            out int accelerationStat, out int speedStat, out int brakingStat,
                                            out int difficultyStat, out double accelerationTime, out int maxPower,
                                            out int maxPowerRPM, out int maxTorque, out int maxTorqueRPM, out int weight)
@@ -452,7 +486,7 @@ namespace TDU2_Track_Records
             topSpeed = 0;
             accelerationStat = 0;
             speedStat = 0;
-            price = "";
+            price = 0;
             brakingStat = 0;
             difficultyStat = 0;
             accelerationTime = 0;
@@ -465,7 +499,7 @@ namespace TDU2_Track_Records
             List<string> errorMessages = new List<string>();
 
             // Validate mileage
-            if (!(SI == "Metric" ? double.TryParse(Odometer_Metric.Text, out mileage) : double.TryParse(Odometer_Imperial.Text, out mileage)))
+            if (!(SI == "Metric" ? double.TryParse(_odometer_metric.Text, out mileage) : double.TryParse(_odometer_imperial.Text, out mileage)))
             {
                 errorMessages.Add("Invalid or empty mileage.");
             }
@@ -475,7 +509,7 @@ namespace TDU2_Track_Records
                 errorMessages.Add("Price is required.");
             } else
             {
-                price = VehiclePriceTextBox.Text;
+                price = Convert.ToInt32(VehiclePriceTextBox.Text);
             }
 
             // Validate top speed
@@ -568,7 +602,7 @@ namespace TDU2_Track_Records
             currentTextBox.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         }
 
-        private void SetVehicleDetails(VehicleManagement vehicle, double mileage, string price, int topSpeed,
+        private void SetVehicleDetails(VehicleManagement vehicle, double mileage, int price, int topSpeed,
                                         int accelerationStat, int speedStat, int brakingStat, int difficultyStat,
                                         double accelerationTime, int maxPower, int maxPowerRPM, int maxTorque,
                                         int maxTorqueRPM, int weight)
@@ -578,7 +612,7 @@ namespace TDU2_Track_Records
                 : VehicleBrandTextBox.Text + " " + VehicleModelTextBox.Text;
             vehicle.VehicleBrand = VehicleBrandComboBox.Text;
             vehicle.VehicleModel = VehicleModelTextBox.Text;
-            vehicle.VehicleClass = VehicleClassComboBox.Text;
+            vehicle.VehicleCategory = VehicleClassComboBox.Text;
 
             if (SI == "Metric")
             {
@@ -591,8 +625,8 @@ namespace TDU2_Track_Records
                 vehicle.VehicleOdometerMetric = Math.Round(mileage * 1.60934,1);
             }
 
-            vehicle.VehicleOwned = VehicleOwnedCheckBox.IsChecked == true ? 1 : 0;
-            vehicle.VehicleActive = VehicleActiveCheckBox.IsChecked == true ? 1 : 0;
+            vehicle.VehicleOwned = VehicleOwnedCheckBox.IsChecked == true ? true : false;
+            vehicle.VehicleActive = VehicleActiveCheckBox.IsChecked == true ? true : false;
             vehicle.VehiclePrice = price;
             vehicle.VehicleAccelerationStat = accelerationStat;
             vehicle.VehicleSpeedStat = speedStat;
@@ -600,9 +634,9 @@ namespace TDU2_Track_Records
             vehicle.VehicleDifficultyStat = difficultyStat;
             vehicle.VehicleAccelerationTime = accelerationTime;
             vehicle.VehicleTopSpeed = topSpeed;
-            vehicle.VehicleEngineDisplacement = EngineSizeTextBox.Text;
-            vehicle.VehicleEngineLayout = EngineLayoutComboBox.Text;
-            vehicle.VehicleGearbox = GearboxComboBox.Text;
+            vehicle.VehicleEngineDisplacement = Convert.ToInt32(EngineDisplacementTextBox.Text);
+            vehicle.VehicleEnginePosition = EnginePositionComboBox.Tag.ToString();
+            vehicle.GearboxName = GearboxComboBox.Text;
             vehicle.VehicleMaxPower = maxPower;
             vehicle.VehicleMaxPowerRPM = maxPowerRPM;
             vehicle.VehicleMaxTorque = maxTorque;
@@ -613,10 +647,11 @@ namespace TDU2_Track_Records
 
         private void AddParameters(SQLiteCommand cmd, VehicleManagement vehicle, byte[] image)
         {
+            cmd.Parameters.AddWithValue("@id", vehicle.id);
             cmd.Parameters.AddWithValue("@name", vehicle.VehicleName ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@brand", vehicle.VehicleBrand ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@model", vehicle.VehicleModel ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@class", vehicle.VehicleClass ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@class", vehicle.VehicleCategory ?? (object)DBNull.Value);
             cmd.Parameters.AddWithValue("@odometerMetric", vehicle.VehicleOdometerMetric);
             cmd.Parameters.AddWithValue("@odometerImperial", vehicle.VehicleOdometerImperial);
             cmd.Parameters.AddWithValue("@owned", vehicle.VehicleOwned);
@@ -628,24 +663,23 @@ namespace TDU2_Track_Records
             cmd.Parameters.AddWithValue("@difficultyStat", vehicle.VehicleDifficultyStat);
             cmd.Parameters.AddWithValue("@topSpeed", vehicle.VehicleTopSpeed);
             cmd.Parameters.AddWithValue("@accelerationTime", vehicle.VehicleAccelerationTime);
-            cmd.Parameters.AddWithValue("@engine", vehicle.VehicleEngineDisplacement ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@layout", vehicle.VehicleEngineLayout ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@gearbox", vehicle.VehicleGearbox ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("@engine", vehicle.VehicleEngineDisplacement);
+            cmd.Parameters.AddWithValue("@layout", vehicle.VehicleEnginePosition);
+            cmd.Parameters.AddWithValue("@gearbox", vehicle.VehicleGearboxType);
             cmd.Parameters.AddWithValue("@maxPower", vehicle.VehicleMaxPower);
             cmd.Parameters.AddWithValue("@maxPowerRPM", vehicle.VehicleMaxPowerRPM);
             cmd.Parameters.AddWithValue("@maxTorque", vehicle.VehicleMaxTorque);
             cmd.Parameters.AddWithValue("@maxTorqueRPM", vehicle.VehicleMaxTorqueRPM);
             cmd.Parameters.AddWithValue("@weight", vehicle.VehicleWeight);
             cmd.Parameters.AddWithValue("@image", image ?? (object)DBNull.Value);
-            cmd.Parameters.AddWithValue("@id", vehicle.Id);
         }
 
 
         private void AddVehicleButton_Click(object sender, RoutedEventArgs e)
         {
             double mileage;
-            string price;
-            int topSpeed, accelerationStat, speedStat, brakingStat, difficultyStat, maxPower, maxPowerRPM, maxTorque, maxTorqueRPM, weight;
+           
+            int price, topSpeed, accelerationStat, speedStat, brakingStat, difficultyStat, maxPower, maxPowerRPM, maxTorque, maxTorqueRPM, weight;
             double accelerationTime;
 
             List<string> errors = ValidateInputs(out mileage, out price, out topSpeed,
@@ -681,27 +715,27 @@ namespace TDU2_Track_Records
                 string vehicleClass = VehicleClassComboBox.Text;
                 if (SI == "Metric")
                 {
-                    meter_Metric = double.Parse(Odometer_Metric.Text);
+                    meter_Metric = double.Parse(_odometer_metric.Text);
                     meter_Imperial = Math.Round(meter_Metric * 0.621371, 1);
                 }
                 else
                 {
-                    meter_Imperial = double.Parse(Odometer_Imperial.Text);
+                    meter_Imperial = double.Parse(_odometer_imperial.Text);
                     meter_Metric = Math.Round(meter_Imperial * 1.60934, 1);
                 }
                 int races = 0;
-                price = VehiclePriceTextBox.Text;
+                price = Convert.ToInt32(VehiclePriceTextBox.Text);
                 bool isActive = VehicleActiveCheckBox.IsChecked.GetValueOrDefault();
-                int isactive = 0;
+                int is_active = 0;
                 if (isActive == true)
                 {
-                    isactive = 1;
+                    is_active = 1;
                 }
                 bool isOwned = VehicleOwnedCheckBox.IsChecked.GetValueOrDefault();
-                int isowned = 0;
+                int is_owned = 0;
                 if (isOwned == true)
                 {
-                    isowned = 1;
+                    is_owned = 1;
                 }
                 accelerationStat = Convert.ToInt32(AccelerationStatSlider.Value);
                 speedStat = Convert.ToInt32(SpeedStatSlider.Value);
@@ -709,7 +743,7 @@ namespace TDU2_Track_Records
                 difficultyStat = Convert.ToInt32(DifficultyStatSlider.Value);
                 accelerationTime = Convert.ToDouble(AccelerationTextBox.Text);
                 topSpeed = int.Parse(TopSpeedTextBox.Text);
-                string engineSize = EngineSizeTextBox.Text;
+                string engineSize = EngineDisplacementTextBox.Text;
                 string engineLayout = EngineLayoutComboBox.Text;
                 string gearbox = GearboxComboBox.Text;
                 maxTorque = int.Parse(MaxTorqueTextBox.Text);
@@ -724,14 +758,14 @@ namespace TDU2_Track_Records
                 {
                     conn.Open();
                     query = @"
-            INSERT INTO vehicles 
-            (Name, Brand, Model, Class, Races_Ran, Odometer_Metric, Odometer_Imperial, Price, Active, Owned, Acceleration_Stat, Speed_Stat, Braking_Stat, 
-            Difficulty_Stat, Top_Speed, Acceleration_Time, Engine, Engine_Layout, 
-            Gearbox, Max_Torque, Max_TorqueRPM, Max_Power, Max_PowerRPM, Weight, Image) 
-            VALUES 
-            (@name, @brand, @model ,@class, @races, @meter_Metric, @meter_Imperial, @price, @active, @owned, @acceleration, @speedStat, @brakingStat,
-            @difficultyStat, @topSpeed, @accelerationValue, @engineSize, @engineLayout,
-            @gearbox, @maxTorque, @maxTorqueRPM, @maxPower, @maxPowerRPM, @weight, @image)";
+                            INSERT INTO vehicles 
+                            (Name, Brand, Model, Class, Races_Ran, _odometer_metric, _odometer_imperial, Price, Active, Owned, Acceleration_Stat, Speed_Stat, Braking_Stat, 
+                            Difficulty_Stat, Top_Speed, Acceleration_Time, EngineDisplacement, Engine_Layout, 
+                            Gearbox, Max_Torque, Max_TorqueRPM, Max_Power, Max_PowerRPM, Weight, Image) 
+                            VALUES 
+                            (@name, @brand, @model ,@class, @races, @meter_Metric, @meter_Imperial, @price, @active, @owned, @acceleration, @speedStat, @brakingStat,
+                            @difficultyStat, @topSpeed, @accelerationValue, @engineSize, @engineLayout,
+                            @gearbox, @maxTorque, @maxTorqueRPM, @maxPower, @maxPowerRPM, @weight, @image)";
 
 
                     using (var cmd = new SQLiteCommand(query, conn))
@@ -743,8 +777,8 @@ namespace TDU2_Track_Records
                         cmd.Parameters.AddWithValue("@races", races);
                         cmd.Parameters.AddWithValue("@meter_Metric", meter_Metric);
                         cmd.Parameters.AddWithValue("@meter_Imperial", meter_Imperial);
-                        cmd.Parameters.AddWithValue("@active", isactive);
-                        cmd.Parameters.AddWithValue("@owned", isowned);
+                        cmd.Parameters.AddWithValue("@active", is_active);
+                        cmd.Parameters.AddWithValue("@owned", is_owned);
                         cmd.Parameters.AddWithValue("@price", price);
                         cmd.Parameters.AddWithValue("@acceleration", accelerationStat);
                         cmd.Parameters.AddWithValue("@speedStat", speedStat);
@@ -767,16 +801,16 @@ namespace TDU2_Track_Records
 
                 MessageBox.Show("Vehicle Added");
                 BindComboBox(VehicleBrandComboBox);
-                BindComboBox(VehicleSelection);
+                BindComboBox(VehicleComboBox);
                 LoadVehicles();
             }
         }
 
         private void DeleteVehicleButton_Click(object sender, RoutedEventArgs e)
         {
-            if (VehicleSelection.SelectedItem == null) return;
+            if (VehicleComboBox.SelectedItem == null) return;
 
-            var selectedVehicle = (VehicleManagement)VehicleSelection.SelectedItem;  // Assume you have a Vehicle class
+            var selectedVehicle = (VehicleManagement)VehicleComboBox.SelectedItem;  // Assume you have a Vehicle class
 
             using (var conn = new SQLiteConnection(connectionString))
             {
@@ -784,7 +818,7 @@ namespace TDU2_Track_Records
                 string query = "DELETE FROM Vehicles WHERE Id = @id";
                 using (var cmd = new SQLiteCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@id", selectedVehicle.Id);  // Assuming your Vehicle class has an Id property
+                    cmd.Parameters.AddWithValue("@id", selectedVehicle.id);  // Assuming your Vehicle class has an Id property
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -935,7 +969,7 @@ namespace TDU2_Track_Records
                 connection.Open();
 
                 // Define the SQL query based on the island name
-                string query = "SELECT * FROM Houses WHERE IslandName = @IslandName";
+                string query = "SELECT * FROM Houses WHERE IslandName = @IslandName AND OWNED = '1'";
 
                 using (SQLiteCommand command = new SQLiteCommand(query, connection))
                 {
@@ -965,7 +999,7 @@ namespace TDU2_Track_Records
             }
             else
             {
-                GarageGroupBox.Visibility= Visibility.Collapsed;
+                GarageGroupBox.Visibility = Visibility.Collapsed;
             }
         }
         private void VehicleOwnedCheckBoxChange()
@@ -1018,15 +1052,6 @@ namespace TDU2_Track_Records
                 {
                     passwordBox.Clear();
                 }
-                //else if (child is System.Windows.Controls.Image imaGe)
-                //{
-                //    imaGe.Source = null;
-                //}
-                //else if (child is TextBlock textBlock)
-                //{
-                //    textBlock.Text = string.Empty;
-                //}
-                // Add more control types as needed
 
                 // Recurse into child elements
                 ResetControls(child);
@@ -1034,5 +1059,4 @@ namespace TDU2_Track_Records
             }
         }
     }
-
 }

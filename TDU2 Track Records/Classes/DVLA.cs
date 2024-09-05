@@ -9,7 +9,7 @@
 //        public string Name { get; set; }
 //        public string Brand { get; set; }
 //        public string Model { get; set; }
-//        public string Class { get; set; }
+//        public string _vehiclecategory_name { get; set; }
 //        public string RacesRan { get; set; }
 //        public string OdometerMetric { get; set; }
 //        public string OdometerImperial { get; set; }

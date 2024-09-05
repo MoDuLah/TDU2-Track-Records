@@ -1,4 +1,10 @@
 SELECT id, name
 FROM vehicles 
-WHERE name LIKE '%Supra%' 
-   OR name LIKE '%Nissan%' AND active = '1';
+WHERE Active='1' AND name LIKE '%Merc%' 
+--  OR name LIKE '%RUF %'
+-- OR name LIKE '%Porsche%'
+-- OR name LIKE '%Mazda%'
+ 
+
+
+ ;

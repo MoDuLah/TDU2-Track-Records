@@ -139,7 +139,7 @@ namespace TDU2_Track_Records
         private void BindVehicleComboBox(ComboBox comboBox)
         {
             ComboBoxItem selectedItem = (ComboBoxItem)combo_Class.SelectedItem;
-            string query = "SELECT * FROM vehicles WHERE Active = '1' AND Owned = '1'";
+            string query = "SELECT * FROM vehicles WHERE _is_active = 'true' AND _is_owned = '1'";
 
             if (!string.IsNullOrEmpty(combo_Class.Text))
             {
@@ -158,7 +158,7 @@ namespace TDU2_Track_Records
             {
                 if (dataSet.Tables[0].Rows.Count > 0)
                 {
-                    SetComboBoxSource(comboBox, dataSet, "Name", "id");
+                    SetComboBoxSource(comboBox, dataSet, "_vehicle_name", "id");
                     //ClearVehicleDetails();
                 }
                 else

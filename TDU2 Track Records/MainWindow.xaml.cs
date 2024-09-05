@@ -90,7 +90,7 @@ namespace TDU2_Track_Records
                 new ComboBoxItem { ImagePath = "Images/carClasses/C3.png", Description = "Classic 3", Value = "C3" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/C4.png", Description = "Classic 4", Value = "C4" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/MA1.png", Description = "Motorcycles 1", Value = "MA1" },
-                new ComboBoxItem { ImagePath = "Images/carClasses/MA2.png", Description = "Motorcycles 2", Value = "MA2" }
+                new ComboBoxItem { ImagePath = "Images/carClasses/MA2.png", Description = "Motorcycles 2", Value = "mA2" }
             };
 
             combo_Class.ItemsSource = items;
@@ -378,7 +378,7 @@ namespace TDU2_Track_Records
         }
         private void calc_Total_Odometer()
         {
-            string odo = SI == "Metric" ? "Odometer_Metric" : "Odometer_Imperial";
+            string odo = SI == "Metric" ? "_odometer_metric" : "_odometer_imperial";
             string query = $"SELECT Sum({odo}) FROM [vehicles];";
 
             try
@@ -582,8 +582,8 @@ namespace TDU2_Track_Records
             string answer = Average_Speed.Text.Substring(0, Average_Speed.Text.Length - speed.Length);
             if (SI == "Metric")
             {
-                odo = "Odometer_Metric";
-                otherSiName = "Odometer_Imperial";
+                odo = "_odometer_metric";
+                otherSiName = "_odometer_imperial";
                 calcOtherSIOdometer = Math.Round(Convert.ToDouble(txt_odometer.Text) * onemile, 2);
                 havg = "Higher_Avg_Metric";
                 avg = "Average_Speed_Metric";
@@ -594,8 +594,8 @@ namespace TDU2_Track_Records
             }
             else
             {
-                odo = "Odometer_Imperial";
-                otherSiName = "Odometer_Metric";
+                odo = "_odometer_imperial";
+                otherSiName = "_odometer_metric";
                 calcOtherSIOdometer = Math.Round(Convert.ToDouble(txt_odometer.Text) / onemile, 2);
                 havg = "Higher_Avg_Imperial";
                 avg = "Average_Speed_Imperial";
@@ -639,12 +639,12 @@ namespace TDU2_Track_Records
         WHERE id = '{trackId}';
 
         UPDATE [vehicles] 
-        SET {odo} = '{Convert.ToDouble(txt_odometer.Text)}', Races_Ran = Races_Ran + 1 
-        WHERE Name = '{combo_Vehicle.Text.Replace("'", "''")}';
+        SET {odo} = '{Convert.ToDouble(txt_odometer.Text)}', _races_ran = _races_ran + 1 
+        WHERE _vehicle_name = '{combo_Vehicle.Text.Replace("'", "''")}';
 
         UPDATE [vehicles] 
         SET {otherSiName} = '{calcOtherSIOdometer}' 
-        WHERE Name = '{combo_Vehicle.Text.Replace("'", "''")}'";
+        WHERE _vehicle_name = '{combo_Vehicle.Text.Replace("'", "''")}'";
 
         }
 
@@ -701,7 +701,7 @@ namespace TDU2_Track_Records
                 dbConn.Open();
                 try
                 {
-                    using (var dbCmd = new SQLiteCommand($"SELECT {odo} FROM [vehicles] WHERE Name = '{veh}'", dbConn))
+                    using (var dbCmd = new SQLiteCommand($"SELECT {odo} FROM [vehicles] WHERE _vehicle_name = '{veh}'", dbConn))
                     using (var reader = dbCmd.ExecuteReader())
                     {
                         if (reader.Read())
@@ -795,7 +795,7 @@ namespace TDU2_Track_Records
 
         private void UpdateUIForSI(bool isClassSelected)
         {
-                btn_loadrec_Metric.Content = isClassSelected ? "Load Class Records" : "Load Track Records";
+                btn_loadrec_Metric.Content = isClassSelected ? "Load _vehiclecategory_name Records" : "Load Track Records";
                 TrackLapRecordGroupbox.Header = isClassSelected ? "Class Lap Record" : "Track Lap Record";
             if (SI == "Metric")
             {
@@ -1026,7 +1026,7 @@ namespace TDU2_Track_Records
         {
             //if(comboBox.SelectedIndex == -1) { return; }
 
-            string query = "SELECT * FROM vehicles WHERE Active = '1' AND Owned = '1'";
+            string query = "SELECT * FROM vehicles WHERE _is_active = 'true' AND _is_owned = 'true'";
 
             if (combo_Class.SelectedIndex > -1)
             {
@@ -1034,13 +1034,14 @@ namespace TDU2_Track_Records
                 string selectedValue = selectedItem.Value;
                 if (selectedValue != "All")
                 {
-                    query += $" AND Class = '{selectedValue}' ORDER BY Name ASC;";
+                    query += $" AND _vehiclecategory_name = '{selectedValue}' ORDER BY _vehicle_name ASC;";
                 }
             }
             else
             {
-                query += " ORDER BY Name ASC;";
+                query += " ORDER BY _vehicle_name ASC;";
             }
+            
 
 
             ExecuteQuery(query, "vehicles", dataSet =>
@@ -1048,7 +1049,7 @@ namespace TDU2_Track_Records
                 if (dataSet.Tables[0].Rows.Count > 0)
                 {
                     ClearVehicleDetails();
-                    SetComboBoxSource(comboBox, dataSet, "Name", "id");
+                    SetComboBoxSource(comboBox, dataSet, "_vehicle_name", "id");
                     // If a specific ID is provided, select the corresponding item
                     if (!string.IsNullOrEmpty(selectedId))
                     {
@@ -1310,7 +1311,7 @@ namespace TDU2_Track_Records
                         // Show a message box with the details and visibility status for debugging purposes
                         //MessageBox.Show(
                         //    $"Race type: {selectedRaceType}\n" +
-                        //    $"Is Class Restricted? {hasRestrictedClass} (Visibility: {(ClassRestictionGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
+                        //    $"Is _vehiclecategory_name Restricted? {hasRestrictedClass} (Visibility: {(ClassRestictionGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
                         //    $"Is Vehicle Restricted? {hasRestrictedVehicle} (Visibility: {(VehicleRestictionGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
                         //    $"Is it Race? {isRace} (Visibility: {(RaceLengthGroupBox.Visibility == Visibility.Visible ? "Visible" : "Collapsed")})\n" +
                         //    $"Is it Eliminator? {isEliminator}\n" +
@@ -1372,13 +1373,13 @@ namespace TDU2_Track_Records
             int orientation = cb_orientation.IsChecked == false ? 0 : 1;
             string veh = combo_Vehicle.Text.Replace("'", "''");
             int trackId = Convert.ToInt32(combo_Track.SelectedValue);
-            string odoColumn = SI == "Metric" ? "Odometer_Metric" : "Odometer_Imperial";
+            string odoColumn = SI == "Metric" ? "__odometer_metric" : "__odometer_imperial";
             double conversionFactor = SI == "Imperial" ? 1.60934 : 1.0;
 
             // SQL query to fetch odometer reading, fastest lap, and the number of records for the vehicle and track
             string query = $@"
                             SELECT 
-                            (SELECT {odoColumn} FROM vehicles WHERE Name = '{veh}'),
+                            (SELECT {odoColumn} FROM vehicles WHERE _vehicle_name = '{veh}'),
                             (SELECT Fastest_Lap FROM records WHERE carName = '{veh}' AND trackId = {trackId}),
                             (SELECT COUNT(*) FROM records WHERE trackId = {trackId} AND carName = '{veh}' AND conditions = {conditions} AND orientation = {orientation})";
 
@@ -1490,8 +1491,8 @@ namespace TDU2_Track_Records
         private int GetCarsCount(SQLiteConnection dbConn, string param)
         {
             string query = string.IsNullOrEmpty(param)
-                ? "SELECT COUNT(*) FROM [vehicles] WHERE Active = '1' ;"
-                : $"SELECT COUNT(*) FROM [vehicles] WHERE Class = '{param}' and Active = '1' ;";
+                ? "SELECT COUNT(*) FROM [vehicles] WHERE _is_active = 'true' ;"
+                : $"SELECT COUNT(*) FROM [vehicles] WHERE _vehiclecategory_name = '{param}' and _is_active = 'true' ;";
 
             using (var cmd = new SQLiteCommand(query, dbConn))
             using (var reader = cmd.ExecuteReader())
@@ -2085,6 +2086,14 @@ namespace TDU2_Track_Records
                     lastTracksTop = tracks.Top;
                 }
             FillComboBoxWithTracks(combo_Track);
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
         }
     }
 }
