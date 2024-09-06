@@ -6,6 +6,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using TDU2_Track_Records.Properties;
 using System.Windows.Input;
+using System.Collections.Generic;
 
 namespace TDU2_Track_Records
 {
@@ -15,10 +16,11 @@ namespace TDU2_Track_Records
         public string distance, speed;
         public string slotColumn;
         readonly string SI = Settings.Default.system;
-
+        bool isUnlocked = false;
         public dealerships()
         {
             InitializeComponent();
+            PreloadAvailableCars(); // Preload cars once when initializing
         }
 
         private void IslandComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -28,8 +30,36 @@ namespace TDU2_Track_Records
             if (!string.IsNullOrEmpty(selectedIsland))
             {
                 LoadDealerships(selectedIsland);
+                VehiclesScrollViewer.Visibility = Visibility.Hidden;
             }
 
+        }
+        // Preload the list of available cars once
+        private List<dynamic> availableCars = new List<dynamic>();
+
+        private void PreloadAvailableCars()
+        {
+            availableCars.Clear(); // Clear any previous data
+
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                string query = "SELECT id, _vehicle_name FROM vehicles WHERE _is_available = 'true' ORDER BY _vehicle_name ";
+                using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                {
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            availableCars.Add(new
+                            {
+                                VehicleName = reader["_vehicle_name"].ToString(),
+                                VehicleId = reader["id"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -40,7 +70,7 @@ namespace TDU2_Track_Records
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT * FROM dealerships WHERE Island = @Island ORDER BY Name ASC";
+                string query = "SELECT * FROM dealerships WHERE Island = @Island ORDER BY id ASC";
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Island", island);
@@ -48,6 +78,7 @@ namespace TDU2_Track_Records
                     {
                         while (reader.Read())
                         {
+                            string dealershipId = reader["Id"].ToString();
                             string dealershipName = reader["Name"].ToString();
                             DealershipListBox.Items.Add(dealershipName);
                         }
@@ -62,6 +93,8 @@ namespace TDU2_Track_Records
             {
                 string selectedDealership = DealershipListBox.SelectedItem.ToString();
                 LoadVehicles(selectedDealership);
+                VehiclesScrollViewer.Visibility = Visibility.Visible;
+                VehiclesScrollViewer.ScrollToTop();
             }
         }
 
@@ -69,14 +102,17 @@ namespace TDU2_Track_Records
         {
             VehiclesStackPanel.Children.Clear();
             int slotIndex = 0;
-
+            string island = IslandComboBox.SelectedValue?.ToString();
+            //MessageBox.Show(island);
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT * FROM dealerships WHERE Name = @Name";
+                string query = "SELECT * FROM dealerships WHERE Island = @Island AND Name = @Name";
+                //MessageBox.Show(query);
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Name", dealershipName);
+                    cmd.Parameters.AddWithValue("@Island", island);
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
                         if (reader.Read())
@@ -85,16 +121,24 @@ namespace TDU2_Track_Records
                             {
                                 string slotColumn = $"Slot{i}_VehicleId";
                                 string vehicleId = reader[slotColumn]?.ToString();
-                                if (!string.IsNullOrEmpty(vehicleId))
+
+                                if (string.IsNullOrEmpty(vehicleId))
                                 {
+                                    // If the slot is empty, add a ComboBox
+                                    AddComboBoxToUI(dealershipName, slotIndex, slotColumn);
+                                }
+                                else
+                                {
+                                    // Load the vehicle details for non-empty slots
                                     var vehicle = GetVehicleDetails(vehicleId);
                                     if (vehicle != null)
                                     {
-                                        // Pass the slotColumn to AddVehicleToUI
                                         AddVehicleToUI(vehicle, slotIndex, slotColumn);
-                                        slotIndex++;
                                     }
                                 }
+
+                                // Increment the slotIndex to ensure proper positioning in the grid
+                                slotIndex++;
                             }
                         }
                     }
@@ -102,6 +146,143 @@ namespace TDU2_Track_Records
             }
         }
 
+
+
+        private void AddComboBoxToUI(string dealershipName, int slotIndex, string slotColumn)
+        {
+            // Create the main GroupBox for the empty slot
+            GroupBox emptySlotGroupBox = new GroupBox
+            {
+                Header = $"Empty Slot {slotIndex + 1}",
+                Margin = new Thickness(10),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
+                BorderThickness = new Thickness(2),
+                Padding = new Thickness(10)
+            };
+
+            // Create a StackPanel to hold the ComboBox
+            StackPanel contentStack = new StackPanel();
+
+            // Create the ComboBox for selecting a car
+            ComboBox availableCarsComboBox = new ComboBox
+            {
+                Width = 150,
+                Tag = slotColumn // Store the actual slot column name in the Tag property
+            };
+
+            // Load the available cars into the ComboBox
+            LoadAvailableCarsIntoComboBox(availableCarsComboBox);
+
+            // Add a SelectionChanged event to handle car selection
+            availableCarsComboBox.SelectionChanged += (sender, e) =>
+            {
+                if (availableCarsComboBox.SelectedValue != null)
+                {
+                    string selectedVehicleId = availableCarsComboBox.SelectedValue.ToString();
+                    if (!string.IsNullOrEmpty(selectedVehicleId))
+                    {
+                        AddVehicleToSlot(dealershipName, selectedVehicleId, slotColumn);
+
+                        // Refresh the UI after adding the car
+                        LoadVehicles(dealershipName);
+                    }
+                }
+            };
+
+            // Add the ComboBox to the contentStack
+            contentStack.Children.Add(availableCarsComboBox);
+
+            // Set the content of the GroupBox
+            emptySlotGroupBox.Content = contentStack;
+
+            // Ensure VehiclesStackPanel is a Grid (you may need to adjust based on your layout)
+            Grid grid = VehiclesStackPanel as Grid;
+            if (grid == null)
+            {
+                // Initialize a new Grid if VehiclesStackPanel is not a Grid
+                grid = new Grid();
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+
+                // Define rows based on the number of slots
+                int rows = (8 + 1) / 2;
+                for (int i = 0; i < rows; i++)
+                {
+                    grid.RowDefinitions.Add(new RowDefinition());
+                }
+
+                // Clear existing content and set the new Grid
+                VehiclesStackPanel.Children.Clear();
+                VehiclesStackPanel.Children.Add(grid);
+            }
+
+            // Determine the column and row for this empty slot
+            int column = slotIndex % 2;
+            int row = slotIndex / 2;
+
+            // Set the position of the GroupBox in the grid
+            Grid.SetColumn(emptySlotGroupBox, column);
+            Grid.SetRow(emptySlotGroupBox, row);
+
+            // Add the GroupBox to the grid
+            grid.Children.Add(emptySlotGroupBox);
+        }
+
+
+        private void LoadAvailableCarsIntoComboBox(ComboBox comboBox)
+        {
+            // Reuse the preloaded list of available cars
+            foreach (var car in availableCars)
+            {
+                comboBox.Items.Add(car);
+            }
+
+            comboBox.DisplayMemberPath = "VehicleName";
+            comboBox.SelectedValuePath = "VehicleId";
+        }
+
+
+        private void AddVehicleToSlot(string dealershipName, string vehicleId, string slotColumn)
+        {
+            string island = IslandComboBox.SelectedValue?.ToString();
+            string column = "";
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+
+                // Update the slot with the selected vehicle ID
+                string query = $"UPDATE dealerships SET {slotColumn} = @VehicleId WHERE Name = @Name and Island = @Island";
+
+                using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@VehicleId", vehicleId);
+                    cmd.Parameters.AddWithValue("@Name", dealershipName);
+                    cmd.Parameters.AddWithValue("@Island", island);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                if (island == "Ibiza") {
+                    column = "ibiza";
+                }
+                else
+                {
+                    column = "hawaii";
+                }
+                // Update the slot with the selected vehicle ID
+                string query = $"UPDATE vehicles SET _dealership_name_in_{column} = @Name WHERE id = @VehicleId";
+
+                using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@VehicleId", vehicleId);
+                    cmd.Parameters.AddWithValue("@Name", dealershipName);
+                    cmd.Parameters.AddWithValue("@Island", island);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
 
         private VehicleManagement GetVehicleDetails(string vehicleId)
@@ -146,7 +327,7 @@ namespace TDU2_Track_Records
             {
                 Header = vehicle.VehicleName, // Set the vehicle name as the header
                 Margin = new Thickness(10),
-                BorderBrush = new SolidColorBrush(System.Windows.Media.Color.FromRgb(100, 100, 100)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
                 BorderThickness = new Thickness(2),
                 Padding = new Thickness(10)
             };
@@ -166,14 +347,15 @@ namespace TDU2_Track_Records
             StackPanel infoStack = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
+                Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Center
+                
             };
 
             // Vehicle Price
             GroupBox priceBox = new GroupBox
             {
                 Header = "Price $",
-                Width = 75
             };
             priceBox.Content = new TextBlock
             {
@@ -187,7 +369,6 @@ namespace TDU2_Track_Records
             GroupBox classBox = new GroupBox
             {
                 Header = "Class",
-                Width = 75
             };
             Image classImage = new Image
             {
@@ -202,7 +383,6 @@ namespace TDU2_Track_Records
             GroupBox statusBox = new GroupBox
             {
                 Header = "Status",
-                Width = 75
             };
             CheckBox ownedCheckBox = new CheckBox
             {
@@ -225,8 +405,7 @@ namespace TDU2_Track_Records
             // Add a button to open the vehicle card window
             Button viewDetailsButton = new Button
             {
-                Content = "View Card",
-                //Width = 100,
+                Content = "Card",
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(10),
                 Tag = vehicle.id // Store the vehicle object in the button's Tag
@@ -234,13 +413,11 @@ namespace TDU2_Track_Records
             viewDetailsButton.Click += ViewDetailsButton_Click;
             infoStack.Children.Add(viewDetailsButton);
 
-            // Determine the slot column name based on slotIndex (mapping logic)
-
-            // Add a delete button for each vehicle
-            // Add a delete button for each vehicle and store the actual column name in the Tag property
+            if(isUnlocked == true) { 
+            // Add a delete button for each vehicle and store the column name in the Tag property
             Button deleteButton = new Button
             {
-                Content = "Delete",
+                Content = "-",
                 Margin = new Thickness(10),
                 Tag = slotColumn // Store the actual column name (e.g., "Slot1_VehicleId")
             };
@@ -248,7 +425,7 @@ namespace TDU2_Track_Records
 
             // Add the delete button to the infoStack
             infoStack.Children.Add(deleteButton);
-
+            }
             // Add the infoStack to contentStack
             contentStack.Children.Add(infoStack);
 
@@ -368,6 +545,16 @@ namespace TDU2_Track_Records
             }
         }
 
+        private void IslandComboBox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if(isUnlocked == false) { 
+            isUnlocked = true;
+            }
+            else
+            {
+                isUnlocked = false;
+            }
+        }
 
         private void dealerships_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

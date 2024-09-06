@@ -24,9 +24,9 @@ namespace TDU2_Track_Records
         private static double lastTracksLeft;
         private static double lastTracksTop;
         private static readonly Regex _regex = new Regex("[^0-9.-]+"); //regex that matches disallowed text
-        SQLiteDataReader reader;
-        //SQLiteConnection dbConn; // Declare the SQLiteConnection-Object
-        SQLiteCommand dbCmd;
+        //SQLiteDataReader reader;
+        ////SQLiteConnection dbConn; // Declare the SQLiteConnection-Object
+        //SQLiteCommand dbCmd;
         public double onemile = 0.621371192;
 
         public InputRecords()

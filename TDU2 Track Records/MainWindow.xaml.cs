@@ -8,8 +8,10 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using TDU2_Track_Records.Models;
 using TDU2_Track_Records.Properties;
 
 
@@ -56,6 +58,15 @@ namespace TDU2_Track_Records
                 ViewEntries_Metric.Visibility = Visibility.Collapsed;
                 ViewEntries_Imperial.Visibility = Visibility.Collapsed;
             }
+            // Bind the TextBox to the TextBlock
+            Binding binding = new Binding();
+            binding.Source = LapsTextBlock;
+            binding.Path = new PropertyPath("Text");
+            binding.Mode = BindingMode.OneWay; // TextBox will only receive text from the TextBlock
+            LapsTextBox.SetBinding(TextBox.TextProperty, binding);
+            // bind ends here
+            GenerateLapsInStackPanel(1);
+            old_LapsGroupBox.Visibility = Visibility.Collapsed;
             ClassRestictionGroupBox.Visibility = Visibility.Collapsed;
             VehicleRestictionGroupBox.Visibility = Visibility.Collapsed;
             OrientationGroupBox.Visibility = Visibility.Collapsed;
@@ -111,10 +122,252 @@ namespace TDU2_Track_Records
 
             combo_Type.ItemsSource = itemb;
         }
+        private void LapsTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ComboBoxItem selectedItem = (ComboBoxItem)combo_Type.SelectedItem;
+            string selectedRaceType = selectedItem?.Value;
+            switch (selectedRaceType)
+            {
+                case "Race SP":
+                case "Time Attack SP":
+                    GenerateLapsInStackPanel(1);  // No laps, just total time
+                    DynamicRaceLapsGroupBox.Visibility = Visibility.Visible;
+                    break;
+                case "Eliminator SP":
+                    GenerateLapsInStackPanel(7);  // No laps, just total time
+                    DynamicRaceLapsGroupBox.Visibility = Visibility.Visible;
+                    break;
+                case "Race MP":
+                    GenerateLapsInStackPanel(5);  // Example for multiple laps
+                    DynamicRaceLapsGroupBox.Visibility = Visibility.Visible;
+                        break;
+                default:
+                    GenerateLapsInStackPanel(0);
+                    DynamicRaceLapsGroupBox.Visibility = Visibility.Collapsed;
+                    break;
+            }
+        }
+
+        public void GenerateLapsInStackPanel(int lapCount)
+        {
+            DynamicRaceLapsStackPanel.Children.Clear();
+
+            for (int lap = 1; lap <= lapCount; lap++)
+            {
+                StackPanel lapPanel = new StackPanel
+                {
+                    Orientation = Orientation.Horizontal,
+                    Margin = new Thickness(5)
+                };
+
+                TextBlock lapLabel = new TextBlock
+                {
+                    Text = $"Lap {lap}",
+                    FontWeight = FontWeights.Bold,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(10, 0, 10, 0),
+                    Width = 50
+                };
+                lapPanel.Children.Add(lapLabel);
+
+                TextBox minTextBox = CreateTextBox(lap, "Min", "00", 1);
+                minTextBox.GotFocus += TextBox_GotFocus;
+                minTextBox.LostFocus += TextBox_LostFocus;
+
+                TextBox secTextBox = CreateTextBox(lap, "Sec", "00", 2);
+                secTextBox.GotFocus += TextBox_GotFocus;
+                secTextBox.LostFocus += TextBox_LostFocus;
+
+                TextBox msTextBox = CreateTextBox(lap, "Ms", "000", 3);
+                msTextBox.GotFocus += TextBox_GotFocus;
+                msTextBox.LostFocus += TextBox_LostFocus;
+
+                TextBlock avgSpeedTextBlock = new TextBlock
+                {
+                    Text = "0.0",
+                    Tag = $"avg_SpeedLap{lap}",
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(10, 0, 0, 0),
+                    Width = 70,
+                    TextAlignment = TextAlignment.Center
+                };
+
+
+                msTextBox.PreviewLostKeyboardFocus += (s, e) => HandleLapMsPreviewLostKeyboardFocus(minTextBox, secTextBox, msTextBox, avgSpeedTextBlock);
+                lapPanel.Children.Add(minTextBox);
+                lapPanel.Children.Add(AddSymbolTextBlock(":"));
+                lapPanel.Children.Add(secTextBox);
+                lapPanel.Children.Add(AddSymbolTextBlock("."));
+                lapPanel.Children.Add(msTextBox);
+                lapPanel.Children.Add(avgSpeedTextBlock);
+                DynamicRaceLapsStackPanel.Children.Add(lapPanel);
+            }
+        }
+
+        private TextBox CreateTextBox(int lap, string type, string defaultText, int tabIndex)
+        {
+            return new TextBox
+            {
+                Name = $"Lap{lap}_{type}",
+                Text = defaultText,
+                MaxLength = type == "Ms" ? 3 : 2,
+                TabIndex = tabIndex,
+                Width = type == "Ms" ? 50 : 30,
+                AutoWordSelection = true
+            };
+        }
+
+        private TextBlock AddSymbolTextBlock(string symbol)
+        {
+            return new TextBlock
+            {
+                Text = symbol,
+                FontWeight = FontWeights.Bold,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Width = 10
+            };
+        }
+        // GotFocus event handler
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            FextBox_GotFocus((TextBox)sender);
+        }
+
+        private void FextBox_GotFocus(TextBox textBox)
+        {
+            // Clear the "00" value when the text box gains focus
+            if (textBox.Text == "00" || textBox.Text == "000")
+            {
+                textBox.Text = "";
+            }
+        }
+
+        // LostFocus event handler
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            FextBox_LostFocus((TextBox)sender);
+        }
+
+        private void FextBox_LostFocus(TextBox textBox)
+        {
+            if (string.IsNullOrEmpty(textBox.Text))
+            {
+                // If the TextBox is empty, reset to "00" or "000" based on type
+                textBox.Text = textBox.Name.EndsWith("_Ms") ? "000" : "00";
+            }
+
+            if (textBox.Name.EndsWith("_Sec"))
+            {
+                // Ensure seconds are not greater than 59
+                if (int.TryParse(textBox.Text, out int seconds) && seconds > 59)
+                {
+                    textBox.Text = "59";
+                }
+            }
+
+            // Ensure the value has at least two digits (for Min/Sec), or three digits (for Ms)
+            if (textBox.Name.EndsWith("_Min") || textBox.Name.EndsWith("_Sec"))
+            {
+                if (textBox.Text.Length == 1)
+                {
+                    textBox.Text = "0" + textBox.Text;
+                }
+            }
+            else if (textBox.Name.EndsWith("_Ms"))
+            {
+                if (textBox.Text.Length == 1)
+                {
+                    textBox.Text = "00" + textBox.Text;
+                }
+                else if (textBox.Text.Length == 2)
+                {
+                    textBox.Text = "0" + textBox.Text;
+                }
+            }
+        }
+
+
+        private void MyTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            // Auto-tab when maxlength is reached
+            if (((TextBox)sender).MaxLength == ((TextBox)sender).Text.Length)
+            {
+                // move focus
+                var ue = e.OriginalSource as FrameworkElement;
+                e.Handled = true;
+                ue.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+            }
+        }
+        private void HandleLapMsPreviewLostKeyboardFocus(TextBox minTextBox, TextBox secTextBox, TextBox msTextBox, TextBlock avgSpeedTextBlock)
+        {
+            if (string.IsNullOrEmpty(minTextBox.Text)) { return; }
+            if (string.IsNullOrEmpty(secTextBox.Text)) { return; }
+            if (string.IsNullOrEmpty(msTextBox.Text)) { return; }
+            if (combo_Track.SelectedIndex == -1) { return; }
+
+            int removeIndex = 0;
+            double RaceOrLapDistance = 0;
+            int laps = 0;
+            if (race_Length.Text.Length > 0)
+            {
+                removeIndex = race_Length.Text.Length - 2;
+                RaceOrLapDistance = Convert.ToDouble(race_Length.Text.Remove(removeIndex)) * 1000;
+            }
+            else
+            {
+                if (lap_Length.Text.Length == 0 || lap_Length.Text == "N/A") { return; }
+                removeIndex = lap_Length.Text.Length - 2;
+                RaceOrLapDistance = Convert.ToDouble(lap_Length.Text.Remove(removeIndex)) * 1000;
+            }
+
+            int msLength = msTextBox.Text.Length;
+            if (msLength == 1)
+            {
+                msTextBox.Text = msTextBox.Text + "00";
+            }
+            else if (msLength == 2)
+            {
+                msTextBox.Text = msTextBox.Text + "0";
+            }
+
+            int ms = Convert.ToInt32(msTextBox.Text);
+            int totalMs = (Convert.ToInt32(minTextBox.Text) * 60 * 1000) + (Convert.ToInt32(secTextBox.Text) * 1000) + ms;
+            if (LapsTextBlock.Text == "N/A") {
+                laps = 1; 
+            } else {
+                laps = Convert.ToInt32(LapsTextBlock.Text);
+            }
+            if (laps > 1)
+            {
+                RaceOrLapDistance = RaceOrLapDistance / laps;
+            }
+            if (totalMs > 0)
+            {
+                
+                double averageSpeed = Math.Round(((RaceOrLapDistance * 3600000) / totalMs) / 1000, 2);
+                avgSpeedTextBlock.Text = averageSpeed.ToString() + speed;
+            }
+        }
+
+
+        // Handler to ensure only numbers are accepted
+        private void PreviewNoDecInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !IsTextAllowed(e.Text);
+        }
+
+        private bool IsTextAllowed(string text)
+        {
+            // Check if the input is numeric
+            return Regex.IsMatch(text, "^[0-9]+$");
+        }
+
 
         private void calc_Total_Lap_Time()
         {
-            const int lapCount = 5;  // Number of laps, can be adjusted if needed
+            if (LapsGroupBox.Visibility == Visibility.Collapsed || string.IsNullOrEmpty(LapsTextBox.Text) || LapsTextBox.Text == "N/A") return;
+            int lapCount = Convert.ToInt32(LapsTextBox.Text);  // Number of laps, can be adjusted if needed
             int totalLapTime = 0;
 
             for (int i = 1; i <= lapCount; i++)
@@ -169,18 +422,21 @@ namespace TDU2_Track_Records
         }
         private void calc_Average_Speed()
         {
+            if (string.IsNullOrEmpty(LapsTextBlock.Text) || LapsTextBlock.Text == "N/A") return ;
             if(LapsGroupBox.Visibility == Visibility.Collapsed) { return; }
             // Convert race length from km to meters
             double totalDistance;
-            if (RaceLengthGroupBox.Visibility == Visibility.Visible) { 
-                totalDistance = Convert.ToDouble(race_Length.Text) * 1000;
+            if (RaceLengthGroupBox.Visibility == Visibility.Visible) {
+                RemoveIndex = race_Length.Text.Length - 2;
+                totalDistance = Convert.ToDouble(race_Length.Text.Remove(RemoveIndex)) * 1000;
             }
             else
             {
-                totalDistance = Convert.ToDouble("lap_Length.Text");
+                RemoveIndex = lap_Length.Text.Length - 2;
+                totalDistance = Convert.ToDouble(lap_Length.Text.Remove(RemoveIndex));
             }
             int totalLapTime = 0;
-            int lapCount = 5;  // Adjust this if you have a different number of laps
+            int lapCount = Convert.ToInt32(LapsTextBlock.Text); // Adjust this if you have a different number of laps
 
             for (int i = 1; i <= lapCount; i++)
             {
@@ -362,6 +618,7 @@ namespace TDU2_Track_Records
 
             foreach (var (min, sec, ms) in lapTimeControls)
             {
+                if (string.IsNullOrEmpty(min.Text) || string.IsNullOrEmpty(sec.Text) || string.IsNullOrEmpty(ms.Text)) return;
                 totalLapTime += ConvertToMilliseconds(min.Text, sec.Text, ms.Text);
             }
 
@@ -957,57 +1214,6 @@ namespace TDU2_Track_Records
             }
         }
 
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            FextBox_GotFocus((TextBox)sender);
-        }
-
-        private void FextBox_GotFocus(TextBox textBox)
-        {
-            // Auto-tab when maxlength is reached
-            if (textBox.Text == "00")
-            {
-                textBox.Text = "";
-            }
-        }
-
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox_LostFocus((TextBox)sender);
-        }
-
-        private void TextBox_LostFocus(TextBox textBox)
-        {
-            if (string.IsNullOrEmpty(textBox.Text))
-            {
-                textBox.Text = "00";
-            }
-
-            if (textBox.Name.EndsWith("_Sec"))
-            {
-                if (int.TryParse(textBox.Text, out int seconds) && seconds > 59)
-                {
-                    textBox.Text = "59";
-                }
-            }
-
-            if (textBox.Text.Length == 1)
-            {
-                textBox.Text = "0" + textBox.Text;
-            }
-        }
-
-        private void MyTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            // Auto-tab when maxlength is reached
-            if (((TextBox)sender).MaxLength == ((TextBox)sender).Text.Length)
-            {
-                // move focus
-                var ue = e.OriginalSource as FrameworkElement;
-                e.Handled = true;
-                ue.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
-            }
-        }
 
         private void FillComboBoxWithTracks(ComboBox comboBox)
         {
@@ -1026,7 +1232,7 @@ namespace TDU2_Track_Records
         {
             //if(comboBox.SelectedIndex == -1) { return; }
 
-            string query = "SELECT * FROM vehicles WHERE _is_active = 'true' AND _is_owned = 'true'";
+            string query = "SELECT * FROM vehicles WHERE _is_available = 'true' AND _is_active = 'true' AND _is_owned = 'true'";
 
             if (combo_Class.SelectedIndex > -1)
             {
@@ -1199,7 +1405,14 @@ namespace TDU2_Track_Records
             // Ensure that the selection change is valid before proceeding
             if (!combo_Track.IsLoaded || combo_Track.Items.Count == 0 || combo_Track.SelectedIndex < 0 || e.AddedItems.Count == 0)
                 return;
+            if (LapsTextBlock.Text == "N/A" || LapsGroupBox.Visibility == Visibility.Hidden || string.IsNullOrEmpty(LapsTextBlock.Text))
+            {
+                return;
+            } else {
 
+                int NoLaps = Convert.ToInt32(LapsTextBlock.Text);
+                GenerateLapsInStackPanel(NoLaps);
+            }
             // Call HandleTrackChange to update the UI based on the track selection
             HandleTrackChange();
 
@@ -1373,7 +1586,7 @@ namespace TDU2_Track_Records
             int orientation = cb_orientation.IsChecked == false ? 0 : 1;
             string veh = combo_Vehicle.Text.Replace("'", "''");
             int trackId = Convert.ToInt32(combo_Track.SelectedValue);
-            string odoColumn = SI == "Metric" ? "__odometer_metric" : "__odometer_imperial";
+            string odoColumn = SI == "Metric" ? "_odometer_metric" : "_odometer_imperial";
             double conversionFactor = SI == "Imperial" ? 1.60934 : 1.0;
 
             // SQL query to fetch odometer reading, fastest lap, and the number of records for the vehicle and track
@@ -1420,13 +1633,10 @@ namespace TDU2_Track_Records
             }
         }
 
-
-
         private void ResetWindowState()
         {
             Application.Current.MainWindow.Height = 500;
         }
-
 
 
         private void CheckProgress()
@@ -1521,17 +1731,17 @@ namespace TDU2_Track_Records
             txt_odometer.Text = txt_odometer.Text.Replace(",", ".");
         }
 
-        // Preview text input to allow only specific characters (e.g., numerical input)
-        private new void PreviewTextInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !IsTextAllowed(e.Text);
-        }
+        //// Preview text input to allow only specific characters (e.g., numerical input)
+        //private new void PreviewTextInput(object sender, TextCompositionEventArgs e)
+        //{
+        //    e.Handled = !IsTextAllowed(e.Text);
+        //}
 
-        // Preview text input to disallow decimal points (e.g., for integer input)
-        private void PreviewNoDecInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !IsDecAllowed(e.Text);
-        }
+        //// Preview text input to disallow decimal points (e.g., for integer input)
+        //private void PreviewNoDecInput(object sender, TextCompositionEventArgs e)
+        //{
+        //    e.Handled = !IsDecAllowed(e.Text);
+        //}
 
         public int RemoveIndex { get; private set; }
 
@@ -1539,10 +1749,10 @@ namespace TDU2_Track_Records
         private static readonly Regex _regexNoDec = new Regex("[^0-9]+"); // Allows only numeric characters (no decimals)
 
         // Check if the input text is allowed (e.g., only numerical characters)
-        private static bool IsTextAllowed(string text)
-        {
-            return !_regex.IsMatch(text);
-        }
+        //private static bool IsTextAllowed(string text)
+        //{
+        //    return !_regex.IsMatch(text);
+        //}
 
         // Check if the input text is allowed without decimal points
         private static bool IsDecAllowed(string text)
@@ -1551,36 +1761,46 @@ namespace TDU2_Track_Records
         }
 
 
-        private void HandleLapMsPreviewLostKeyboardFocus(TextBox minTextBox, TextBox secTextBox, TextBox msTextBox, TextBlock avgSpeedTextBlock)
-        {
-            if (combo_Track.SelectedIndex == -1) { return; }
-            if (string.IsNullOrEmpty(minTextBox.Text)) { return; }
-            if (string.IsNullOrEmpty(secTextBox.Text)) { return; }
-            if (string.IsNullOrEmpty(msTextBox.Text)) { return; }
+        //private void HandleLapMsPreviewLostKeyboardFocus(TextBox minTextBox, TextBox secTextBox, TextBox msTextBox, TextBlock avgSpeedTextBlock)
+        //{
+        //    if (string.IsNullOrEmpty(minTextBox.Text)) { return; }
+        //    if (string.IsNullOrEmpty(secTextBox.Text)) { return; }
+        //    if (string.IsNullOrEmpty(msTextBox.Text)) { return; }
+        //    if (combo_Track.SelectedIndex == -1) { return; }
+        //    int removeIndex = 0;
+        //    double RaceOrLapDistance = 0;
+        //    if (race_Length.Text.Length > 0)
+        //    {
+        //        removeIndex = race_Length.Text.Length - 2;
+        //        RaceOrLapDistance = Convert.ToDouble(race_Length.Text.Remove(removeIndex)) * 1000;
+        //    }
+        //    else { 
+        //    //LapLengthGroupBox.Visibility = Visibility.Visible;
+        //    if (lap_Length.Text.Length == 0 || lap_Length.Text == "N/A" ) { return; }
+        //        removeIndex = race_Length.Text.Length - 2;
+        //        //MessageBox.Show($"Lap Length: {lap_Length.Text.Remove(removeIndex)},\nTime: {minTextBox.Text}:{secTextBox.Text}.{msTextBox.Text}");
+        //        RaceOrLapDistance = Convert.ToDouble(lap_Length.Text.Remove(removeIndex)) * 1000;
+        //    }
+        //    int msLength = msTextBox.Text.Length;
 
-            //int removeIndex = lap_Length.Text.Length - 2;
-            double lapLength = Convert.ToDouble(lap_Length.Text) * 1000; //.Text.Remove(removeIndex)
-            LapLengthGroupBox.Visibility = Visibility.Visible;
-            int msLength = msTextBox.Text.Length;
+        //    if (msLength == 1)
+        //    {
+        //        msTextBox.Text = msTextBox.Text + "00";
+        //    }
+        //    else if (msLength == 2)
+        //    {
+        //        msTextBox.Text = msTextBox.Text + "0";
+        //    }
 
-            if (msLength == 1)
-            {
-                msTextBox.Text = msTextBox.Text + "00";
-            }
-            else if (msLength == 2)
-            {
-                msTextBox.Text = msTextBox.Text + "0";
-            }
+        //    int ms = Convert.ToInt32(msTextBox.Text);
+        //    int totalMs = (Convert.ToInt32(minTextBox.Text) * 60 * 1000) + (Convert.ToInt32(secTextBox.Text) * 1000) + ms;
 
-            int ms = Convert.ToInt32(msTextBox.Text);
-            int totalMs = (Convert.ToInt32(minTextBox.Text) * 60 * 1000) + (Convert.ToInt32(secTextBox.Text) * 1000) + ms;
-
-            if (totalMs > 0)
-            {
-                double averageSpeed = Math.Round(((lapLength * 3600000) / totalMs) / 1000, 2);
-                avgSpeedTextBlock.Text = averageSpeed.ToString();
-            }
-        }
+        //    if (totalMs > 0)
+        //    {
+        //        double averageSpeed = Math.Round(((RaceOrLapDistance * 3600000) / totalMs) / 1000, 2);
+        //        avgSpeedTextBlock.Text = averageSpeed.ToString();
+        //    }
+        //}
         private void Lap1_Ms_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             HandleLapMsPreviewLostKeyboardFocus(Lap1_Min, Lap1_Sec, Lap1_Ms, avg_SpeedLap1);

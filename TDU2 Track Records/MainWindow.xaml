@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TDU2_Track_Records.Classes"
+        xmlns:q="clr-namespace:TDU2_Track_Records"
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
         xmlns:behaviors="clr-namespace:TDU2_Track_Records.Classes"
         xmlns:vm="clr-namespace:TDU2_Track_Records.ViewModels"
@@ -290,7 +291,7 @@
                         </GroupBox>
                     </DockPanel>
                     <DockPanel >
-                        <GroupBox x:Name="LapLengthGroupBox" Header="Lap Length" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Width="220">
+                        <GroupBox x:Name="LapLengthGroupBox" Header="Lap Length" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Width="220" VerticalAlignment="Center">
                             <DockPanel HorizontalAlignment="Center">
                                 <TextBlock x:Name="lap_Length"
                                            DockPanel.Dock="left"
@@ -308,7 +309,7 @@
                         <GroupBox x:Name="LapsGroupBox"  Header="Laps">
                             <StackPanel>
                                 <TextBlock x:Name="LapsTextBlock" Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <TextBox x:Name="LapsTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                <TextBox x:Name="LapsTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden" Panel.ZIndex="2" TextChanged="LapsTextBox_TextChanged" Margin="0,-24,0,-34"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox x:Name="RaceLengthGroupBox" Header="Race Length" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
@@ -332,14 +333,6 @@
                                     <Image x:Name="orientationC_lrec" Source="Images/clockwise.png" Visibility="Collapsed"/>
                                     <Image x:Name="orientationA_lrec" Source="Images/anticlockwise.png" Visibility="Collapsed"/>
                                 </StackPanel>
-                            </GroupBox>
-                            <GroupBox x:Name="PointsGroupBox" Header="Points" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
-                                <DockPanel HorizontalAlignment="Center" >
-                                    <TextBox x:Name="PointsTextBlock" MinWidth="100" />
-                                    <TextBlock x:Name="rdc" Text="{Binding Source={x:Static p:Settings.Default}, Path=Points, Mode=OneWay}" VerticalAlignment="Center"/>
-                                    <Border Width="1" Margin="5,0" Background="Red"/>
-                                    <TextBlock x:Name="PointsRecordTextBlock" Text="High score: " Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </DockPanel>
                             </GroupBox>
                         </StackPanel>
                         <GroupBox x:Name="MinimumSpeedGroupBox" Header="Minimum Speed" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
@@ -449,115 +442,104 @@
             <!--Row 3-->
             <GroupBox Header="Race Data" Grid.Column="3" Grid.Row="1" Margin="5,0,20,5" >
                 <StackPanel>
-                    <!--<ItemsControl x:Name="LapItemsControl" Grid.Row="1" Grid.ColumnSpan="9"
-              ItemsSource="{Binding LapItems}" 
-              ItemTemplate="{StaticResource LapTemplate}"/>-->
-                    <Grid HorizontalAlignment="Left" FocusManager.FocusedElement="{Binding ElementName=Lap1_Min}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto" MinWidth="5" MaxWidth="5"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto" MinWidth="5" MaxWidth="5"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <TextBlock Text="MM  :   SS   .   MS" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,21,0,0" Grid.RowSpan="2" Width="132"/>
-                        <Border Grid.Column="6" Grid.Row="1" Grid.RowSpan="100" Width="1" Margin="5,0" Background="Red"/>
-                        <TextBlock Grid.Row="1" Grid.Column="7" Grid.ColumnSpan="2" Text="Average Speed" MaxWidth="70" TextAlignment="Center" TextWrapping="Wrap" MinWidth="70"/>
-                        <!--Lap 1-->
-                        <TextBlock Text="Lap 1" Grid.Column="0" Grid.Row="2" FontWeight="Bold" Margin="10,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="1" x:Name="Lap1_Min" Grid.Row="2" Text="00" MaxLength="1" TabIndex="5" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" Background="{x:Null}" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text=":" Grid.Column="2" Grid.Row="2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBox Grid.Column="3" x:Name="Lap1_Sec" Grid.Row="2"  Text="00" MaxLength="2" TabIndex="6" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text="." Grid.Column="4" Grid.Row="2" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="5" x:Name="Lap1_Ms" Tag="avg_SpeedLap1" Grid.Row="2" Text="000" MaxLength="3" TabIndex="7" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap1_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
-                        <TextBlock x:Name="avg_SpeedLap1" Text="0.0" Grid.Row="2" Grid.Column="7" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="2" Grid.Column="8" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <!--Lap 2-->
-                        <TextBlock Text="Lap 2" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center" />
-                        <TextBox Grid.Column="1" x:Name="Lap2_Min" Grid.Row="3" Text="00" MaxLength="1" TabIndex="8" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text=":" Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="3" x:Name="Lap2_Sec" Grid.Row="3" Text="00" MaxLength="2" TabIndex="9" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text="." Grid.Column="4" Grid.Row="3" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="5" x:Name="Lap2_Ms" Tag="avg_SpeedLap2" Grid.Row="3" Text="000" MaxLength="3" TabIndex="10" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap2_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
-                        <TextBlock x:Name="avg_SpeedLap2" Text="0.0" Grid.Row="3" Grid.Column="7" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="3" Grid.Column="8" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <!--Lap 3-->
-                        <TextBlock Text="Lap 3" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center" />
-                        <TextBox Grid.Column="1" x:Name="Lap3_Min" Grid.Row="4" Text="00" MaxLength="1" TabIndex="11" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text=":" Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="3" x:Name="Lap3_Sec" Grid.Row="4" Text="00" MaxLength="2" TabIndex="12" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text="." Grid.Column="4" Grid.Row="4" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="5" x:Name="Lap3_Ms" Grid.Row="4" Text="000" MaxLength="3" TabIndex="13" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap3_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
-                        <TextBlock x:Name="avg_SpeedLap3" Tag="avg_SpeedLap3" Text="0.0" Grid.Row="4" Grid.Column="7" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="4" Grid.Column="8" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <!--Lap 4-->
-                        <TextBlock Text="Lap 4" 
-                       Grid.Column="0"
-                       Grid.Row="5"
-                       VerticalAlignment="Center" 
-                       FontWeight="Bold" 
-                       HorizontalAlignment="Center"/>
-                        <TextBox 
-                     x:Name="Lap4_Min" 
-                     Grid.Column="1" Grid.Row="5" Text="00" MaxLength="1" TabIndex="14" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text=":" Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="3" x:Name="Lap4_Sec" Grid.Row="5" Text="00" MaxLength="2" TabIndex="15" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text="." Grid.Column="4" Grid.Row="5" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="5" x:Name="Lap4_Ms" Grid.Row="5" Text="000" MaxLength="3" TabIndex="16" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap4_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
-                        <TextBlock x:Name="avg_SpeedLap4" Tag="avg_SpeedLap4" Text="0.0" Grid.Row="5" Grid.Column="7" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="5" Grid.Column="8" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <!--Lap 5-->
-                        <TextBlock Text="Lap 5" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="1" x:Name="Lap5_Min" Grid.Row="6" Text="00" MaxLength="1" TabIndex="17" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text=":" Grid.Column="2" Grid.Row="6" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="3" x:Name="Lap5_Sec" Grid.Row="6" Text="00" MaxLength="2" TabIndex="18" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
-                        <TextBlock Text="." Grid.Column="4" Grid.Row="6" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
-                        <TextBox Grid.Column="5" x:Name="Lap5_Ms" Grid.Row="6" Text="000" MaxLength="3" TabIndex="19" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap5_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
-                        <TextBlock x:Name="avg_SpeedLap5" Tag="avg_SpeedLap5" Text="0.0" Grid.Row="6" Grid.Column="7" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="6" Grid.Column="8" Background="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
-                    </Grid>
-
-                    <GroupBox Header="Average Lap" Grid.Column="4" Grid.Row="7" x:Name="lbl_avgLapTime" >
-                        <TextBlock Text="{Binding}" x:Name="average_LapTime" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <GroupBox Header="Skata" x:Name="DynamicRaceLapsGroupBox">
+                        <StackPanel x:Name="DynamicRaceLapsStackPanel" Orientation="Vertical" />
                     </GroupBox>
-                    <GroupBox Header="Average Speed" x:Name="lbl_AverageSpeed">
-                        <TextBlock Text="{Binding}" x:Name="Average_Speed" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </GroupBox>
-                    <GroupBox Header="Race Time" x:Name="lbl_TotalTime">
-                        <TextBlock Text="{Binding}" x:Name="Total_Time" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </GroupBox>
+                    <StackPanel>
+                        <GroupBox x:Name="old_LapsGroupBox" Header="Old Laps">
+                        <Grid x:Name="old_RaceLapsGrid" HorizontalAlignment="Left" Visibility="Visible" FocusManager.FocusedElement="{Binding ElementName=Lap1_Min}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto" MinWidth="5" MaxWidth="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto" MinWidth="5" MaxWidth="5"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="MM  :   SS   .   MS" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,21,0,0" Grid.RowSpan="2" Width="132"/>
+                            <Border Grid.Column="6" Grid.Row="1" Grid.RowSpan="100" Width="1" Margin="5,0" Background="Red"/>
+                            <TextBlock Grid.Row="1" Grid.Column="7" Grid.ColumnSpan="2" Text="Average Speed" MaxWidth="70" TextAlignment="Center" TextWrapping="Wrap" MinWidth="70"/>
+                            <!--Lap 1-->
+                            <TextBlock Text="Lap 1" Grid.Column="0" Grid.Row="2" FontWeight="Bold" Margin="10,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="1" x:Name="Lap1_Min" Grid.Row="2" Text="00" MaxLength="1" TabIndex="5" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text=":" Grid.Column="2" Grid.Row="2" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="3" x:Name="Lap1_Sec" Grid.Row="2"  Text="00" MaxLength="2" TabIndex="6" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text="." Grid.Column="4" Grid.Row="2" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="5" x:Name="Lap1_Ms" Tag="avg_SpeedLap1" Grid.Row="2" Text="000" MaxLength="3" TabIndex="7" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap1_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
+                            <TextBlock x:Name="avg_SpeedLap1" Text="0.0" Grid.Row="2" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="2" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <!--Lap 2-->
+                            <TextBlock Text="Lap 2" Grid.Column="0" Grid.Row="3" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="Lap2_Min" Grid.Row="3" Text="00" MaxLength="1" TabIndex="8" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text=":" Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="3" x:Name="Lap2_Sec" Grid.Row="3" Text="00" MaxLength="2" TabIndex="9" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text="." Grid.Column="4" Grid.Row="3" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="5" x:Name="Lap2_Ms" Tag="avg_SpeedLap2" Grid.Row="3" Text="000" MaxLength="3" TabIndex="10" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap2_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
+                            <TextBlock x:Name="avg_SpeedLap2" Text="0.0" Grid.Row="3" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="3" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <!--Lap 3-->
+                            <TextBlock Text="Lap 3" Grid.Column="0" Grid.Row="4" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center" />
+                            <TextBox Grid.Column="1" x:Name="Lap3_Min" Grid.Row="4" Text="00" MaxLength="1" TabIndex="11" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text=":" Grid.Column="2" Grid.Row="4" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="3" x:Name="Lap3_Sec" Grid.Row="4" Text="00" MaxLength="2" TabIndex="12" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text="." Grid.Column="4" Grid.Row="4" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="5" x:Name="Lap3_Ms" Grid.Row="4" Text="000" MaxLength="3" TabIndex="13" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap3_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
+                            <TextBlock x:Name="avg_SpeedLap3" Tag="avg_SpeedLap3" Text="0.0" Grid.Row="4" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="4" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <!--Lap 4-->
+                            <TextBlock Text="Lap 4" Grid.Column="0" Grid.Row="5" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox x:Name="Lap4_Min" Grid.Column="1" Grid.Row="5" Text="00" MaxLength="1" TabIndex="14" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text=":" Grid.Column="2" Grid.Row="5" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="3" x:Name="Lap4_Sec" Grid.Row="5" Text="00" MaxLength="2" TabIndex="15" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text="." Grid.Column="4" Grid.Row="5" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="5" x:Name="Lap4_Ms" Grid.Row="5" Text="000" MaxLength="3" TabIndex="16" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap4_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
+                            <TextBlock x:Name="avg_SpeedLap4" Tag="avg_SpeedLap4" Text="0.0" Grid.Row="5" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="5" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <!--Lap 5-->
+                            <TextBlock Text="Lap 5" Grid.Column="0" Grid.Row="6" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="1" x:Name="Lap5_Min" Grid.Row="6" Text="00" MaxLength="1" TabIndex="17" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text=":" Grid.Column="2" Grid.Row="6" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="3" x:Name="Lap5_Sec" Grid.Row="6" Text="00" MaxLength="2" TabIndex="18" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" />
+                            <TextBlock Text="." Grid.Column="4" Grid.Row="6" VerticalAlignment="Center" FontWeight="Bold" HorizontalAlignment="Center"/>
+                            <TextBox Grid.Column="5" x:Name="Lap5_Ms" Grid.Row="6" Text="000" MaxLength="3" TabIndex="19" AutoWordSelection="True" TextChanged="MyTextBox_TextChanged" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus" GotKeyboardFocus="TextBox_GotKeyboardFocus" GotMouseCapture="TextBox_GotMouseCapture" PreviewTextInput="PreviewNoDecInput" PreviewLostKeyboardFocus="Lap5_Ms_PreviewLostKeyboardFocus" PreviewGotKeyboardFocus="LapMs_PreviewGotKeyboardFocus" />
+                            <TextBlock x:Name="avg_SpeedLap5" Tag="avg_SpeedLap5" Text="0.0" Grid.Row="6" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="6" Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                        </GroupBox>
+                        <GroupBox x:Name="PointsGroupBox" Header="Points" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
+                            <DockPanel HorizontalAlignment="Center" >
+                                <TextBox x:Name="PointsTextBlock" MinWidth="100" />
+                                <TextBlock x:Name="rdc" Text="{Binding Source={x:Static p:Settings.Default}, Path=Points, Mode=OneWay}" VerticalAlignment="Center"/>
+                                <Border Width="1" Margin="5,0" Background="Red"/>
+                                <TextBlock x:Name="PointsRecordTextBlock" Text="High score: " Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </DockPanel>
+                        </GroupBox>
+                        <GroupBox x:Name="lbl_avgLapTime" Header="Average Lap" >
+                            <TextBlock Text="{Binding}" x:Name="average_LapTime" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </GroupBox>
+                        <GroupBox x:Name="lbl_AverageSpeed" Header="Average Speed">
+                            <TextBlock Text="{Binding}" x:Name="Average_Speed" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </GroupBox>
+                        <GroupBox x:Name="lbl_TotalTime" Header="Race Time">
+                            <TextBlock Text="{Binding}" x:Name="Total_Time" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </GroupBox>
+                    </StackPanel>
                 </StackPanel>
             </GroupBox>
 
-            <!--Row 4-->
-            <!--Row 5-->
-
-            <!--Row 6-->
-
-            <!--Row 7-->
-
-            <!--Row 8-->
-
-
-            <!--Row 9-->
-
-
-            <!--Row 10-->
             <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="4"
                           x:Name="ViewEntries_Metric"
                           Width="Auto" MinWidth="400"
