@@ -49,7 +49,20 @@
                 <TextBlock Text="TDU2 Track Records" FontSize="48" Foreground="{DynamicResource HoverBackground}" FontFamily="Gill Sans MT Ext Condensed Bold" Background="{DynamicResource GlassBrush}" HorizontalAlignment="Left" Margin="0,0,0,5"/>
             </DockPanel>
             <DockPanel Grid.Column="5" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,5">
-                
+                <Image x:Name="SGM_Button" MouseLeftButtonDown="SGM_MouseLeftButtonDown"
+   Margin="0,0,5,0" Width="32" Height="32"
+   ToolTip="SaveGame Manager">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/objectives/crc.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/objectives/ico_roads.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
                 <Image x:Name="tracks_Button" MouseLeftButtonDown="tracks_MouseLeftButtonDown"
                    Margin="0,0,5,0" Width="32" Height="32"
                    ToolTip="Add Events">
@@ -199,7 +212,7 @@
                             </ComboBox>
                         </GroupBox>
 
-                        <GroupBox Header="Event Name">
+                        <GroupBox Header="Event Name" MinWidth="200">
                             <ComboBox x:Name="combo_Track" ItemsSource="{Binding}"  DisplayMemberPath="Name" SelectedValuePath="Id" TabIndex="0" Loaded="Combo_Track_Loaded"
                                       SelectionChanged="Combo_Track_SelectionChanged" LostFocus="Combo_Track_LostFocus" PreviewKeyUp="Combo_Track_PreviewKeyUp" MinWidth="160" MaxDropDownHeight="250"/>
                         </GroupBox>
@@ -291,7 +304,7 @@
                         </GroupBox>
                     </DockPanel>
                     <DockPanel >
-                        <GroupBox x:Name="LapLengthGroupBox" Header="Lap Length" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Width="220" VerticalAlignment="Center">
+                        <GroupBox x:Name="LapLengthGroupBox" Header="Lap Length" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <DockPanel HorizontalAlignment="Center">
                                 <TextBlock x:Name="lap_Length"
                                            DockPanel.Dock="left"
@@ -312,7 +325,7 @@
                                 <TextBox x:Name="LapsTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden" Panel.ZIndex="2" TextChanged="LapsTextBox_TextChanged" Margin="0,-24,0,-34"/>
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox x:Name="RaceLengthGroupBox" Header="Race Length" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
+                        <GroupBox x:Name="RaceLengthGroupBox" Header="Race Length" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <DockPanel HorizontalAlignment="Center" >
                                 <TextBlock Text="{Binding}" x:Name="race_Length" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                 <TextBlock x:Name="RaceLength_Distance_Unit"
@@ -335,13 +348,13 @@
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
-                        <GroupBox x:Name="MinimumSpeedGroupBox" Header="Minimum Speed" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
+                        <GroupBox x:Name="MinimumSpeedGroupBox" Header="Minimum Speed" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <DockPanel HorizontalAlignment="Center" >
                                 <TextBlock x:Name="MinimumSpeedTextBlock" Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                 <TextBlock x:Name="MinimumSpeed_Distance_Unit" Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}" Visibility="Collapsed" VerticalAlignment="Center"/>
                             </DockPanel>
                         </GroupBox>
-                        <GroupBox x:Name="CheckPointsGroupBox" Header="Checkpoints" VerticalAlignment="Center" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="87">
+                        <GroupBox x:Name="CheckPointsGroupBox" Header="Checkpoints" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <DockPanel HorizontalAlignment="Center" >
                                 <TextBlock x:Name="CheckpointsTextBlock" Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </DockPanel>
@@ -359,9 +372,8 @@
                                       FontSize="16" 
                                       Foreground="#FFBBBBBB" 
                                       FontWeight="Bold" 
-                                      VerticalAlignment="Center" 
-                                      Margin="0,10,0,0" 
-                                      MouseLeftButtonDown="TextBlock_MouseLeftButtonDown">
+                                      Margin="0,0,0,0" 
+                                      MouseLeftButtonDown="TextBlock_MouseLeftButtonDown" VerticalAlignment="Center">
                                 <TextBlock.ToolTip>
                                     <ToolTip>
                                         <StackPanel>
@@ -371,10 +383,10 @@
                                     </ToolTip>
                                 </TextBlock.ToolTip>
                            </TextBlock>
-                            <Button x:Name="btn_reset" Content="Reset" Click="Btn_reset_Click" TabIndex="22" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White"   />
-                            <Button x:Name="btn_submit" Content="Submit" Click="Btn_submit_Click" TabIndex="20" FontWeight="Bold" Foreground="White" FontSize="18" GotFocus="Btn_submit_GotFocus" />
-                        <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" x:Name="btn_loadrec_Metric" IsEnabled="false" Content="Load Records" TabIndex="23" FontWeight="Bold" FontSize="18" Click="Btn_loadrec_Click"/>
-                        <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" x:Name="btn_loadrec_Imperial" IsEnabled="false" Content="Load Records" TabIndex="23" FontWeight="Bold" FontSize="18" Click="Btn_loadrec_Click" Visibility="Visible" />
+                            <Button x:Name="btn_reset" Content="Reset" Click="Btn_reset_Click" TabIndex="22" FontWeight="Bold" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Margin="5,0,5,0"   />
+                            <Button x:Name="btn_submit" Content="Submit" Click="Btn_submit_Click" TabIndex="20" FontWeight="Bold" Foreground="White" FontSize="18" GotFocus="Btn_submit_GotFocus" Margin="5,0,5,0" />
+                        <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" x:Name="btn_loadrec_Metric" IsEnabled="false" Content="Load Records" TabIndex="23" FontWeight="Bold" FontSize="18" Click="Btn_loadrec_Click" Margin="5,0,5,0"/>
+                        <ToggleButton Style="{StaticResource CustomToggleButtonStyle}" x:Name="btn_loadrec_Imperial" IsEnabled="false" Content="Load Records" TabIndex="23" FontWeight="Bold" FontSize="18" Click="Btn_loadrec_Click" Visibility="Visible" Margin="5,0,5,0" />
                         </StackPanel>
                         <TextBlock x:Name="sysMSG" Text="" Foreground="Red"/>
                     </StackPanel>
@@ -382,7 +394,7 @@
             </GroupBox>
 
             <!--Row 2-->
-            <GroupBox Header="Vehicle" Grid.Row="1" MinWidth="400" Grid.Column="2" Margin="5,0,5,0">
+            <GroupBox Header="Vehicle" Grid.Row="1" Grid.Column="2" Margin="5,0,5,0">
                 <StackPanel>
                     <DockPanel>
                         <GroupBox Header="Class">
@@ -442,7 +454,7 @@
             <!--Row 3-->
             <GroupBox Header="Race Data" Grid.Column="3" Grid.Row="1" Margin="5,0,20,5" >
                 <StackPanel>
-                    <GroupBox Header="Skata" x:Name="DynamicRaceLapsGroupBox">
+                    <GroupBox Header="Lap/Race Time" x:Name="DynamicRaceLapsGroupBox">
                         <StackPanel x:Name="DynamicRaceLapsStackPanel" Orientation="Vertical" />
                     </GroupBox>
                     <StackPanel>

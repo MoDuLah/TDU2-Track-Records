@@ -44,7 +44,7 @@ namespace TDU2_Track_Records
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT id, _vehicle_name FROM vehicles WHERE _is_available = 'true' ORDER BY _vehicle_name ";
+                string query = "SELECT id, _vehicle_name FROM vehicles WHERE _is_purchasable = 'true' ORDER BY _vehicle_name ";
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -150,82 +150,85 @@ namespace TDU2_Track_Records
 
         private void AddComboBoxToUI(string dealershipName, int slotIndex, string slotColumn)
         {
-            // Create the main GroupBox for the empty slot
-            GroupBox emptySlotGroupBox = new GroupBox
+            if (isUnlocked == true)
             {
-                Header = $"Empty Slot {slotIndex + 1}",
-                Margin = new Thickness(10),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
-                BorderThickness = new Thickness(2),
-                Padding = new Thickness(10)
-            };
-
-            // Create a StackPanel to hold the ComboBox
-            StackPanel contentStack = new StackPanel();
-
-            // Create the ComboBox for selecting a car
-            ComboBox availableCarsComboBox = new ComboBox
-            {
-                Width = 150,
-                Tag = slotColumn // Store the actual slot column name in the Tag property
-            };
-
-            // Load the available cars into the ComboBox
-            LoadAvailableCarsIntoComboBox(availableCarsComboBox);
-
-            // Add a SelectionChanged event to handle car selection
-            availableCarsComboBox.SelectionChanged += (sender, e) =>
-            {
-                if (availableCarsComboBox.SelectedValue != null)
+                // Create the main GroupBox for the empty slot
+                GroupBox emptySlotGroupBox = new GroupBox
                 {
-                    string selectedVehicleId = availableCarsComboBox.SelectedValue.ToString();
-                    if (!string.IsNullOrEmpty(selectedVehicleId))
+                    Header = $"Empty Slot {slotIndex + 1}",
+                    Margin = new Thickness(10),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
+                    BorderThickness = new Thickness(2),
+                    Padding = new Thickness(10)
+                };
+
+                // Create a StackPanel to hold the ComboBox
+                StackPanel contentStack = new StackPanel();
+
+                // Create the ComboBox for selecting a car
+                ComboBox availableCarsComboBox = new ComboBox
+                {
+                    Width = 150,
+                    Tag = slotColumn // Store the actual slot column name in the Tag property
+                };
+
+                // Load the available cars into the ComboBox
+                LoadAvailableCarsIntoComboBox(availableCarsComboBox);
+
+                // Add a SelectionChanged event to handle car selection
+                availableCarsComboBox.SelectionChanged += (sender, e) =>
+                {
+                    if (availableCarsComboBox.SelectedValue != null)
                     {
-                        AddVehicleToSlot(dealershipName, selectedVehicleId, slotColumn);
+                        string selectedVehicleId = availableCarsComboBox.SelectedValue.ToString();
+                        if (!string.IsNullOrEmpty(selectedVehicleId))
+                        {
+                            AddVehicleToSlot(dealershipName, selectedVehicleId, slotColumn);
 
-                        // Refresh the UI after adding the car
-                        LoadVehicles(dealershipName);
+                            // Refresh the UI after adding the car
+                            LoadVehicles(dealershipName);
+                        }
                     }
-                }
-            };
+                };
 
-            // Add the ComboBox to the contentStack
-            contentStack.Children.Add(availableCarsComboBox);
+                // Add the ComboBox to the contentStack
+                contentStack.Children.Add(availableCarsComboBox);
 
-            // Set the content of the GroupBox
-            emptySlotGroupBox.Content = contentStack;
+                // Set the content of the GroupBox
+                emptySlotGroupBox.Content = contentStack;
 
-            // Ensure VehiclesStackPanel is a Grid (you may need to adjust based on your layout)
-            Grid grid = VehiclesStackPanel as Grid;
-            if (grid == null)
-            {
-                // Initialize a new Grid if VehiclesStackPanel is not a Grid
-                grid = new Grid();
-                grid.ColumnDefinitions.Add(new ColumnDefinition());
-                grid.ColumnDefinitions.Add(new ColumnDefinition());
-
-                // Define rows based on the number of slots
-                int rows = (8 + 1) / 2;
-                for (int i = 0; i < rows; i++)
+                // Ensure VehiclesStackPanel is a Grid (you may need to adjust based on your layout)
+                Grid grid = VehiclesStackPanel as Grid;
+                if (grid == null)
                 {
-                    grid.RowDefinitions.Add(new RowDefinition());
+                    // Initialize a new Grid if VehiclesStackPanel is not a Grid
+                    grid = new Grid();
+                    grid.ColumnDefinitions.Add(new ColumnDefinition());
+                    grid.ColumnDefinitions.Add(new ColumnDefinition());
+
+                    // Define rows based on the number of slots
+                    int rows = (8 + 1) / 2;
+                    for (int i = 0; i < rows; i++)
+                    {
+                        grid.RowDefinitions.Add(new RowDefinition());
+                    }
+
+                    // Clear existing content and set the new Grid
+                    VehiclesStackPanel.Children.Clear();
+                    VehiclesStackPanel.Children.Add(grid);
                 }
 
-                // Clear existing content and set the new Grid
-                VehiclesStackPanel.Children.Clear();
-                VehiclesStackPanel.Children.Add(grid);
+                // Determine the column and row for this empty slot
+                int column = slotIndex % 2;
+                int row = slotIndex / 2;
+
+                // Set the position of the GroupBox in the grid
+                Grid.SetColumn(emptySlotGroupBox, column);
+                Grid.SetRow(emptySlotGroupBox, row);
+
+                // Add the GroupBox to the grid
+                grid.Children.Add(emptySlotGroupBox);
             }
-
-            // Determine the column and row for this empty slot
-            int column = slotIndex % 2;
-            int row = slotIndex / 2;
-
-            // Set the position of the GroupBox in the grid
-            Grid.SetColumn(emptySlotGroupBox, column);
-            Grid.SetRow(emptySlotGroupBox, row);
-
-            // Add the GroupBox to the grid
-            grid.Children.Add(emptySlotGroupBox);
         }
 
 

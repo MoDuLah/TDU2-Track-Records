@@ -63,9 +63,7 @@
 					<Grid>
 						<Border x:Name="OuterBd" CornerRadius="3"
                                 BorderBrush="{StaticResource NormalOuterBorder}" 
-                                BorderThickness="1" Background="{StaticResource NormalBackground}"
-                        
-                                >
+                                BorderThickness="1" Background="{StaticResource NormalBackground}">
                             <Border.Effect>
                                 <DropShadowEffect Color="Black" Direction="300" ShadowDepth="10" Opacity="0.6" BlurRadius="7"/>
                             </Border.Effect>

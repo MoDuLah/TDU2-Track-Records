@@ -41,5 +41,11 @@
     <Setting Name="Points" Type="System.String" Scope="User">
       <Value Profile="(Default)">Points</Value>
     </Setting>
+    <Setting Name="BackupFolderPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="defaultSaveFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

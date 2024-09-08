@@ -119,7 +119,7 @@ namespace TDU2_Track_Records
         private void BindVehicleComboBox(ComboBox comboBox)
         {
             ComboBoxItem selectedItem = (ComboBoxItem)RestrictedClassComboBox.SelectedItem;
-            string query = "SELECT * FROM vehicles WHERE _is_available = 'true'";
+            string query = "SELECT * FROM vehicles WHERE _is_purchasable = 'true'";
 
             if (RestrictedClassComboBox.SelectedIndex > 0)
             {

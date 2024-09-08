@@ -44,14 +44,7 @@ namespace TDU2_Track_Records
         public int VehicleTrackBack { get; set; }
         public int VehicleTrackFront { get; set; }
         public int VehicleWheelbase { get; set; }
-        public int VehicleNbSeats { get; set; }
-        public int VehicleNbDoors { get; set; }
-        public int VehicleDefaultRimsDiameterF { get; set; }
-        public int VehicleDefaultRimsDiameterR { get; set; }
-        public int VehicleDefaultRimsHeightF { get; set; }
-        public int VehicleDefaultRimsHeightR { get; set; }
-        public int VehicleDefaultRimsWidthF { get; set; }
-        public int VehicleDefaultRimsWidthR { get; set; }
+
         public int VehicleBrakesDimFront { get; set; }
         public int VehicleBrakesDimRear { get; set; }
 
@@ -64,7 +57,7 @@ namespace TDU2_Track_Records
         public bool VehicleCanSticker { get; set; }
         public bool VehicleCanUpgrade { get; set; }
         public bool VehicleActive { get; set; }
-        public bool VehicleAvailable { get; set; }
+        public bool VehiclePurchasable { get; set; }
         public bool VehicleOwned { get; set; }
         public byte[] VehicleImage { get; set; }
     }

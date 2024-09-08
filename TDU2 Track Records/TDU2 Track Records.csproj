@@ -33,8 +33,8 @@
     <ProductName>TDU2 TR</ProductName>
     <PublisherName>Gleris Productions</PublisherName>
     <SuiteName>TDU2</SuiteName>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.0.0.0</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -62,7 +62,7 @@
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>TDU2TR.ico</ApplicationIcon>
+    <ApplicationIcon>TDU2.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
@@ -141,6 +141,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SaveGameManager.xaml.cs">
+      <DependentUpon>SaveGameManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="vehicleCard.xaml.cs">
       <DependentUpon>vehicleCard.xaml</DependentUpon>
     </Compile>
@@ -187,6 +190,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="powerlap.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SaveGameManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -273,6 +280,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="TDU2.ico" />
+    <Resource Include="Images\Folder.png" />
+    <Resource Include="Images\Restore.png" />
+    <Resource Include="Images\Save.png" />
     <Resource Include="Images\vehicles\placeholder.png" />
     <Resource Include="Images\backgrounds\dealership1.png" />
     <Resource Include="Images\backgrounds\dealershipbg.png" />
@@ -446,7 +457,6 @@
     <Resource Include="Images\vehicles\Aston Martin One-77.jpg" />
     <Resource Include="Images\vehicles\Aston Martin V12 Vantage.jpg" />
     <Resource Include="Images\vehicles\Aston Martin V8 Vantage.jpg" />
-    <Resource Include="Images\vehicles\Atari Fast Track.png" />
     <Resource Include="Images\vehicles\Audi Q7 V12 TDI quattro - TDU2 Inuit Edition.jpg" />
     <Resource Include="Images\vehicles\Audi Q7 V12 TDI quattro.jpg" />
     <Resource Include="Images\vehicles\Audi R8 Spyder 5.2 FSI Quattro.jpg" />
@@ -513,11 +523,7 @@
     <Resource Include="Images\vehicles\Ginetta F400.jpg" />
     <Resource Include="Images\vehicles\Ginetta G40.jpg" />
     <Resource Include="Images\vehicles\Gumpert apollo sport.jpg" />
-    <Resource Include="Images\vehicles\Hammer Track.png" />
     <Resource Include="Images\vehicles\Harley Davidson Fat Boy Low.jpg" />
-    <Resource Include="Images\vehicles\Hawaii Spin Track.png" />
-    <Resource Include="Images\vehicles\Helmet%27s Angels.png" />
-    <Resource Include="Images\vehicles\Hill track.png" />
     <Resource Include="Images\vehicles\Hot Rod.jpg" />
     <Resource Include="Images\vehicles\Hummer H3.jpg" />
     <Resource Include="Images\vehicles\Jaguar D-type.jpg" />
@@ -541,7 +547,6 @@
     <Resource Include="Images\vehicles\Lancia Stratos Group 4.jpg" />
     <Resource Include="Images\vehicles\Land Rover Range Rover Sport HSE.jpg" />
     <Resource Include="Images\vehicles\Lexus LFA.jpg" />
-    <Resource Include="Images\vehicles\Lightning Track.png" />
     <Resource Include="Images\vehicles\Lotus 2-Eleven.jpg" />
     <Resource Include="Images\vehicles\Lotus Elise SC.jpg" />
     <Resource Include="Images\vehicles\Lotus Esprit S3.jpg" />
@@ -574,7 +579,6 @@
     <Resource Include="Images\vehicles\Pagani Zonda R.jpg" />
     <Resource Include="Images\vehicles\Pagani Zonda Roadster F.jpg" />
     <Resource Include="Images\vehicles\Pagani Zonda Tricolore.jpg" />
-    <Resource Include="Images\vehicles\Pat-A-Track.png" />
     <Resource Include="Images\vehicles\Porsche 918 Spyder.jpg" />
     <Resource Include="Images\vehicles\RUF RGT.jpg" />
     <Resource Include="Images\vehicles\RUF RK Spyder.jpg" />
@@ -591,9 +595,7 @@
     <Resource Include="Images\vehicles\Spyker D8 Peking-to-Paris.jpg" />
     <Resource Include="Images\vehicles\Subaru BRZ.jpg" />
     <Resource Include="Images\vehicles\Subaru Impreza WRX STI.jpg" />
-    <Resource Include="Images\vehicles\The S Track.png" />
     <Resource Include="Images\vehicles\Toyota Supra Twin Turbo.jpg" />
-    <Resource Include="Images\vehicles\Turntable Track.png" />
     <Resource Include="Images\vehicles\TVR Cerbera Speed 12.jpg" />
     <Resource Include="Images\vehicles\TVR Sagaris.jpg" />
     <Resource Include="Images\vehicles\Volkswagen Beetle.jpg" />
@@ -700,6 +702,12 @@
   <ItemGroup>
     <PackageReference Include="EntityFramework">
       <Version>6.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Core">
+      <Version>1.1.5</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Shell">
+      <Version>1.1.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers">
       <Version>0.4.421302</Version>

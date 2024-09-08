@@ -178,5 +178,29 @@ namespace TDU2_Track_Records.Properties {
                 this["Points"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BackupFolderPath {
+            get {
+                return ((string)(this["BackupFolderPath"]));
+            }
+            set {
+                this["BackupFolderPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string defaultSaveFolder {
+            get {
+                return ((string)(this["defaultSaveFolder"]));
+            }
+            set {
+                this["defaultSaveFolder"] = value;
+            }
+        }
     }
 }

@@ -65,7 +65,11 @@ namespace TDU2_Track_Records
             binding.Mode = BindingMode.OneWay; // TextBox will only receive text from the TextBlock
             LapsTextBox.SetBinding(TextBox.TextProperty, binding);
             // bind ends here
-            GenerateLapsInStackPanel(1);
+            //GenerateLapsInStackPanel(1);
+            DynamicRaceLapsGroupBox.Visibility = Visibility.Collapsed;
+            lbl_AverageSpeed.Visibility = Visibility.Collapsed;
+            lbl_avgLapTime.Visibility = Visibility.Collapsed;
+            lbl_TotalTime.Visibility = Visibility.Collapsed;
             old_LapsGroupBox.Visibility = Visibility.Collapsed;
             ClassRestictionGroupBox.Visibility = Visibility.Collapsed;
             VehicleRestictionGroupBox.Visibility = Visibility.Collapsed;
@@ -132,24 +136,35 @@ namespace TDU2_Track_Records
                 case "Time Attack SP":
                     GenerateLapsInStackPanel(1);  // No laps, just total time
                     DynamicRaceLapsGroupBox.Visibility = Visibility.Visible;
+                    LapsGroupBox.Visibility = Visibility.Collapsed;
                     break;
                 case "Eliminator SP":
                     GenerateLapsInStackPanel(7);  // No laps, just total time
                     DynamicRaceLapsGroupBox.Visibility = Visibility.Visible;
+                    lbl_AverageSpeed.Visibility = Visibility.Visible;
+                    lbl_avgLapTime.Visibility = Visibility.Visible;
+                    lbl_TotalTime.Visibility = Visibility.Visible;
+
                     break;
                 case "Race MP":
                     GenerateLapsInStackPanel(5);  // Example for multiple laps
                     DynamicRaceLapsGroupBox.Visibility = Visibility.Visible;
-                        break;
+                    lbl_AverageSpeed.Visibility = Visibility.Visible;
+                    lbl_avgLapTime.Visibility = Visibility.Visible;
+                    lbl_TotalTime.Visibility = Visibility.Visible;
+
+                    break;
                 default:
                     GenerateLapsInStackPanel(0);
                     DynamicRaceLapsGroupBox.Visibility = Visibility.Collapsed;
+                    LapsGroupBox.Visibility = Visibility.Collapsed;
                     break;
             }
         }
 
         public void GenerateLapsInStackPanel(int lapCount)
         {
+            if (string.IsNullOrEmpty(lapCount.ToString()) || lapCount < 1) return;
             DynamicRaceLapsStackPanel.Children.Clear();
 
             for (int lap = 1; lap <= lapCount; lap++)
@@ -157,7 +172,7 @@ namespace TDU2_Track_Records
                 StackPanel lapPanel = new StackPanel
                 {
                     Orientation = Orientation.Horizontal,
-                    Margin = new Thickness(5)
+                    Margin = new Thickness(0)
                 };
 
                 TextBlock lapLabel = new TextBlock
@@ -165,30 +180,33 @@ namespace TDU2_Track_Records
                     Text = $"Lap {lap}",
                     FontWeight = FontWeights.Bold,
                     VerticalAlignment = VerticalAlignment.Center,
-                    Margin = new Thickness(10, 0, 10, 0),
-                    Width = 50
+                    Margin = new Thickness(0, 0, 0, 0),
+                    //Width = 50
                 };
                 lapPanel.Children.Add(lapLabel);
 
                 TextBox minTextBox = CreateTextBox(lap, "Min", "00", 1);
+                minTextBox.TextChanged += MyTextBox_TextChanged;
                 minTextBox.GotFocus += TextBox_GotFocus;
                 minTextBox.LostFocus += TextBox_LostFocus;
 
                 TextBox secTextBox = CreateTextBox(lap, "Sec", "00", 2);
+                secTextBox.TextChanged += MyTextBox_TextChanged;
                 secTextBox.GotFocus += TextBox_GotFocus;
                 secTextBox.LostFocus += TextBox_LostFocus;
 
-                TextBox msTextBox = CreateTextBox(lap, "Ms", "000", 3);
+                TextBox msTextBox = CreateTextBox(lap, "Ms", "00", 2);
+                msTextBox.TextChanged += MyTextBox_TextChanged;
                 msTextBox.GotFocus += TextBox_GotFocus;
                 msTextBox.LostFocus += TextBox_LostFocus;
 
                 TextBlock avgSpeedTextBlock = new TextBlock
                 {
-                    Text = "0.0",
+                    Text = "",
                     Tag = $"avg_SpeedLap{lap}",
                     VerticalAlignment = VerticalAlignment.Center,
-                    Margin = new Thickness(10, 0, 0, 0),
-                    Width = 70,
+                    Margin = new Thickness(10, 0, 5, 0),
+                    //Width = 70,
                     TextAlignment = TextAlignment.Center
                 };
 
@@ -210,9 +228,10 @@ namespace TDU2_Track_Records
             {
                 Name = $"Lap{lap}_{type}",
                 Text = defaultText,
-                MaxLength = type == "Ms" ? 3 : 2,
+                MaxLength = 2, //type == "Ms" ? 3 : if back to miliseconds.
                 TabIndex = tabIndex,
-                Width = type == "Ms" ? 50 : 30,
+                MinWidth = 20,
+                Margin = new Thickness(0, 0, 0, 0),
                 AutoWordSelection = true
             };
         }
@@ -225,7 +244,6 @@ namespace TDU2_Track_Records
                 FontWeight = FontWeights.Bold,
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                Width = 10
             };
         }
         // GotFocus event handler
@@ -254,7 +272,7 @@ namespace TDU2_Track_Records
             if (string.IsNullOrEmpty(textBox.Text))
             {
                 // If the TextBox is empty, reset to "00" or "000" based on type
-                textBox.Text = textBox.Name.EndsWith("_Ms") ? "000" : "00";
+                textBox.Text = textBox.Name.EndsWith("_Ms") ? "00" : "00";
             }
 
             if (textBox.Name.EndsWith("_Sec"))
@@ -912,11 +930,11 @@ namespace TDU2_Track_Records
             TextBox[] ms = { Lap1_Ms, Lap2_Ms, Lap3_Ms, Lap4_Ms, Lap5_Ms };
             TextBlock[] speedLaps = { avg_SpeedLap1, avg_SpeedLap2, avg_SpeedLap3, avg_SpeedLap4, avg_SpeedLap5 };
 
-            for (int i = 0; i < mins.Length; i++)
+            for (int i = 0; i < Convert.ToInt32(LapsTextBlock.Text); i++)
             {
                 mins[i].Text = "00";
                 secs[i].Text = "00";
-                ms[i].Text = "000";
+                ms[i].Text = "00";
                 speedLaps[i].Text = "0.0";
             }
         }
@@ -1232,7 +1250,7 @@ namespace TDU2_Track_Records
         {
             //if(comboBox.SelectedIndex == -1) { return; }
 
-            string query = "SELECT * FROM vehicles WHERE _is_available = 'true' AND _is_active = 'true' AND _is_owned = 'true'";
+            string query = "SELECT * FROM vehicles WHERE _is_purchasable = 'true' AND _is_active = 'true' AND _is_owned = 'true'";
 
             if (combo_Class.SelectedIndex > -1)
             {
@@ -1332,9 +1350,9 @@ namespace TDU2_Track_Records
 
         private void Btn_submit_GotFocus(object sender, RoutedEventArgs e)
         {
-            calc_Average_Lap_Time();
-            calc_Total_Lap_Time();
-            calc_Average_Speed();
+            //calc_Average_Lap_Time();
+            //calc_Total_Lap_Time();
+            //calc_Average_Speed();
         }
 
         private void Btn_loadrec_Click(object sender, RoutedEventArgs e)
@@ -1701,8 +1719,8 @@ namespace TDU2_Track_Records
         private int GetCarsCount(SQLiteConnection dbConn, string param)
         {
             string query = string.IsNullOrEmpty(param)
-                ? "SELECT COUNT(*) FROM [vehicles] WHERE _is_active = 'true' ;"
-                : $"SELECT COUNT(*) FROM [vehicles] WHERE _vehiclecategory_name = '{param}' and _is_active = 'true' ;";
+                ? "SELECT COUNT(*) FROM [vehicles] WHERE _is_active = 'true' and _is_purchasable = 'true' and _is_owned = 'true';"
+                : $"SELECT COUNT(*) FROM [vehicles] WHERE _vehiclecategory_name = '{param}' and _is_active = 'true' and _is_purchasable = 'true' and _is_owned = 'true';";
 
             using (var cmd = new SQLiteCommand(query, dbConn))
             using (var reader = cmd.ExecuteReader())
@@ -2314,6 +2332,12 @@ namespace TDU2_Track_Records
             {
                 this.DragMove();
             }
+        }
+
+        private void SGM_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var SaveGameManager = new SaveGameManager();
+            SaveGameManager.Show();
         }
     }
 }

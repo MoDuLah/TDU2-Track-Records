@@ -234,7 +234,7 @@ namespace TDU2_Track_Records
                                     // Boolean properties
                                     VehicleActive = GetBoolean(reader, columnIndices["_is_active"]),
                                     VehicleOwned = GetBoolean(reader, columnIndices["_is_owned"]),
-                                    VehicleAvailable = GetBoolean(reader, columnIndices["_is_available"]),
+                                    VehiclePurchasable = GetBoolean(reader, columnIndices["_is_purchasable"]),
             
                                     // Image property
                                     VehicleImage = reader.IsDBNull(columnIndices["_vehicle_image"]) ? null : (byte[])reader["_vehicle_image"], // Adjusted to retrieve BLOB data
@@ -429,12 +429,12 @@ namespace TDU2_Track_Records
                             _odometer_imperial = @odometerImperial,
                             _is_owned = @owned,
                             _is_active = @active,
-                            Price = @price, 
-                            Acceleration_Stat = @accelerationStat,
-                            Speed_Stat = @speedStat,
-                            Braking_Stat = @brakingStat, 
-                            Difficulty_Stat = @difficultyStat,
-                            Top_Speed = @topSpeed,
+                            _price = @price, 
+                            _stat_acc = @accelerationStat,
+                            _stat_speed = @speedStat,
+                            _stat_brake = @brakingStat, 
+                            _difficulty = @difficultyStat,
+                            _theoretical_Top_Speed = @topSpeed,
                             Acceleration_Time = @accelerationTime,
                             Engine = @engine,
                             Engine_Layout = @layout,
