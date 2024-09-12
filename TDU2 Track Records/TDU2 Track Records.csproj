@@ -31,7 +31,7 @@
     <MapFileExtensions>false</MapFileExtensions>
     <TargetCulture>en</TargetCulture>
     <ProductName>TDU2 TR</ProductName>
-    <PublisherName>Gleris Productions</PublisherName>
+    <PublisherName>MoDuLah</PublisherName>
     <SuiteName>TDU2</SuiteName>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>2.0.0.%2a</ApplicationVersion>
@@ -138,11 +138,6 @@
     </Compile>
     <Compile Include="powerlap.xaml.cs">
       <DependentUpon>powerlap.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SaveGameManager.xaml.cs">
       <DependentUpon>SaveGameManager.xaml</DependentUpon>
@@ -283,6 +278,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Images\ico\navigation\crc_over.png" />
+    <Resource Include="Images\ico\navigation\crc.png" />
+    <Resource Include="Images\ico\navigation\leaderboard.png" />
+    <Resource Include="Images\ico\navigation\leaderboard_over.png" />
     <Resource Include="TDU2.ico" />
     <Resource Include="Images\Folder.png" />
     <Resource Include="Images\Restore.png" />
@@ -389,7 +388,6 @@
     <Resource Include="Images\ico\navigation\garage.png" />
     <Resource Include="Images\ico\navigation\garage_over.png" />
     <Resource Include="Images\ico\navigation\house.png" />
-    <Resource Include="Images\ico\navigation\houseproper.png" />
     <Resource Include="Images\ico\navigation\house_over.png" />
     <Resource Include="Images\ico\navigation\minimize.png" />
     <Resource Include="Images\ico\navigation\minimize_over.png" />
@@ -608,10 +606,6 @@
     <Resource Include="Images\vehicles\Wiesmann Roadster MF3.jpg" />
     <Resource Include="Images\tdu2.ico" />
     <Resource Include="TDU2TR.ico" />
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <Content Include="database.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

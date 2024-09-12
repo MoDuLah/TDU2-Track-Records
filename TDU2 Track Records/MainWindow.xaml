@@ -51,21 +51,21 @@
             <DockPanel Grid.Column="5" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,5">
  
                 <Image x:Name="tracks_Button" MouseLeftButtonDown="tracks_MouseLeftButtonDown"
-                   Margin="0,0,5,0" Width="32" Height="32"
+                   Margin="0,0,5,0" Width="42" Height="42"
                    ToolTip="Add Events">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/ico/objectives/crc.png"/>
+                            <Setter Property="Source" Value="Images/ico/navigation/crc.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/ico/objectives/ico_roads.png"/>
+                                    <Setter Property="Source" Value="Images/ico/navigation/crc_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
                 </Image>
                 <Image x:Name="Objectives_Button" MouseLeftButtonDown="Objectives_MouseLeftButtonDown"
-                    Margin="0,0,5,0" Width="32" Height="32"
+                    Margin="0,0,5,0" Width="42" Height="42"
                     ToolTip="Objectives">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -80,7 +80,7 @@
                 </Image>
                 <Image x:Name="Houses_Button" MouseLeftButtonDown="Houses_MouseLeftButtonDown"
                     Margin="0,0,5,0"
-                    ToolTip="Houses" Stretch="None">
+                    ToolTip="Houses" Width="42">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/ico/navigation/house.png"/>
@@ -93,8 +93,8 @@
                     </Image.Style>
                 </Image>
                 <Image x:Name="Dealership_Button" MouseLeftButtonDown="Dealership_MouseLeftButtonDown"
-                    Margin="0,0,5,0"
-                    ToolTip="Dealerships" Stretch="None">
+                    Margin="0,0,5,0" Width="42" Height="42"
+                    ToolTip="Dealerships">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/ico/navigation/dealership.png"/>
@@ -107,14 +107,14 @@
                     </Image.Style>
                 </Image>
                 <Image x:Name="PowerLaps_Button" MouseLeftButtonDown="PowerLaps_MouseLeftButtonDown"
-                        Margin="0,0,5,0"
-                        ToolTip="Power Laps Leaderboard" Stretch="None">
+                        Margin="0,0,5,0" Width="42" Height="42"
+                        ToolTip="Power Laps Leaderboard" Stretch="UniformToFill">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
-                            <Setter Property="Source" Value="Images/lap.png"/>
+                            <Setter Property="Source" Value="Images/ico/navigation/leaderboard.png"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter Property="Source" Value="Images/Lap_over.png"/>
+                                    <Setter Property="Source" Value="Images/ico/navigation/leaderboard_over.png"/>
                                 </Trigger>
                             </Style.Triggers>
                         </Style>
@@ -135,9 +135,8 @@
                     </Image.Style>
                 </Image>
                 <Image x:Name="Settings_Button" MouseLeftButtonDown="Settings_MouseLeftButtonDown"
-                       Margin="0,0,5,0"
-                       Width="32" Height="32" MinWidth="32" MinHeight="32"
-                       ToolTip="Settings">
+                       Margin="0,0,5,0" MinWidth="32" MinHeight="32"
+                       ToolTip="Settings" Width="42">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/ico/navigation/settings.png"/>
@@ -151,7 +150,7 @@
                 </Image>
                 <Image x:Name="Minimize_Button" MouseLeftButtonDown="Minimize_MouseLeftButtonDown"
                        Margin="0,0,5,0"
-                       Width="32" Height="32" MinWidth="32" MinHeight="32"
+                       Width="42" Height="42" MinWidth="32" MinHeight="32"
                        ToolTip="Minimize Application">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -166,7 +165,7 @@
                 </Image>
                 <Image x:Name="Close_Button" MouseLeftButtonDown="Close_Button_MouseLeftButtonDown"
                        Margin="0,0,5,0"
-                       Width="32" Height="32" MinWidth="32" MinHeight="32"
+                       Width="42" Height="42" MinWidth="32" MinHeight="32"
                        ToolTip="Close Application">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">

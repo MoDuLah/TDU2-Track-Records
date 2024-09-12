@@ -230,7 +230,7 @@ namespace TDU2_Track_Records
                 Text = defaultText,
                 MaxLength = 2, //type == "Ms" ? 3 : if back to miliseconds.
                 TabIndex = tabIndex,
-                MinWidth = 20,
+                MinWidth = 32,
                 Margin = new Thickness(0, 0, 0, 0),
                 AutoWordSelection = true
             };

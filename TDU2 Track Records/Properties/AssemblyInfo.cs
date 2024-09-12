@@ -9,7 +9,7 @@ using System.Windows;
 [assembly: AssemblyTitle("TDU2 Track Records")]
 [assembly: AssemblyDescription("Track your records on all the TDU2 Racetracks")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Gleris Corp")]
+[assembly: AssemblyCompany("MoDuLah")]
 [assembly: AssemblyProduct("")]
 [assembly: AssemblyCopyright("Copyright © 2018-2024")]
 [assembly: AssemblyTrademark("")]
