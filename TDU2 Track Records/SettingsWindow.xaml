@@ -11,7 +11,7 @@
  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
         ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Adobe Gothic Std B" FontSize="16" 
         WindowStyle="None" AllowsTransparency="True" 
-        Background="{x:Null}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False">
+        Background="{x:Null}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" Closing="Window_Closing">
 
     <Window.Resources>
         <local:UnitConverter x:Key="UnitConverter"/>
@@ -37,18 +37,21 @@
                             <StackPanel Orientation="Vertical" Margin="5">
                                 <Slider x:Name="UnitSlider" Minimum="0" Maximum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="150"
                                         Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Converter={StaticResource UnitConverter}, Mode=TwoWay}" />
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                    <TextBlock Text="Speed: " FontSize="12"/>
-                    <TextBlock x:Name="SpeedUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" />
-                    <TextBlock Text=" Weight: "  FontSize="12" Margin="5,0,0,0"/>
-                    <TextBlock x:Name="WeightUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}" />
-                    <TextBlock Text="Distance: "  FontSize="12" Margin="5,0,0,0"/>
-                    <TextBlock x:Name="DistanceUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}" />
-                    <TextBlock Text="Torque: "  FontSize="12" Margin="5,0,0,0"/>
-                    <TextBlock x:Name="torqueUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}" />
-                        </StackPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                                    <TextBlock Text="Speed: " FontSize="12"/>
+                                    <TextBlock x:Name="SpeedUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" />
+                                    <TextBlock Text=" Weight: "  FontSize="12" Margin="5,0,0,0"/>
+                                    <TextBlock x:Name="WeightUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}" />
+                                    <TextBlock Text="Distance: "  FontSize="12" Margin="5,0,0,0"/>
+                                    <TextBlock x:Name="DistanceUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=distance, Mode=OneWay}" />
+                                    <TextBlock Text="Torque: "  FontSize="12" Margin="5,0,0,0"/>
+                                    <TextBlock x:Name="torqueUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}" />
+                                </StackPanel>
                             </StackPanel>
                         </GroupBox>
-            <Button Content="Close" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
+                        <GroupBox Header="Dealership Columns">
+                            <TextBox Text="{Binding Source={x:Static p:Settings.Default}, Path=dealershipColumns, Mode=TwoWay}" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        </GroupBox>
+        <Button Content="Close" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
     </StackPanel>
 </Window>

@@ -18,6 +18,8 @@
         <Setter Property="BorderThickness" Value="0,0,0,1"/>
         <Setter Property="Margin" Value="0,0,0,0"/>
         <Setter Property="Padding" Value="5"/>
+        <!-- Disable the dotted focus border -->
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">

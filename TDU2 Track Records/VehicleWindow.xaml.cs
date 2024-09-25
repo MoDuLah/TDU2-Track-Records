@@ -198,11 +198,12 @@ namespace TDU2_Track_Records
                                     DriveName = GetString(reader, columnIndices["_drive_name"]),
                                     FrontBrakesDesc = GetString(reader, columnIndices["_brakes_characteristics_front"]),
                                     RearBrakesDesc = GetString(reader, columnIndices["_brakes_characteristics_rear"]),
-                                    HouseStoredName = GetString(reader, columnIndices["_house_stored_name"]),
+                                    HouseStoredNameIbiza = GetString(reader, columnIndices["_house_name_in_ibiza☺"]),
+                                    HouseStoredNameOahu = GetString(reader, columnIndices["_house_name_in_hawaii"]),
                                     VehicleEnginePosition = GetString(reader, columnIndices["_engine_position"]),
             
                                     // Integer properties
-                                    VehiclePrice = GetInt(reader, columnIndices["_price"]),
+                                    VehiclePrice = GetString(reader, columnIndices["_price"]),
                                     VehicleEngineDisplacement = GetInt(reader, columnIndices["_displacement"]),
                                     VehicleGearboxType = GetInt(reader, columnIndices["_gearbox_id"]),
                                     VehicleNbGears = GetInt(reader, columnIndices["_nb_gears"]),
@@ -627,7 +628,7 @@ namespace TDU2_Track_Records
 
             vehicle.VehicleOwned = VehicleOwnedCheckBox.IsChecked == true ? true : false;
             vehicle.VehicleActive = VehicleActiveCheckBox.IsChecked == true ? true : false;
-            vehicle.VehiclePrice = price;
+            vehicle.VehiclePrice = price.ToString();
             vehicle.VehicleAccelerationStat = accelerationStat;
             vehicle.VehicleSpeedStat = speedStat;
             vehicle.VehicleBrakingStat = brakingStat;

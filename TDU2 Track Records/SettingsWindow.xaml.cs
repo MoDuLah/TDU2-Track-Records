@@ -65,5 +65,19 @@ namespace TDU2_Track_Records
                 this.DragMove();
             }
         }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Settings.Default.Save();
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(
+                "Changing the settings will reload the main window, and any unsaved data will be lost. Do you want to continue?",
+                "Warning",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+        }
     }
 }

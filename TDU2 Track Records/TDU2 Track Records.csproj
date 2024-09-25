@@ -33,8 +33,9 @@
     <ProductName>TDU2 TR</ProductName>
     <PublisherName>MoDuLah</PublisherName>
     <SuiteName>TDU2</SuiteName>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.0.0.%2a</ApplicationVersion>
+    <ApplicationVersion>2.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -49,6 +50,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseWinFormsOutOfProcDesigner>True</UseWinFormsOutOfProcDesigner>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -60,9 +62,10 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreGeneratedCode>false</CodeAnalysisIgnoreGeneratedCode>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <UseWinFormsOutOfProcDesigner>True</UseWinFormsOutOfProcDesigner>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>TDU2.ico</ApplicationIcon>
@@ -83,7 +86,13 @@
     <ManifestKeyFile>TDU2 Track Records_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TDU2_Track_Records.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -139,9 +148,7 @@
     <Compile Include="powerlap.xaml.cs">
       <DependentUpon>powerlap.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SaveGameManager.xaml.cs">
-      <DependentUpon>SaveGameManager.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Vehicled.cs" />
     <Compile Include="vehicleCard.xaml.cs">
       <DependentUpon>vehicleCard.xaml</DependentUpon>
     </Compile>
@@ -188,10 +195,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="powerlap.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="SaveGameManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -278,12 +281,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Images\vehicleCard\mA1.png" />
+    <Resource Include="Images\vehicleCard\mA2.png" />
+    <Resource Include="Images\vehicleCard\C1.png" />
+    <Resource Include="Images\vehicleCard\C4.png" />
+    <Resource Include="Images\vehicleCard\B1.png" />
+    <None Include="TDU2 Track Records.ruleset" />
     <Resource Include="Images\ico\navigation\crc_over.png" />
     <Resource Include="Images\ico\navigation\crc.png" />
     <Resource Include="Images\ico\navigation\leaderboard.png" />
     <Resource Include="Images\ico\navigation\leaderboard_over.png" />
     <Resource Include="TDU2.ico" />
-    <Resource Include="Images\Folder.png" />
     <Resource Include="Images\Restore.png" />
     <Resource Include="Images\Save.png" />
     <Resource Include="Images\vehicles\placeholder.png" />
@@ -420,18 +428,10 @@
     <Resource Include="Images\ico\categories\ico_cat4casino.png" />
     <Resource Include="Images\ico\categories\ico_cat4casino_over.png" />
     <Resource Include="Images\ico\categories\ico_cat4_over.png" />
-    <Resource Include="Images\lap.png" />
-    <Resource Include="Images\lap_over.png" />
     <Resource Include="Images\minimize.png" />
     <Resource Include="Images\minimize_over.png" />
-    <Resource Include="garage_over.png" />
-    <Resource Include="garage.png" />
     <Resource Include="Images\close.png" />
     <Resource Include="Images\close_over.png" />
-    <Resource Include="Images\garage.png" />
-    <Resource Include="Images\garage_over.png" />
-    <Resource Include="Images\settings.png" />
-    <Resource Include="Images\settings_over.png" />
     <Resource Include="Images\vehicles\Aston Martin DBS Coupé.jpg" />
     <Resource Include="Images\vehicles\Audi R8 Coupé 4.2 FSI Quattro.jpg" />
     <Resource Include="Images\vehicles\Audi R8 Coupé 5.2 FSI Quattro.jpg" />
@@ -674,8 +674,8 @@
     <Resource Include="Images\powerLapbg.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\carClasses\MA1.png" />
-    <Resource Include="Images\carClasses\MA2.png" />
+    <Resource Include="Images\carClasses\mA1.png" />
+    <Resource Include="Images\carClasses\mA2.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\carClasses\SC.png" />

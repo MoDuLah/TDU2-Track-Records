@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for TDU2 Track Records" Description="Code analysis rules for TDU2 Track Records.csproj." ToolsVersion="17.0">
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.Features" RuleNamespace="Microsoft.CodeAnalysis.Features">
+    <Rule Id="IDE0070" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" RuleNamespace="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers">
+    <Rule Id="UA0001" Action="None" />
+    <Rule Id="UA0002" Action="None" />
+    <Rule Id="UA0005" Action="None" />
+    <Rule Id="UA0006" Action="None" />
+    <Rule Id="UA0007" Action="None" />
+    <Rule Id="UA0008" Action="None" />
+    <Rule Id="UA0010" Action="None" />
+    <Rule Id="UA0011" Action="None" />
+    <Rule Id="UA0012" Action="None" />
+    <Rule Id="UA0013" Action="None" />
+    <Rule Id="UA0013_A" Action="None" />
+    <Rule Id="UA0013_B" Action="None" />
+    <Rule Id="UA0013_C" Action="None" />
+    <Rule Id="UA0013_D" Action="None" />
+    <Rule Id="UA0013_E" Action="None" />
+    <Rule Id="UA0013_F" Action="None" />
+    <Rule Id="UA0013_G" Action="None" />
+    <Rule Id="UA0013_H" Action="None" />
+    <Rule Id="UA0013_I" Action="None" />
+    <Rule Id="UA0013_J" Action="None" />
+    <Rule Id="UA0013_K" Action="None" />
+    <Rule Id="UA0013_L" Action="None" />
+    <Rule Id="UA0013_M" Action="None" />
+    <Rule Id="UA0013_N" Action="None" />
+    <Rule Id="UA0013_O" Action="None" />
+    <Rule Id="UA0013_P" Action="None" />
+    <Rule Id="UA0013_Q" Action="None" />
+    <Rule Id="UA0013_R" Action="None" />
+    <Rule Id="UA0013_S" Action="None" />
+    <Rule Id="UA306" Action="None" />
+    <Rule Id="UA306_A1" Action="None" />
+    <Rule Id="UA306_A2" Action="None" />
+    <Rule Id="UA306_A3" Action="None" />
+    <Rule Id="UA306_A4" Action="None" />
+    <Rule Id="UA306_B" Action="None" />
+    <Rule Id="UA306_C" Action="None" />
+    <Rule Id="UA306_D" Action="None" />
+    <Rule Id="UA306_E" Action="None" />
+    <Rule Id="UA306_F" Action="None" />
+    <Rule Id="UA306_G" Action="None" />
+    <Rule Id="UA306_H" Action="None" />
+    <Rule Id="UA306_I" Action="None" />
+  </Rules>
+</RuleSet>

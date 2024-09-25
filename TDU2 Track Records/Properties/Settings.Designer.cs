@@ -202,5 +202,17 @@ namespace TDU2_Track_Records.Properties {
                 this["defaultSaveFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int dealershipColumns {
+            get {
+                return ((int)(this["dealershipColumns"]));
+            }
+            set {
+                this["dealershipColumns"] = value;
+            }
+        }
     }
 }

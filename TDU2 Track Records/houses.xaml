@@ -1,12 +1,102 @@
 ﻿<Window x:Class="TDU2_Track_Records.houses"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TDU2_Track_Records"
-        mc:Ignorable="d"
-        Title="houses" Height="450" Width="800">
+ xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+ xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+ xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+ xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
+ xmlns:local="clr-namespace:TDU2_Track_Records"
+ mc:Ignorable="d" FontFamily="Adobe Gothic Std B" FontSize="20" MaxWidth="1600" 
+ Title="Dealerships" WindowStyle="None" AllowsTransparency="True" 
+ Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
+ Background="{x:Null}"
+ ResizeMode="CanResizeWithGrip" SizeToContent="WidthAndHeight" HorizontalContentAlignment="Stretch"
+ ScrollViewer.HorizontalScrollBarVisibility="Auto" MouseLeftButtonDown="dealerships_MouseLeftButtonDown">
     <Grid>
-        
+        <!-- Background Image -->
+        <Grid.Background>
+            <ImageBrush ImageSource="/Images/backgrounds/housesbg.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}" Stretch="UniformToFill"/>
+        </Grid.Background>
+        <!-- Column and Row Definitions -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <!-- Island Selector -->
+        <StackPanel x:Name="IslandSelector" Grid.Column="1" Grid.Row="1" Grid.RowSpan="4">
+            <ComboBox x:Name="IslandComboBox" 
+                             HorizontalAlignment="Left" 
+                             VerticalAlignment="Top" 
+                             Margin="10"
+                             Width="200" 
+                             SelectionChanged="IslandComboBox_SelectionChanged" FontSize="14" PreviewMouseRightButtonDown="IslandComboBox_PreviewMouseRightButtonDown">
+                <ComboBoxItem Content="Ibiza"/>
+                <ComboBoxItem Content="Oahu"/>
+            </ComboBox>
+
+            <ScrollViewer MaxHeight="600" VerticalScrollBarVisibility="Auto" Padding="5,5,5,5" CanContentScroll="True" HorizontalContentAlignment="Stretch" VirtualizingStackPanel.IsVirtualizing="True">
+                <ListBox Visibility="Visible" x:Name="DealershipListBox" 
+                     HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0" MinWidth="200"
+                 SelectionChanged="DealershipListBox_SelectionChanged" Background="#FF8A8A8A" Foreground="Black" d:ItemsSource="{d:SampleData ItemCount=10}" FontSize="14">
+
+                </ListBox>
+            </ScrollViewer>
+
+        </StackPanel>
+        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Center">
+            <GroupBox x:Name="HouseName" Header="{Binding HouseName}">
+                <StackPanel Orientation="Horizontal">
+                    <Image x:Name="HouseImage" Width="160" Height="90" Margin="5"/>
+                    <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                        <GroupBox Header="Rating">
+                            <TextBlock x:Name="HouseRating" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </GroupBox>
+                    </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                        <GroupBox Header="Price">
+                            <TextBlock x:Name="HousePrice" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </GroupBox>
+                    </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                    <GroupBox Header="Owned">
+                            <TextBlock x:Name="HouseOwned" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    </GroupBox>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                    <GroupBox Header="Max Slots">
+                            <TextBlock x:Name="HouseMaxSlots" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    </GroupBox>
+                </StackPanel>
+            </StackPanel>
+            </GroupBox>
+        </StackPanel>
+        <!-- Vehicles Display -->
+        <ScrollViewer Grid.Column="2" Grid.Row="2" Grid.RowSpan="3" x:Name="VehiclesScrollViewer" HorizontalAlignment="Left" VerticalAlignment="Top"
+              Margin="10,10,10,10" Width="900" Visibility="Hidden" Height="800" MouseLeftButtonDown="dealerships_MouseLeftButtonDown" VirtualizingStackPanel.IsVirtualizing="True" FocusVisualStyle="{x:Null}">
+            <Grid x:Name="VehiclesStackPanel">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+            </Grid>
+        </ScrollViewer>
     </Grid>
 </Window>

@@ -7,6 +7,7 @@ using System.Windows.Media;
 using TDU2_Track_Records.Properties;
 using System.Windows.Input;
 using System.Collections.Generic;
+using System.Linq; // For .Take() method in LINQ
 
 namespace TDU2_Track_Records
 {
@@ -16,6 +17,7 @@ namespace TDU2_Track_Records
         public string distance, speed;
         public string slotColumn;
         readonly string SI = Settings.Default.system;
+        public int dealershipColumn = Settings.Default.dealershipColumns;
         bool isUnlocked = false;
         public dealerships()
         {
@@ -44,7 +46,12 @@ namespace TDU2_Track_Records
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT id, _vehicle_name FROM vehicles WHERE _is_purchasable = 'true' ORDER BY _vehicle_name ";
+                string query = "SELECT id, _vehicle_name FROM vehicles ";
+                if (isUnlocked == false) { 
+                    query += "WHERE _is_purchasable = 'true' ORDER BY _vehicle_name ";
+                } else {
+                    query += " ORDER BY _vehicle_name ";
+                }
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
@@ -100,15 +107,14 @@ namespace TDU2_Track_Records
 
         private void LoadVehicles(string dealershipName)
         {
-            VehiclesStackPanel.Children.Clear();
+            VehiclesStackPanel.Children.Clear(); // Clear existing UI elements before loading new ones
             int slotIndex = 0;
             string island = IslandComboBox.SelectedValue?.ToString();
-            //MessageBox.Show(island);
+
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
                 string query = "SELECT * FROM dealerships WHERE Island = @Island AND Name = @Name";
-                //MessageBox.Show(query);
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Name", dealershipName);
@@ -117,14 +123,15 @@ namespace TDU2_Track_Records
                     {
                         if (reader.Read())
                         {
-                            for (int i = 1; i <= 8; i++) // Loop through all 8 slots
+                            // Loop through all 20 slots
+                            for (int i = 1; i <= 20; i++) // Increased from 8 to 20 slots
                             {
                                 string slotColumn = $"Slot{i}_VehicleId";
                                 string vehicleId = reader[slotColumn]?.ToString();
 
                                 if (string.IsNullOrEmpty(vehicleId))
                                 {
-                                    // If the slot is empty, add a ComboBox
+                                    // If the slot is empty, add a ComboBox for selecting a vehicle
                                     AddComboBoxToUI(dealershipName, slotIndex, slotColumn);
                                 }
                                 else
@@ -147,7 +154,88 @@ namespace TDU2_Track_Records
         }
 
 
+        //private void AddComboBoxToUI(string dealershipName, int slotIndex, string slotColumn)
+        //{
+        //    if (isUnlocked == true)
+        //    {
+        //        // Create the main GroupBox for the empty slot
+        //        GroupBox emptySlotGroupBox = new GroupBox
+        //        {
+        //            Header = $"Empty Slot {slotIndex + 1}",
+        //            Margin = new Thickness(10),
+        //            BorderBrush = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
+        //            BorderThickness = new Thickness(2),
+        //            Padding = new Thickness(10)
+        //        };
 
+        //        // Create a StackPanel to hold the ComboBox
+        //        StackPanel contentStack = new StackPanel();
+
+        //        // Create the ComboBox for selecting a car
+        //        ComboBox availableCarsComboBox = new ComboBox
+        //        {
+        //            Width = 150,
+        //            Tag = slotColumn // Store the actual slot column name in the Tag property
+        //        };
+
+        //        // Load the available cars into the ComboBox
+        //        LoadAvailableCarsIntoComboBox(availableCarsComboBox);
+
+        //        // Add a SelectionChanged event to handle car selection
+        //        availableCarsComboBox.SelectionChanged += (sender, e) =>
+        //        {
+        //            if (availableCarsComboBox.SelectedValue != null)
+        //            {
+        //                string selectedVehicleId = availableCarsComboBox.SelectedValue.ToString();
+        //                if (!string.IsNullOrEmpty(selectedVehicleId))
+        //                {
+        //                    AddVehicleToSlot(dealershipName, selectedVehicleId, slotColumn);
+
+        //                    // Refresh the UI after adding the car
+        //                    LoadVehicles(dealershipName);
+        //                }
+        //            }
+        //        };
+
+        //        // Add the ComboBox to the contentStack
+        //        contentStack.Children.Add(availableCarsComboBox);
+
+        //        // Set the content of the GroupBox
+        //        emptySlotGroupBox.Content = contentStack;
+
+        //        // Ensure VehiclesStackPanel is a Grid (you may need to adjust based on your layout)
+        //        Grid grid = VehiclesStackPanel as Grid;
+        //        if (grid == null)
+        //        {
+        //            // Initialize a new Grid if VehiclesStackPanel is not a Grid
+        //            grid = new Grid();
+        //            grid.ColumnDefinitions.Add(new ColumnDefinition());
+        //            grid.ColumnDefinitions.Add(new ColumnDefinition());
+
+        //            // Define rows based on the number of slots
+        //            int rows = (8 + 1) / 2;
+        //            for (int i = 0; i < rows; i++)
+        //            {
+        //                grid.RowDefinitions.Add(new RowDefinition());
+        //            }
+
+        //            // Clear existing content and set the new Grid
+        //            VehiclesStackPanel.Children.Clear();
+        //            VehiclesStackPanel.Children.Add(grid);
+        //        }
+
+        //        // Determine the column and row for this empty slot
+        //        int column = slotIndex % 2;
+        //        int row = slotIndex / 2;
+
+        //        // Set the position of the GroupBox in the grid
+        //        Grid.SetColumn(emptySlotGroupBox, column);
+        //        Grid.SetRow(emptySlotGroupBox, row);
+
+        //        // Add the GroupBox to the grid
+        //        grid.Children.Add(emptySlotGroupBox);
+        //    }
+        //}
         private void AddComboBoxToUI(string dealershipName, int slotIndex, string slotColumn)
         {
             if (isUnlocked == true)
@@ -183,6 +271,7 @@ namespace TDU2_Track_Records
                         string selectedVehicleId = availableCarsComboBox.SelectedValue.ToString();
                         if (!string.IsNullOrEmpty(selectedVehicleId))
                         {
+                            // Add the selected vehicle to the slot
                             AddVehicleToSlot(dealershipName, selectedVehicleId, slotColumn);
 
                             // Refresh the UI after adding the car
@@ -197,30 +286,38 @@ namespace TDU2_Track_Records
                 // Set the content of the GroupBox
                 emptySlotGroupBox.Content = contentStack;
 
-                // Ensure VehiclesStackPanel is a Grid (you may need to adjust based on your layout)
+                // Ensure VehiclesStackPanel is a Grid
                 Grid grid = VehiclesStackPanel as Grid;
                 if (grid == null)
                 {
                     // Initialize a new Grid if VehiclesStackPanel is not a Grid
                     grid = new Grid();
-                    grid.ColumnDefinitions.Add(new ColumnDefinition());
-                    grid.ColumnDefinitions.Add(new ColumnDefinition());
-
-                    // Define rows based on the number of slots
-                    int rows = (8 + 1) / 2;
-                    for (int i = 0; i < rows; i++)
-                    {
-                        grid.RowDefinitions.Add(new RowDefinition());
-                    }
-
-                    // Clear existing content and set the new Grid
                     VehiclesStackPanel.Children.Clear();
                     VehiclesStackPanel.Children.Add(grid);
                 }
 
+                // Determine the number of columns (make it consistent with LoadVehicles)
+                int columns = dealershipColumn; // You can set this to any number of columns you want per row
+
+                // Add columns dynamically if needed
+                while (grid.ColumnDefinitions.Count < columns)
+                {
+                    grid.ColumnDefinitions.Add(new ColumnDefinition());
+                }
+
+                // Calculate the number of rows needed based on the number of vehicles
+                int totalSlots = slotIndex + 1;
+                int rows = (totalSlots + columns - 1) / columns;
+
+                // Add rows dynamically if needed
+                while (grid.RowDefinitions.Count < rows)
+                {
+                    grid.RowDefinitions.Add(new RowDefinition());
+                }
+
                 // Determine the column and row for this empty slot
-                int column = slotIndex % 2;
-                int row = slotIndex / 2;
+                int column = slotIndex % columns;
+                int row = slotIndex / columns;
 
                 // Set the position of the GroupBox in the grid
                 Grid.SetColumn(emptySlotGroupBox, column);
@@ -308,9 +405,10 @@ namespace TDU2_Track_Records
                                 VehicleName = reader["_vehicle_name"].ToString(),
                                 VehicleBrand = reader["_brand_name"].ToString(),
                                 VehicleModel = reader["_modelfull_name"].ToString(),
-                                VehiclePrice = Convert.ToInt32(reader["_price"].ToString()),
+                                VehiclePrice = reader["_price"].ToString(),
                                 VehicleCategory = reader["_vehiclecategory_name"].ToString(),
                                 VehicleOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
+                                VehiclePurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
                                 // Check if the "Image" column is DBNull before casting
                                 VehicleImage = reader["_vehicle_image"] != DBNull.Value ? (byte[])reader["_vehicle_image"] : null
 
@@ -323,9 +421,154 @@ namespace TDU2_Track_Records
         }
 
 
+        //private void AddVehicleToUI(VehicleManagement vehicle, int slotIndex, string slotColumn)
+        //{
+        //    // Create the main GroupBox for the vehicle (existing code)
+        //    GroupBox vehicleGroupBox = new GroupBox
+        //    {
+        //        Header = vehicle.VehicleName, // Set the vehicle name as the header
+        //        Margin = new Thickness(10),
+        //        BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
+        //        BorderThickness = new Thickness(2),
+        //        Padding = new Thickness(10)
+        //    };
+
+        //    // Create a StackPanel to hold all vehicle information
+        //    StackPanel contentStack = new StackPanel();
+
+        //    // Add the vehicle image
+        //    Image vehicleImage = new Image
+        //    {
+        //        Width = 300,
+        //        Source = LoadImage(vehicle.VehicleImage) // Convert byte[] to ImageSource
+        //    };
+        //    contentStack.Children.Add(vehicleImage);
+
+        //    // Create a StackPanel for the vehicle info
+        //    StackPanel infoStack = new StackPanel
+        //    {
+        //        Orientation = Orientation.Horizontal,
+        //        Margin = new Thickness(10),
+        //        HorizontalAlignment = HorizontalAlignment.Center
+
+        //    };
+
+        //    // Vehicle Price
+        //    GroupBox priceBox = new GroupBox
+        //    {
+        //        Header = "Price $",
+        //    };
+        //    priceBox.Content = new TextBlock
+        //    {
+        //        Text = vehicle.VehiclePrice.ToString(),
+        //        HorizontalAlignment = HorizontalAlignment.Center,
+        //        FontSize = 18
+        //    };
+        //    infoStack.Children.Add(priceBox);
+
+        //    // Vehicle Class
+        //    GroupBox classBox = new GroupBox
+        //    {
+        //        Header = "Class",
+        //    };
+        //    Image classImage = new Image
+        //    {
+        //        Width = 32,
+        //        Height = 32,
+        //        Source = new BitmapImage(new Uri("/Images/carClasses/" + vehicle.VehicleCategory + ".png", UriKind.Relative))
+        //    };
+        //    classBox.Content = classImage;
+        //    infoStack.Children.Add(classBox);
+
+        //    // Vehicle Status
+        //    GroupBox statusBox = new GroupBox
+        //    {
+        //        Header = "Status",
+        //    };
+        //    CheckBox ownedCheckBox = new CheckBox
+        //    {
+        //        IsChecked = vehicle.VehicleOwned == true,
+        //        VerticalAlignment = VerticalAlignment.Center
+        //    };
+        //    TextBlock ownedText = new TextBlock
+        //    {
+        //        Text = "Owned",
+        //        FontSize = 16,
+        //        VerticalAlignment = VerticalAlignment.Center
+        //    };
+
+        //    DockPanel statusPanel = new DockPanel();
+        //    statusPanel.Children.Add(ownedCheckBox);
+        //    statusPanel.Children.Add(ownedText);
+        //    statusBox.Content = statusPanel;
+        //    infoStack.Children.Add(statusBox);
+
+        //    // Add a button to open the vehicle card window
+        //    Button viewDetailsButton = new Button
+        //    {
+        //        Content = "Card",
+        //        VerticalAlignment = VerticalAlignment.Center,
+        //        Margin = new Thickness(10),
+        //        Tag = vehicle.id // Store the vehicle object in the button's Tag
+        //    };
+        //    viewDetailsButton.Click += ViewDetailsButton_Click;
+        //    infoStack.Children.Add(viewDetailsButton);
+
+        //    if(isUnlocked == true) { 
+        //    // Add a delete button for each vehicle and store the column name in the Tag property
+        //    Button deleteButton = new Button
+        //    {
+        //        Content = "-",
+        //        Margin = new Thickness(10),
+        //        Tag = slotColumn // Store the actual column name (e.g., "Slot1_VehicleId")
+        //    };
+        //    deleteButton.Click += DeleteVehicleButton_Click;
+
+        //    // Add the delete button to the infoStack
+        //    infoStack.Children.Add(deleteButton);
+        //    }
+        //    // Add the infoStack to contentStack
+        //    contentStack.Children.Add(infoStack);
+
+        //    // Set the content of the GroupBox
+        //    vehicleGroupBox.Content = contentStack;
+
+        //    // Ensure VehiclesStackPanel is a Grid
+        //    Grid grid = VehiclesStackPanel as Grid;
+        //    if (grid == null)
+        //    {
+        //        // Initialize a new Grid if VehiclesStackPanel is not a Grid
+        //        grid = new Grid();
+
+        //        // Define two columns in the Grid
+        //        grid.ColumnDefinitions.Add(new ColumnDefinition());
+        //        grid.ColumnDefinitions.Add(new ColumnDefinition());
+
+        //        // Define rows based on the number of vehicles
+        //        int rows = (8 + 1) / 2; // 8 slots, 2 columns per row
+        //        for (int i = 0; i < rows; i++)
+        //        {
+        //            grid.RowDefinitions.Add(new RowDefinition());
+        //        }
+
+        //        // Clear existing content and set the new Grid
+        //        VehiclesStackPanel.Children.Clear();
+        //        VehiclesStackPanel.Children.Add(grid);
+        //    }
+
+        //    // Determine the column and row for this vehicle
+        //    int column = slotIndex % 2;
+        //    int row = slotIndex / 2;
+
+        //    // Set the position of the GroupBox
+        //    Grid.SetColumn(vehicleGroupBox, column);
+        //    Grid.SetRow(vehicleGroupBox, row);
+
+        //    grid.Children.Add(vehicleGroupBox);
+        //}
         private void AddVehicleToUI(VehicleManagement vehicle, int slotIndex, string slotColumn)
         {
-            // Create the main GroupBox for the vehicle (existing code)
+            // Create the main GroupBox for the vehicle
             GroupBox vehicleGroupBox = new GroupBox
             {
                 Header = vehicle.VehicleName, // Set the vehicle name as the header
@@ -352,22 +595,22 @@ namespace TDU2_Track_Records
                 Orientation = Orientation.Horizontal,
                 Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Center
-                
             };
-
-            // Vehicle Price
-            GroupBox priceBox = new GroupBox
+            if (vehicle.VehiclePurchasable == true)
             {
-                Header = "Price $",
-            };
-            priceBox.Content = new TextBlock
-            {
-                Text = vehicle.VehiclePrice.ToString(),
-                HorizontalAlignment = HorizontalAlignment.Center,
-                FontSize = 18
-            };
-            infoStack.Children.Add(priceBox);
-
+                // Vehicle Price
+                GroupBox priceBox = new GroupBox
+                {
+                    Header = "Price $",
+                };
+                priceBox.Content = new TextBlock
+                {
+                    Text = vehicle.VehiclePrice.ToString(),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    FontSize = 18
+                };
+                infoStack.Children.Add(priceBox);
+            }
             // Vehicle Class
             GroupBox classBox = new GroupBox
             {
@@ -383,11 +626,14 @@ namespace TDU2_Track_Records
             infoStack.Children.Add(classBox);
 
             // Vehicle Status
-            GroupBox statusBox = new GroupBox
+            if (vehicle.VehiclePurchasable == true)
+            {
+                GroupBox statusBox = new GroupBox
             {
                 Header = "Status",
             };
-            CheckBox ownedCheckBox = new CheckBox
+
+                CheckBox ownedCheckBox = new CheckBox
             {
                 IsChecked = vehicle.VehicleOwned == true,
                 VerticalAlignment = VerticalAlignment.Center
@@ -398,37 +644,40 @@ namespace TDU2_Track_Records
                 FontSize = 16,
                 VerticalAlignment = VerticalAlignment.Center
             };
-
+            
             DockPanel statusPanel = new DockPanel();
             statusPanel.Children.Add(ownedCheckBox);
             statusPanel.Children.Add(ownedText);
+
             statusBox.Content = statusPanel;
             infoStack.Children.Add(statusBox);
-
+            }
             // Add a button to open the vehicle card window
             Button viewDetailsButton = new Button
             {
                 Content = "Card",
                 VerticalAlignment = VerticalAlignment.Center,
                 Margin = new Thickness(10),
-                Tag = vehicle.id // Store the vehicle object in the button's Tag
+                Tag = vehicle.id // Store the vehicle ID in the button's Tag
             };
             viewDetailsButton.Click += ViewDetailsButton_Click;
             infoStack.Children.Add(viewDetailsButton);
 
-            if(isUnlocked == true) { 
-            // Add a delete button for each vehicle and store the column name in the Tag property
-            Button deleteButton = new Button
+            // If unlocked, add a delete button for each vehicle
+            if (isUnlocked == true)
             {
-                Content = "-",
-                Margin = new Thickness(10),
-                Tag = slotColumn // Store the actual column name (e.g., "Slot1_VehicleId")
-            };
-            deleteButton.Click += DeleteVehicleButton_Click;
-
-            // Add the delete button to the infoStack
-            infoStack.Children.Add(deleteButton);
+                Button deleteButton = new Button
+                {
+                    Content = "Remove",
+                    Margin = new Thickness(5),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Tag = slotColumn // Store the actual column name (e.g., "Slot1_VehicleId")
+                    
+                };
+                deleteButton.Click += DeleteVehicleButton_Click;
+                infoStack.Children.Add(deleteButton);
             }
+
             // Add the infoStack to contentStack
             contentStack.Children.Add(infoStack);
 
@@ -439,33 +688,39 @@ namespace TDU2_Track_Records
             Grid grid = VehiclesStackPanel as Grid;
             if (grid == null)
             {
-                // Initialize a new Grid if VehiclesStackPanel is not a Grid
                 grid = new Grid();
-
-                // Define two columns in the Grid
-                grid.ColumnDefinitions.Add(new ColumnDefinition());
-                grid.ColumnDefinitions.Add(new ColumnDefinition());
-
-                // Define rows based on the number of vehicles
-                int rows = (8 + 1) / 2; // 8 slots, 2 columns per row
-                for (int i = 0; i < rows; i++)
-                {
-                    grid.RowDefinitions.Add(new RowDefinition());
-                }
-
-                // Clear existing content and set the new Grid
                 VehiclesStackPanel.Children.Clear();
                 VehiclesStackPanel.Children.Add(grid);
             }
 
+            // Determine the number of columns dynamically
+            int columns = dealershipColumn; // You can set this to any number of columns you want per row
+
+            // Add columns dynamically if needed
+            while (grid.ColumnDefinitions.Count < columns)
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition());
+            }
+
+            // Calculate the number of rows needed based on the number of vehicles
+            int totalVehicles = slotIndex + 1;
+            int rows = (totalVehicles + columns - 1) / columns;
+
+            // Add rows dynamically if needed
+            while (grid.RowDefinitions.Count < rows)
+            {
+                grid.RowDefinitions.Add(new RowDefinition());
+            }
+
             // Determine the column and row for this vehicle
-            int column = slotIndex % 2;
-            int row = slotIndex / 2;
+            int column = slotIndex % columns;
+            int row = slotIndex / columns;
 
             // Set the position of the GroupBox
             Grid.SetColumn(vehicleGroupBox, column);
             Grid.SetRow(vehicleGroupBox, row);
 
+            // Add the vehicleGroupBox to the grid
             grid.Children.Add(vehicleGroupBox);
         }
 
@@ -474,11 +729,17 @@ namespace TDU2_Track_Records
             Button button = sender as Button;
             if (button != null)
             {
-                VehicleManagement vehicle = button.Tag as VehicleManagement;
-                if (vehicle != null)
+                if (button?.Tag == null || !int.TryParse(button.Tag.ToString(), out int vehicleId))
                 {
-                    vehicleCard vehicleWindow = new vehicleCard(vehicle);
-                    vehicleWindow.ShowDialog();
+                    MessageBox.Show("Invalid Vehicle ID");
+                    return;
+                }
+                else { 
+                // Get the vehicle ID from the button's Tag
+                vehicleId = Convert.ToInt32(button.Tag);
+                // Open the vehicleCard window and pass the vehicle ID
+                vehicleCard vehicleWindow = new vehicleCard(vehicleId);
+                vehicleWindow.ShowDialog();
                 }
             }
         }
@@ -550,6 +811,7 @@ namespace TDU2_Track_Records
 
         private void IslandComboBox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+
             if(isUnlocked == false) { 
             isUnlocked = true;
             }
@@ -557,6 +819,7 @@ namespace TDU2_Track_Records
             {
                 isUnlocked = false;
             }
+            PreloadAvailableCars();
         }
 
         private void dealerships_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -566,6 +829,30 @@ namespace TDU2_Track_Records
                 this.DragMove();
             }
         }
+        private void Settings_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Prompt the user before closing the parent window
+                MessageBoxResult result = MessageBox.Show(
+                    "Results will not take effect until you re-open this window.",
+                    "Warning",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
 
+                var settingsWindow = new SettingsWindow();
+
+                settingsWindow.Left = this.Left + this.Width + 10;
+                settingsWindow.Top = this.Top;
+                settingsWindow.ShowDialog();
+        }
+
+        private void Minimize_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Window.GetWindow(this).WindowState = WindowState.Minimized;
+        }
+
+        private void Close_Button_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Window.GetWindow(this)?.Close();
+        }
     }
 }

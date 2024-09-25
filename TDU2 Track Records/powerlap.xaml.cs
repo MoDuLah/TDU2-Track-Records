@@ -5,6 +5,7 @@ using System.Data.SQLite;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using TDU2_Track_Records.Properties;
 using System.ComponentModel;
 
@@ -48,7 +49,7 @@ namespace TDU2_Track_Records
             List<ComboBoxItem> sorts = new List<ComboBoxItem>
             {
                 new ComboBoxItem { ImagePath = "Images/carClasses/SC.png", Description = "Car Name", Value = "carName" },
-                new ComboBoxItem { ImagePath = "Images/carClasses/A1.png", Description = "Fastest Lap", Value = "Fastest_Lap" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/A1.png", Description = "Fastest Lap", Value = "Total_Time" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/A2.png", Description = "Average Lap", Value = "Average_Lap" }
             };
 
@@ -69,10 +70,11 @@ namespace TDU2_Track_Records
 
         private void LoadFastestLaps()
         {
+            if (combo_Track.SelectedIndex == -1) return;
             if (combo_Track.SelectedValue != null)
             {
                 // Get the selected track ID
-                int trackId = combo_Track.SelectedIndex + 1;
+                int trackId = Convert.ToInt32(combo_Track.SelectedValue);
 
                 // Determine the conditions and orientation based on the checkboxes
                 int conditions = cb_conditions.IsChecked == true ? 1 : 0;
@@ -336,15 +338,15 @@ namespace TDU2_Track_Records
                 {
                     var carClasses = new List<string> { "A1", "A2", "A3", "A4", "A5", "A6", "A7", "B2", "B3", "B4", "C1", "C2", "C3", "C4", "MA1", "MA2" };
                     string carClassCondition = string.Join("', '", carClasses);
-                    query = $"SELECT carName, Fastest_Lap, carClass, conditions, orientation FROM records " +
+                    query = $"SELECT carName, Total_Time, carClass, conditions, orientation FROM records " +
                             $"WHERE trackId = @TrackId AND carClass IN ('{carClassCondition}') " +
-                            $"AND conditions = @Conditions AND orientation = @Orientation ORDER BY Fastest_Lap ASC";
+                            $"AND conditions = @Conditions AND orientation = @Orientation ORDER BY Total_Time ASC";
                 }
                 else
                 {
-                    query = $"SELECT carName, Fastest_Lap, carClass, conditions, orientation FROM records " +
+                    query = $"SELECT carName, Total_Time, carClass, conditions, orientation FROM records " +
                             $"WHERE trackId = @TrackId AND carClass = @CarClass " +
-                            $"AND conditions = @Conditions AND orientation = @Orientation ORDER BY Fastest_Lap ASC";
+                            $"AND conditions = @Conditions AND orientation = @Orientation ORDER BY Total_Time ASC";
                 }
 
                 using (SQLiteConnection connection = new SQLiteConnection(_connectionString))
@@ -364,7 +366,7 @@ namespace TDU2_Track_Records
                                 {
                                     carName = reader["carName"].ToString(),
                                     carClass = reader["carClass"].ToString(),
-                                    LapTime = reader["Fastest_Lap"].ToString(),
+                                    LapTime = reader["Total_Time"].ToString(),
                                     WeatherConditions = reader["conditions"].ToString(),
                                     Orientation = reader["orientation"].ToString()
                                 };
