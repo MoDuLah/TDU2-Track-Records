@@ -57,7 +57,7 @@
             <DockPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,5">
                 <Image x:Name="vehicleButton" 
     Margin="0,0,5,0" Width="42" Height="42"
-    ToolTip="Add Events" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown">
+    ToolTip="Vehicle Management" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/ico/navigation/cars.png"/>
@@ -155,7 +155,7 @@
                 </Image>
                 <Image x:Name="Settings_Button" MouseLeftButtonDown="Settings_MouseLeftButtonDown"
                        Margin="0,0,5,0" MinWidth="32" MinHeight="32"
-                       ToolTip="Settings" Width="42">
+                       ToolTip="Settings" Width="42" AutomationProperties.AccessKey="s">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/ico/navigation/settings.png"/>
@@ -170,7 +170,7 @@
                 <Image x:Name="Minimize_Button" MouseLeftButtonDown="Minimize_MouseLeftButtonDown"
                        Margin="0,0,5,0"
                        Width="42" Height="42" MinWidth="32" MinHeight="32"
-                       ToolTip="Minimize Application">
+                       ToolTip="Minimize" AutomationProperties.AccessKey="m">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/ico/navigation/minimize.png"/>
@@ -185,7 +185,7 @@
                 <Image x:Name="Close_Button" MouseLeftButtonDown="Close_Button_MouseLeftButtonDown"
                        Margin="0,0,5,0"
                        Width="42" Height="42" MinWidth="32" MinHeight="32"
-                       ToolTip="Close Application">
+                       ToolTip="Close" AutomationProperties.AccessKey="x">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/ico/navigation/close.png"/>
@@ -414,7 +414,7 @@
                             </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Name" DockPanel.Dock="Right">
-                            <ComboBox x:Name="combo_Vehicle" ItemsSource="{Binding}" LostFocus="Combo_Vehicle_LostFocus" TabIndex="1006" PreviewKeyUp="Combo_Vehicle_LostFocus" VerticalAlignment="Stretch"/>
+                            <ComboBox x:Name="combo_Vehicle" ItemsSource="{Binding}" LostFocus="Combo_Vehicle_LostFocus" TabIndex="1006" PreviewKeyUp="Combo_Vehicle_LostFocus" VerticalAlignment="Stretch" MinWidth="320" HorizontalAlignment="Center" Width="399"/>
                         </GroupBox>
                         
                     </DockPanel>

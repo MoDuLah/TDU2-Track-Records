@@ -41,7 +41,7 @@ namespace TDU2_Track_Records
                 new ComboBoxItem { ImagePath = "Images/carClasses/C2.png", Description = "Classic 2", Value = "C2" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/C3.png", Description = "Classic 3", Value = "C3" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/C4.png", Description = "Classic 4", Value = "C4" },
-                new ComboBoxItem { ImagePath = "Images/carClasses/MA1.png", Description = "Motorcycles 1", Value = "MA1" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/MA1.png", Description = "Motorcycles 1", Value = "mA1" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/MA2.png", Description = "Motorcycles 2", Value = "mA2" }
             };
 
@@ -336,7 +336,7 @@ namespace TDU2_Track_Records
                 string query;
                 if (carClass == "All")
                 {
-                    var carClasses = new List<string> { "A1", "A2", "A3", "A4", "A5", "A6", "A7", "B2", "B3", "B4", "C1", "C2", "C3", "C4", "MA1", "MA2" };
+                    var carClasses = new List<string> { "A1", "A2", "A3", "A4", "A5", "A6", "A7", "B2", "B3", "B4", "C1", "C2", "C3", "C4", "mA1", "mA2" };
                     string carClassCondition = string.Join("', '", carClasses);
                     query = $"SELECT carName, Total_Time, carClass, conditions, orientation FROM records " +
                             $"WHERE trackId = @TrackId AND carClass IN ('{carClassCondition}') " +

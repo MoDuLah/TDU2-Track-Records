@@ -45,7 +45,8 @@ namespace TDU2_Track_Records
                 new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_kyd.png", Description = "Keep Your Distance", Value = "Keep Your Distance MP" },
                 new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_speedtrap.png", Description = "Speed Trap Multiplayer", Value = "Speed Trap MP" }
             };
-
+            distanceTextBlock.Text = distance;
+            MinimumSpeedDistance.Text = distance;
             RaceTypeComboBox.ItemsSource = items;
             PopulateClasses();
             ShowLastEntry();

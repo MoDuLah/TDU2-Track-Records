@@ -63,6 +63,7 @@ namespace TDU2_Track_Records
         public string Price { get; set; }
         public string Acceleration0To100Kmh { get; set; }
         public string MaxTheoreticalSpeed { get; set; }
+        public string Braking100To0 { get; set; }
         public string StatAcc { get; set; }
         public string StatSpeed { get; set; }
         public string StatBrake { get; set; }
@@ -99,6 +100,7 @@ namespace TDU2_Track_Records
         public bool CanUpgrade { get; set; }
         public bool IsActive { get; set; }
         public bool IsPurchasable { get; set; }
+        public bool IsReward { get; set; }
         public bool IsOwned { get; set; }
         public string DealershipIdInIbiza { get; set; }
         public string DealershipIdInHawaii { get; set; }

@@ -27,19 +27,29 @@
                         </ComboBox>
                     </GroupBox>
                     <GroupBox Header="Event Name:">
-                        <TextBox x:Name="TrackNameTextBox" Margin="5" />
+                        <TextBox x:Name="TrackNameTextBox" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
                     </GroupBox>
-                    <GroupBox Header="Event Length (Total):" x:Name="DistanceGroupBox" Visibility="Visible">
-                        <TextBox x:Name="LapLengthTextBox" Width="200" Margin="5" />
+                    <GroupBox x:Name="DistanceGroupBox" Visibility="Visible">
+                        <GroupBox.Header>
+                            <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Distance in ("/>
+                            <TextBlock x:Name="distanceTextBlock" Text="{Binding distance}"/>
+                             <TextBlock Text=")"/>
+                            </StackPanel>
+                        </GroupBox.Header>
+                        <TextBox x:Name="LapLengthTextBox" Width="200" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
                     </GroupBox>
                     <GroupBox Header="Number of Laps:" x:Name="LapsGroupBox" Visibility="Visible">
-                        <TextBox x:Name="LapsTextBox" Width="200" Margin="5" Text="1" />
+                        <TextBox x:Name="LapsTextBox" Width="200" Margin="5" Text="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
                     </GroupBox>
                     <GroupBox Header="Minimum Speed:" x:Name="SpeedGroupBox" Visibility="Visible">
-                        <TextBox x:Name="MinSpeedTextBox" Width="200" Margin="5" Text="0" />
+                        <StackPanel Orientation="Horizontal">
+                        <TextBox x:Name="MinSpeedTextBox" Width="200" Margin="5" Text="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                        <TextBlock x:Name="MinimumSpeedDistance" Text="{Binding distance}"/>
+                        </StackPanel>
                     </GroupBox>
                     <GroupBox Header="Checkpoints:" x:Name="CheckpointsGroupBox" Visibility="Visible">
-                        <TextBox x:Name="CheckpointsTextBox" Width="200" Margin="5" Text="0" />
+                        <TextBox x:Name="CheckpointsTextBox" Width="200" Margin="5" Text="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
                     </GroupBox>
                     <GroupBox Header="Restricted Class:" x:Name="RestrictedClassGroupBox" Visibility="Visible">
                         <ComboBox x:Name="RestrictedClassComboBox" Width="200" Margin="5" SelectedIndex="0"  SelectedValuePath="id"  SelectionChanged="RestrictedClassComboBox_SelectionChanged">

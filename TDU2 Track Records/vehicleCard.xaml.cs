@@ -34,6 +34,7 @@ namespace TDU2_Track_Records
                 SetDriveTypeVisibility(vehicle.DriveName);
                 SetDifficultyImages(vehicle.Difficulty);
                 SetPaintStickerUpgradeVisibility(vehicle.CanPaint,vehicle.CanSticker,vehicle.CanUpgrade);
+                UpdateVehicleDetails(vehicle.id);
             }
             else
             {
@@ -75,7 +76,7 @@ namespace TDU2_Track_Records
                                 DriveName = reader["_drive_name"].ToString(),
                                 Length = reader["_length"].ToString() + "mm",
                                 Width = reader["_width"].ToString() + "mm",
-                                VehicleFrontTires = reader["_tires_front"] != DBNull.Value? reader["_tires_front"].ToString() : "N/A",
+                                VehicleFrontTires = reader["_tires_front"] != DBNull.Value ? reader["_tires_front"].ToString() : "N/A",
                                 VehicleRearTires = reader["_tires_rear"] != DBNull.Value ? reader["_tires_rear"].ToString() : "N/A",
                                 BrakesCharacteristicsFront = reader["_brakes_characteristics_front"].ToString() + " " + reader["_brakes_dim_front"].ToString() + "mm",
                                 BrakesCharacteristicsRear = reader["_brakes_characteristics_rear"].ToString() + " " + reader["_brakes_dim_rear"].ToString() + "mm",
@@ -91,6 +92,7 @@ namespace TDU2_Track_Records
                                 GearboxName = reader["_gearbox_name"].ToString(),
                                 MaxTheoreticalSpeed = reader["_max_theorical_speed"].ToString(),
                                 Acceleration0To100Kmh = reader["_acceleration_0_100_kmh"].ToString(),
+                                Braking100To0 = reader["_braking_100_0"].ToString(),
                                 // Information
                                 Mass = reader["_mass"].ToString(),
                                 PowerWeightRatio = reader["_masspower_ratio"].ToString(),
@@ -249,57 +251,64 @@ namespace TDU2_Track_Records
                 double[] accelerationFactors = { 1.0, 0.98, 0.96, 0.94, 0.92 };
                 double[] maxSpeedFactors = { 1.0, 1.02, 1.04, 1.06, 1.08 };
                 double[] statAccFactors = { 1.0, 1.02, 1.04, 1.06, 1.08 };
-                double[] statSpeedFactors = { 1.0, 1.04, 1.08, 1.12, 1.16 };
-                double[] statBrakeFactors = { 1.0, 1.08, 1.12, 1.16, 1.20 };
+                double[] statSpeedFactors = { 1.0, 1.02, 1.04, 1.06, 1.08 };
+                double[] statBrakeFactors = { 1.0, 0.98, 0.96, 0.94, 0.92 };
                 double[] powerFactors = { 1.0, 1.02, 1.04, 1.06, 1.08 };
                 double[] massReductionFactors = { 1.0, 0.99, 0.98, 0.97, 0.96 };
-                int upgradeLevel = int.Parse(vehicle.VehicleLevel);
-                double basePower = Convert.ToDouble(vehicle.PowerBhp);
-                double baseAccel = Convert.ToDouble(vehicle.Acceleration0To100Kmh);
-                double baseMaxSpeed = Convert.ToDouble(vehicle.MaxTheoreticalSpeed);
-                double baseWeight = Convert.ToDouble(vehicle.Mass);
-                double baseStatAcc = Convert.ToDouble(vehicle.StatAcc);
-                double baseStatSpeed = Convert.ToDouble(vehicle.StatSpeed);
-                double baseStatBrake = Convert.ToDouble(vehicle.StatBrake);
-                double baseMassPower = Convert.ToDouble(vehicle.PowerWeightRatio);
-                double finalAccel = baseAccel *= accelerationFactors[upgradeLevel];
-                double finalMaxSpeed = baseMaxSpeed * maxSpeedFactors[upgradeLevel];
-                double finalWeight = baseWeight * massReductionFactors[upgradeLevel];
-                double finalStatAcc = baseStatAcc * statAccFactors[upgradeLevel];
-                double finalStatSpeed = baseStatSpeed * statSpeedFactors[upgradeLevel];
-                double finalStatBrake = baseStatBrake * statBrakeFactors[upgradeLevel];
-                double finalPower = basePower * powerFactors[upgradeLevel];
-                double finalMassPower = Math.Round(finalWeight / finalPower,3);
-                // Calculate new stats based on upgrade level
-                vehicle.Acceleration0To100Kmh = CalculateNewValue(vehicle.Acceleration0To100Kmh, baseAccel, finalAccel, upgradeLevel, false); // decreases
-                vehicle.MaxTheoreticalSpeed = CalculateNewValue(vehicle.MaxTheoreticalSpeed, baseMaxSpeed, finalMaxSpeed, upgradeLevel, true); // increases
-                vehicle.Mass = CalculateNewValue(vehicle.Mass, baseWeight, finalWeight, upgradeLevel, false); // decreases
-                vehicle.StatAcc = CalculateNewValue(vehicle.StatAcc, baseStatAcc, finalStatAcc, upgradeLevel, true); // increases
-                vehicle.StatSpeed = CalculateNewValue(vehicle.StatSpeed, baseStatSpeed, finalStatSpeed, upgradeLevel, true); // increases
-                vehicle.StatBrake = CalculateNewValue(vehicle.StatBrake, baseStatBrake, finalStatBrake, upgradeLevel, true); // increases
-                vehicle.PowerBhp = CalculateNewValue(vehicle.PowerBhp, basePower, finalPower, upgradeLevel, true); // increases
-                vehicle.PowerWeightRatio = finalMassPower.ToString();
-                // Update the UI
-                this.DataContext = vehicle;
-                VehiclerLevel.Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative));
+                double[] priceIncreaseFactors = { 1.0, 1.13, 1.27, 1.40, 1.60 };
+
+                try
+                {
+                    int upgradeLevel = int.Parse(vehicle.VehicleLevel);
+                    double basePower = Convert.ToDouble(vehicle.PowerBhp);
+                    double baseAccel = Convert.ToDouble(vehicle.Acceleration0To100Kmh);
+                    double baseBraking100To0 = Convert.ToDouble(vehicle.Braking100To0);
+                    double baseMaxSpeed = Convert.ToDouble(vehicle.MaxTheoreticalSpeed);
+                    double baseWeight = Convert.ToDouble(vehicle.Mass);
+                    double baseStatAcc = Convert.ToDouble(vehicle.StatAcc);
+                    double baseStatSpeed = Convert.ToDouble(vehicle.StatSpeed);
+                    double baseStatBrake = Convert.ToDouble(vehicle.StatBrake);
+                    double basePrice = Convert.ToDouble(vehicle.VehiclePrice);
+
+                    // Calculate new stats based on upgrade level
+                    double finalAccel = Math.Round(baseAccel * accelerationFactors[upgradeLevel], 2);
+                    double finalMaxSpeed = Math.Round(baseMaxSpeed * maxSpeedFactors[upgradeLevel], 0);
+                    double finalWeight = Math.Round(baseWeight * massReductionFactors[upgradeLevel], 0);
+                    double finalStatAcc = Math.Floor(100 - (((baseAccel / statAccFactors[upgradeLevel]) - 2.25) / 9.75 * 100));
+                    double finalStatSpeed = Math.Floor(((baseMaxSpeed * statSpeedFactors[upgradeLevel]) - 70) / 400 * 100);
+                    double finalStatBrake = Math.Floor(100 - (((baseBraking100To0 * statBrakeFactors[upgradeLevel]) - 90) / 80 * 100));
+                    double finalPower = Math.Round(basePower * powerFactors[upgradeLevel], 0);
+                    double finalMassPower = Math.Round(finalWeight / finalPower, 3);
+                    double finalPrice = Math.Round(basePrice * priceIncreaseFactors[upgradeLevel], 0);
+
+                    // Update vehicle stats
+                    vehicle.Acceleration0To100Kmh = finalAccel.ToString();
+                    vehicle.MaxTheoreticalSpeed = finalMaxSpeed.ToString();
+                    vehicle.Mass = finalWeight.ToString();
+                    vehicle.StatAcc = finalStatAcc.ToString();
+                    vehicle.StatSpeed = finalStatSpeed.ToString();
+                    vehicle.StatBrake = finalStatBrake.ToString();
+                    vehicle.PowerBhp = finalPower.ToString();
+                    vehicle.PowerWeightRatio = finalMassPower.ToString();
+                    vehicle.VehiclePrice = finalPrice.ToString();
+
+                    // Update the UI
+                    this.DataContext = vehicle;
+                    VehiclerLevel.Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative));
+                }
+                catch (FormatException ex)
+                {
+                    // Handle format exception (e.g., log error or show message)
+                    MessageBox.Show("Error parsing vehicle details: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    // Handle any other exception
+                    MessageBox.Show("An unexpected error occurred: " + ex.Message);
+                }
             }
         }
-        private string CalculateNewValue(string currentStatValue, double baseValue, double finalValue, int upgradeLevel, bool increases)
-        {
-            double currentStat = Convert.ToDouble(currentStatValue);
-            double newStat;
 
-            if (increases)
-            {
-                newStat = baseValue + ((finalValue - baseValue) * (upgradeLevel / 4.0));
-            }
-            else
-            {
-                newStat = baseValue - ((baseValue - finalValue) * (upgradeLevel / 4.0));
-            }
-
-            return newStat.ToString("F2"); // Format to 2 decimal places
-        }
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ButtonState == MouseButtonState.Pressed)

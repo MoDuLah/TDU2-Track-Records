@@ -55,17 +55,17 @@
 
         </StackPanel>
         <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Margin="10" VerticalAlignment="Top" HorizontalAlignment="Center">
-            <GroupBox x:Name="HouseName" Header="{Binding HouseName}">
+            <GroupBox x:Name="HouseName" Header="{Binding HouseName}" Visibility="Collapsed">
                 <StackPanel Orientation="Horizontal">
-                    <Image x:Name="HouseImage" Width="160" Height="90" Margin="5"/>
+                    <Image x:Name="HouseImage" Width="160" Height="90" Margin="5,2,0,0"/>
                     <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
                         <GroupBox Header="Rating">
                             <TextBlock x:Name="HouseRating" FontWeight="Bold" HorizontalAlignment="Center"/>
                         </GroupBox>
                     </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
-                        <GroupBox Header="Price">
-                            <TextBlock x:Name="HousePrice" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        <GroupBox Header="Price" HorizontalContentAlignment="Center" Padding="5,0,5,0">
+                            <TextBlock x:Name="HousePrice" FontWeight="Bold" HorizontalAlignment="Center" MinWidth="82"/>
                         </GroupBox>
                     </StackPanel>
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
@@ -73,7 +73,7 @@
                             <TextBlock x:Name="HouseOwned" FontWeight="Bold" HorizontalAlignment="Center"/>
                     </GroupBox>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
                     <GroupBox Header="Max Slots">
                             <TextBlock x:Name="HouseMaxSlots" FontWeight="Bold" HorizontalAlignment="Center"/>
                     </GroupBox>

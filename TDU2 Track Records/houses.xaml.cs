@@ -111,8 +111,13 @@ namespace TDU2_Track_Records
             {
                 string selectedDealership = DealershipListBox.SelectedItem.ToString();
                 LoadVehicles(selectedDealership);
+                HouseName.Visibility = Visibility.Visible;
                 VehiclesScrollViewer.Visibility = Visibility.Visible;
                 VehiclesScrollViewer.ScrollToTop();
+            }
+            else
+            {
+                HouseName.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -333,8 +338,8 @@ namespace TDU2_Track_Records
                                 id = Convert.ToInt32(reader["id"]),
                                 VehicleName = reader["_vehicle_name"].ToString(),
                                 VehicleCategory = reader["_vehiclecategory_name"].ToString(),
-                                VehiclePurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
-                                VehicleActive = Convert.ToBoolean(reader["_is_active"]),
+                                IsPurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
+                                IsActive = Convert.ToBoolean(reader["_is_active"]),
                                 // Check if the "Image" column is DBNull before casting
                                 VehicleImage = reader["_vehicle_image"] != DBNull.Value ? (byte[])reader["_vehicle_image"] : null
                             };
@@ -398,8 +403,8 @@ namespace TDU2_Track_Records
                 Text = vehicle.id.ToString(),
                 Tag = slotColumn,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Center
-                //Visibility = Visibility.Collapsed
+                VerticalAlignment = VerticalAlignment.Center,
+                Visibility = Visibility.Collapsed
             };
             infoStack.Children.Add(vehicleIdd);
             // Add a button to open the vehicle card window
@@ -407,19 +412,19 @@ namespace TDU2_Track_Records
             {
                 Content = "Card",
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(10),
+                Margin = new Thickness(5),
                 Tag = vehicle.id // Store the vehicle object in the button's Tag
             };
             viewDetailsButton.Click += ViewDetailsButton_Click;
             infoStack.Children.Add(viewDetailsButton);
 
-            if (isUnlocked == true)
+            if (isUnlocked)
             {
                 // Add a delete button for each vehicle and store the column name in the Tag property
                 Button deleteButton = new Button
                 {
                     Content = "Remove",
-                    Margin = new Thickness(10),
+                    Margin = new Thickness(5),
                     Tag = slotColumn // Store the actual column name (e.g., "Slot1_VehicleId")
                 };
                 deleteButton.Click += DeleteVehicleButton_Click;
@@ -530,7 +535,7 @@ namespace TDU2_Track_Records
                 // Return a placeholder image if imageData is null or empty
                 var placeholderImage = new BitmapImage();
                 placeholderImage.BeginInit();
-                placeholderImage.UriSource = new Uri("pack://application:,,,/Images/vehicles/placeholder.png", UriKind.Absolute);
+                placeholderImage.UriSource = new Uri("pack://application:,,,/Images/houses/placeholder.png", UriKind.Absolute);
                 placeholderImage.DecodePixelWidth = 300; // Set max width
                 placeholderImage.DecodePixelHeight = 150; // Set max height
                 placeholderImage.CacheOption = BitmapCacheOption.OnLoad;

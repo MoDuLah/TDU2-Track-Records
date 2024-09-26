@@ -18,6 +18,8 @@ namespace TDU2_Track_Records
         public string slotColumn;
         readonly string SI = Settings.Default.system;
         public int dealershipColumn = Settings.Default.dealershipColumns;
+        private static double lastcardLeft;
+        private static double lastcardTop;
         bool isUnlocked = false;
         public dealerships()
         {
@@ -328,7 +330,6 @@ namespace TDU2_Track_Records
             }
         }
 
-
         private void LoadAvailableCarsIntoComboBox(ComboBox comboBox)
         {
             // Reuse the preloaded list of available cars
@@ -407,8 +408,10 @@ namespace TDU2_Track_Records
                                 VehicleModel = reader["_modelfull_name"].ToString(),
                                 VehiclePrice = reader["_price"].ToString(),
                                 VehicleCategory = reader["_vehiclecategory_name"].ToString(),
+                                VehicleLevel = reader["_upgrade_level"].ToString(),
                                 VehicleOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
-                                VehiclePurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
+                                IsPurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
+                                IsReward = Convert.ToBoolean(reader["_is_reward"]),
                                 // Check if the "Image" column is DBNull before casting
                                 VehicleImage = reader["_vehicle_image"] != DBNull.Value ? (byte[])reader["_vehicle_image"] : null
 
@@ -596,7 +599,7 @@ namespace TDU2_Track_Records
                 Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
-            if (vehicle.VehiclePurchasable == true)
+            if (vehicle.IsPurchasable)
             {
                 // Vehicle Price
                 GroupBox priceBox = new GroupBox
@@ -625,8 +628,22 @@ namespace TDU2_Track_Records
             classBox.Content = classImage;
             infoStack.Children.Add(classBox);
 
+            // Vehicle Class
+            GroupBox levelBox = new GroupBox
+            {
+                Header = "Tune",
+            };
+            Image tuneImage = new Image
+            {
+                Width = 32,
+                Height = 32,
+                Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative))
+            };
+            levelBox.Content = tuneImage;
+            infoStack.Children.Add(levelBox);
+
             // Vehicle Status
-            if (vehicle.VehiclePurchasable == true)
+            if (vehicle.IsPurchasable || vehicle.IsReward)
             {
                 GroupBox statusBox = new GroupBox
             {
@@ -637,7 +654,18 @@ namespace TDU2_Track_Records
             {
                 IsChecked = vehicle.VehicleOwned == true,
                 VerticalAlignment = VerticalAlignment.Center
+            }; 
+            // Add event handlers for CheckBox checked and unchecked events
+            ownedCheckBox.Checked += (sender, e) =>
+            {
+                UpdateVehicleOwnedStatus(vehicle.id, true);  // Update database when checked
             };
+
+            ownedCheckBox.Unchecked += (sender, e) =>
+            {
+                UpdateVehicleOwnedStatus(vehicle.id, false);  // Update database when unchecked
+            };
+
             TextBlock ownedText = new TextBlock
             {
                 Text = "Owned",
@@ -652,6 +680,7 @@ namespace TDU2_Track_Records
             statusBox.Content = statusPanel;
             infoStack.Children.Add(statusBox);
             }
+
             // Add a button to open the vehicle card window
             Button viewDetailsButton = new Button
             {
@@ -664,7 +693,7 @@ namespace TDU2_Track_Records
             infoStack.Children.Add(viewDetailsButton);
 
             // If unlocked, add a delete button for each vehicle
-            if (isUnlocked == true)
+            if (isUnlocked)
             {
                 Button deleteButton = new Button
                 {
@@ -723,6 +752,24 @@ namespace TDU2_Track_Records
             // Add the vehicleGroupBox to the grid
             grid.Children.Add(vehicleGroupBox);
         }
+        // Method to update the vehicle owned status in the database
+        private void UpdateVehicleOwnedStatus(int vehicleId, bool isOwned)
+        {
+            // SQL update command to update the 'VehicleOwned' column in the database
+            string query = "UPDATE vehicles SET _is_owned = @isOwned WHERE id = @vehicleId";
+
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@isOwned", isOwned ? "true" : "false");
+                    cmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+                    cmd.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
+        }
 
         private void ViewDetailsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -737,8 +784,40 @@ namespace TDU2_Track_Records
                 else { 
                 // Get the vehicle ID from the button's Tag
                 vehicleId = Convert.ToInt32(button.Tag);
-                // Open the vehicleCard window and pass the vehicle ID
-                vehicleCard vehicleWindow = new vehicleCard(vehicleId);
+                    // Open the vehicleCard window and pass the vehicle ID
+                    vehicleCard vehicleWindow = new vehicleCard(vehicleId);
+                    // Get the screen dimensions
+                    var screenWidth = SystemParameters.PrimaryScreenWidth;
+                    var screenHeight = SystemParameters.PrimaryScreenHeight;
+
+                    // Set the position to the stored values, or default to the main window position if not set
+                    double targetLeft = lastcardLeft != 0 ? lastcardLeft : this.Left - 10;
+                    double targetTop = lastcardTop != 0 ? lastcardTop : this.Top + (this.Height - vehicleWindow.Height) / 2;
+
+                    // Adjust if the window would be positioned outside the screen bounds
+                    if (targetLeft + vehicleWindow.Width > screenWidth)
+                    {
+                        targetLeft = screenWidth - vehicleWindow.Width;
+                    }
+                    if (targetTop + vehicleWindow.Height > screenHeight)
+                    {
+                        targetTop = screenHeight - vehicleWindow.Height;
+                    }
+                    if (targetLeft < 0)
+                    {
+                        targetLeft = 0;
+                    }
+                    if (targetTop < 0)
+                    {
+                        targetTop = 0;
+                    }
+
+                    // Set the window position
+                    vehicleWindow.Left = targetLeft;
+                    vehicleWindow.Top = targetTop;
+
+
+                vehicleWindow.Closed += cardWindow_Closed;
                 vehicleWindow.ShowDialog();
                 }
             }
@@ -780,7 +859,17 @@ namespace TDU2_Track_Records
             }
         }
 
-
+        private void cardWindow_Closed(object sender, EventArgs e)
+        {
+            var cardWindow = sender as Window;
+            // Refresh the UI after deletion
+            if (cardWindow != null)
+            {
+                lastcardLeft = cardWindow.Left;
+                lastcardTop = cardWindow.Top;
+            }
+            LoadVehicles(DealershipListBox.SelectedItem.ToString());
+        }
         private BitmapImage LoadImage(byte[] imageData)
         {
             if (imageData == null || imageData.Length == 0)

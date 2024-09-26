@@ -75,7 +75,7 @@ namespace TDU2_Track_Records
 
             List<ComboBoxItem> items = new List<ComboBoxItem>
             {
-                new ComboBoxItem { ImagePath = "Images/carClasses/SC.png", Description = "All", Value = "All" },
+                new ComboBoxItem { ImagePath = "Images/carClasses/SC.png", Description = "All", Value = "" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/A1.png", Description = "Asphalt 1", Value = "A1" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/A2.png", Description = "Asphalt 2", Value = "A2" },
                 new ComboBoxItem { ImagePath = "Images/carClasses/A3.png", Description = "Asphalt 3", Value = "A3" },
@@ -145,12 +145,15 @@ namespace TDU2_Track_Records
                 {
                     query += $" AND _vehiclecategory_name = '{selectedValue}' ORDER BY _vehicle_name ASC;";
                 }
+                else
+                {
+                    query += "ORDER BY _vehicle_name ASC;";
+                }
             }
             else
             {
                 query += " ORDER BY _vehicle_name ASC;";
             }
-
             ExecuteQuery(query, "vehicles", dataSet =>
             {
                 if (dataSet.Tables[0].Rows.Count > 0)
@@ -361,11 +364,6 @@ namespace TDU2_Track_Records
 
         private void FextBox_LostFocus(TextBox textBox)
         {
-            //if (string.IsNullOrEmpty(textBox.Text))
-            //{
-            //    // If the TextBox is empty, reset to "00" or "000" based on type
-            //    textBox.Text = textBox.Name.EndsWith("_Ms") ? "00" : "000";
-            //}
 
             if (textBox.Name.EndsWith("_Sec"))
             {
@@ -1055,7 +1053,7 @@ namespace TDU2_Track_Records
 
                     // Record type
                     string recordX;
-                    switch (combo_Class.SelectedIndex)
+                    switch (combo_Class.SelectedValue)
                     {
                         case -1:
                         case 0:
