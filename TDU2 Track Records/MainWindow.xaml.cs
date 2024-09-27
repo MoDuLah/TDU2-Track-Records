@@ -209,9 +209,8 @@ namespace TDU2_Track_Records
                 // If "All" is selected, show all vehicles
                 query = $@"
             SELECT * FROM vehicles 
-            WHERE _is_purchasable = 'true' 
-            AND _is_active = 'true' 
-            AND _is_owned = 'true'
+            WHERE _is_active = 'true' 
+            OR _is_owned = 'true'
             ORDER BY _vehicle_name ASC;";
             }
             else
@@ -219,9 +218,9 @@ namespace TDU2_Track_Records
                 // Show only vehicles matching the selected class
                 query = $@"
             SELECT * FROM vehicles 
-            WHERE _is_purchasable = 'true' 
-            AND _is_active = 'true' 
-            AND _is_owned = 'true'
+            WHERE _is_active = 'true'
+            AND _vehiclecategory_name = '{selectedClass}'
+            OR _is_owned = 'true'
             AND _vehiclecategory_name = '{selectedClass}'
             ORDER BY _vehicle_name ASC;";
             }
