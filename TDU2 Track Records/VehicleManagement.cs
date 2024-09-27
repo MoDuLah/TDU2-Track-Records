@@ -61,7 +61,8 @@ namespace TDU2_Track_Records
         public string Name { get; set; }
         public string CategoryName { get; set; }
         public string Price { get; set; }
-        public string Acceleration0To100Kmh { get; set; }
+        public string Acceleration0To100Kph { get; set; }
+        public string Acceleration0To60Mph { get; set; }
         public string MaxTheoreticalSpeed { get; set; }
         public string Braking100To0 { get; set; }
         public string StatAcc { get; set; }

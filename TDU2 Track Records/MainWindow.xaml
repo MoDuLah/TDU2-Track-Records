@@ -216,10 +216,23 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </GroupBox>
-
+                        <GroupBox Header="Class">
+                            <ComboBox x:Name="combo_Class" MinWidth="75" VerticalAlignment="Stretch"
+                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                      Height="38" MaxHeight="38" Padding="5,5,5,5" SelectionChanged="combo_Class_SelectionChanged" TabIndex="1005">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill" />
+                                            <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </GroupBox>
                         <GroupBox Header="Event Name" MinWidth="200">
-                            <ComboBox x:Name="combo_Track" ItemsSource="{Binding}"  DisplayMemberPath="Name" SelectedValuePath="Id" TabIndex="1001" Loaded="Combo_Track_Loaded"
-                                      SelectionChanged="Combo_Track_SelectionChanged" LostFocus="Combo_Track_LostFocus" PreviewKeyUp="Combo_Track_PreviewKeyUp" MinWidth="160" MaxDropDownHeight="250"/>
+                            <ComboBox x:Name="combo_Track" ItemsSource="{Binding}"  DisplayMemberPath="Name" SelectedValuePath="Id" TabIndex="1001" LostFocus="Combo_Track_LostFocus" PreviewKeyUp="Combo_Track_PreviewKeyUp"
+                                      SelectionChanged="Combo_Track_SelectionChanged" MinWidth="160" MaxDropDownHeight="250"/>
                         </GroupBox>
                         <GroupBox x:Name="ClassRestictionGroupBox" Visibility="Collapsed" >
                             <GroupBox.Header>
@@ -398,21 +411,6 @@
                                 </TextBlock.ToolTip>
                             </TextBlock>
                         </StackPanel>
-
-                        <GroupBox Header="Class">
-                            <ComboBox x:Name="combo_Class" MinWidth="75" VerticalAlignment="Stretch"
-                                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                                      Height="38" MaxHeight="38" Padding="5,5,5,5" SelectionChanged="combo_Class_SelectionChanged" TabIndex="1005">
-                                <ComboBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill" />
-                                            <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </ComboBox.ItemTemplate>
-                            </ComboBox>
-                        </GroupBox>
                         <GroupBox Header="Name" DockPanel.Dock="Right">
                             <ComboBox x:Name="combo_Vehicle" ItemsSource="{Binding}" LostFocus="Combo_Vehicle_LostFocus" TabIndex="1006" PreviewKeyUp="Combo_Vehicle_LostFocus" VerticalAlignment="Stretch" MinWidth="320" HorizontalAlignment="Center" Width="399"/>
                         </GroupBox>
@@ -482,20 +480,20 @@
                                      AutoWordSelection="True" 
                                      local:PlaceholderBehavior.PlaceholderText="00" 
                                      local:PlaceholderBehavior.PlaceholderForeground="Gray"
-                                     LostFocus="TextBox_LostFocus" MaxLength="2" PreviewGotKeyboardFocus="TextBox_GotKeyboardFocus" TabIndex="1009"/>
+                                     LostFocus="TextBox_LostFocus" MaxLength="2" PreviewGotKeyboardFocus="TextBox_GotKeyboardFocus" TabIndex="1009" TextChanged="MyTextBox_TextChanged"/>
                             <TextBlock Grid.Column="1" Grid.Row="1" Text=":" VerticalAlignment="Center"/>
                             <TextBox x:Name="Race_Sec" Grid.Column="2" Grid.Row="1" MinWidth="32" VerticalAlignment="Center" 
                                      HorizontalAlignment="Center" 
                                      AutoWordSelection="True" 
                                      local:PlaceholderBehavior.PlaceholderText="00" 
-                                     local:PlaceholderBehavior.PlaceholderForeground="Gray" LostFocus="TextBox_LostFocus" MaxLength="2" PreviewGotKeyboardFocus="TextBox_GotKeyboardFocus" TabIndex="1010"/>
+                                     local:PlaceholderBehavior.PlaceholderForeground="Gray" LostFocus="TextBox_LostFocus" MaxLength="2" PreviewGotKeyboardFocus="TextBox_GotKeyboardFocus" TabIndex="1010" TextChanged="MyTextBox_TextChanged"/>
                             <TextBlock Grid.Column="3" Grid.Row="1" Text="." VerticalAlignment="Center"/>
                             <TextBox x:Name="Race_Ms" Grid.Column="4" Grid.Row="1" MinWidth="32" VerticalAlignment="Center" 
                                      HorizontalAlignment="Center" 
-                                     MaxLength="3" 
+                                     MaxLength="2" 
                                      AutoWordSelection="True" 
                                      local:PlaceholderBehavior.PlaceholderText="000" 
-                                     local:PlaceholderBehavior.PlaceholderForeground="Gray" PreviewLostKeyboardFocus="Lap1_Ms_PreviewLostKeyboardFocus" TabIndex="1011" />
+                                     local:PlaceholderBehavior.PlaceholderForeground="Gray" PreviewLostKeyboardFocus="Lap1_Ms_PreviewLostKeyboardFocus" TabIndex="1011" TextChanged="MyTextBox_TextChanged" />
                             <TextBlock x:Name="AverageRace_Speed" Text="0.00" Grid.Column="6" Grid.Row="1" MinWidth="32" VerticalAlignment="Center"/>
                             <TextBlock x:Name="Speed_Text" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="6" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>

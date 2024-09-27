@@ -16,11 +16,21 @@ namespace TDU2_Track_Records
         readonly string connectionString = Settings.Default.connectionString;
         public string distance, speed;
         readonly string SI = Settings.Default.system;
+        double conversionSpeedFactor;
+        double conversionWeightFactor;
+        double conversionTorqueFactor;
+        string conversionAccImage;
+        bool isCalculated = false;
+
         bool canUpgrade;
 
         public vehicleCard(int vehicleId)
         {
             InitializeComponent();
+            conversionSpeedFactor = SI == "Imperial" ? 0.621371 : 1.0;
+            conversionWeightFactor = SI == "Imperial" ? 2.20462 : 1.0;
+            conversionTorqueFactor = SI == "Imperial" ? 0.737562 : 1.0;
+            conversionAccImage = SI == "Imperial" ? "M" : "K";
 
             // Query the database to get all the details of the vehicle using the vehicle ID
             VehicleManagement vehicle = GetVehicleDetails(vehicleId);
@@ -29,12 +39,14 @@ namespace TDU2_Track_Records
                 this.DataContext = vehicle;
                 VehiclerClass.Source = new BitmapImage(new Uri("/Images/carClasses/" + vehicle.VehicleCategory + ".png", UriKind.Relative));
                 VehiclerLevel.Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative)); //" + vehicle.VehicleLevel + "
+                AccTimeImage.Source = new BitmapImage(new Uri($"/Images/vehicleCard/acc{conversionAccImage}ph.png", UriKind.Relative));
                 VehiclerLevel.Tag = vehicle.id;
                 SetEnginePositionVisibility(vehicle.EnginePosition);
                 SetDriveTypeVisibility(vehicle.DriveName);
                 SetDifficultyImages(vehicle.Difficulty);
                 SetPaintStickerUpgradeVisibility(vehicle.CanPaint,vehicle.CanSticker,vehicle.CanUpgrade);
                 UpdateVehicleDetails(vehicle.id);
+
             }
             else
             {
@@ -91,7 +103,8 @@ namespace TDU2_Track_Records
                                 NbGears = reader["_nb_gears"].ToString() + " Gears",
                                 GearboxName = reader["_gearbox_name"].ToString(),
                                 MaxTheoreticalSpeed = reader["_max_theorical_speed"].ToString(),
-                                Acceleration0To100Kmh = reader["_acceleration_0_100_kmh"].ToString(),
+                                Acceleration0To100Kph = reader["_acceleration_0_100_kph"].ToString(),
+                                Acceleration0To60Mph = reader["_acceleration_0_60_mph"].ToString(),
                                 Braking100To0 = reader["_braking_100_0"].ToString(),
                                 // Information
                                 Mass = reader["_mass"].ToString(),
@@ -99,7 +112,7 @@ namespace TDU2_Track_Records
                                 DealershipNameInIbiza = reader["_dealership_name_in_ibiza"].ToString(),
                                 DealershipNameInHawaii = reader["_dealership_name_in_hawaii"].ToString(),
                                 VehiclePrice = reader["_price"].ToString(),
-                                VehicleOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
+                                IsOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
                                 HouseStoredNameIbiza = reader["_house_name_in_ibiza"].ToString(),
                                 HouseStoredNameOahu = reader["_house_name_in_hawaii"].ToString()
                             };
@@ -107,13 +120,16 @@ namespace TDU2_Track_Records
                     }
                 }
             }
+            
             if(vehicle.CanUpgrade == false) { canUpgrade = false; } else { canUpgrade = true; }
             return vehicle;
         }
-        public void CalculateUpgradedStats()
+        private void ChangeMeasuringSystem(string speed, string mass, string torque)
         {
 
+
         }
+
         private void SetPaintStickerUpgradeVisibility(bool canPaints, bool canStickers, bool canUpgrades)
         {
             SetVisibility(CanPaint, CantPaint, canPaints);
@@ -244,6 +260,7 @@ namespace TDU2_Track_Records
 
         private void UpdateVehicleDetails(int vehicleId)
         {
+
             VehicleManagement vehicle = GetVehicleDetails(vehicleId);
             if (vehicle != null)
             {
@@ -261,28 +278,31 @@ namespace TDU2_Track_Records
                 {
                     int upgradeLevel = int.Parse(vehicle.VehicleLevel);
                     double basePower = Convert.ToDouble(vehicle.PowerBhp);
-                    double baseAccel = Convert.ToDouble(vehicle.Acceleration0To100Kmh);
+                    double baseAccel = SI == "Metric" ? Convert.ToDouble(vehicle.Acceleration0To100Kph) : Convert.ToDouble(vehicle.Acceleration0To60Mph);
                     double baseBraking100To0 = Convert.ToDouble(vehicle.Braking100To0);
                     double baseMaxSpeed = Convert.ToDouble(vehicle.MaxTheoreticalSpeed);
                     double baseWeight = Convert.ToDouble(vehicle.Mass);
-                    double baseStatAcc = Convert.ToDouble(vehicle.StatAcc);
-                    double baseStatSpeed = Convert.ToDouble(vehicle.StatSpeed);
-                    double baseStatBrake = Convert.ToDouble(vehicle.StatBrake);
+                    //double baseStatAcc = Convert.ToDouble(vehicle.StatAcc);
+                    //double baseStatSpeed = Convert.ToDouble(vehicle.StatSpeed);
+                    //double baseStatBrake = Convert.ToDouble(vehicle.StatBrake);
                     double basePrice = Convert.ToDouble(vehicle.VehiclePrice);
+                    double baseTorque = Convert.ToDouble(vehicle.TorqueNm);
 
                     // Calculate new stats based on upgrade level
-                    double finalAccel = Math.Round(baseAccel * accelerationFactors[upgradeLevel], 2);
-                    double finalMaxSpeed = Math.Round(baseMaxSpeed * maxSpeedFactors[upgradeLevel], 0);
-                    double finalWeight = Math.Round(baseWeight * massReductionFactors[upgradeLevel], 0);
                     double finalStatAcc = Math.Floor(100 - (((baseAccel / statAccFactors[upgradeLevel]) - 2.25) / 9.75 * 100));
                     double finalStatSpeed = Math.Floor(((baseMaxSpeed * statSpeedFactors[upgradeLevel]) - 70) / 400 * 100);
                     double finalStatBrake = Math.Floor(100 - (((baseBraking100To0 * statBrakeFactors[upgradeLevel]) - 90) / 80 * 100));
+                    double finalAccel = Math.Round(baseAccel * accelerationFactors[upgradeLevel], 2);
+                    double finalMaxSpeed = Math.Round((baseMaxSpeed * maxSpeedFactors[upgradeLevel]) * conversionSpeedFactor, 0);
+                    double finalWeight = Math.Round((baseWeight * massReductionFactors[upgradeLevel]) * conversionWeightFactor, 0);
                     double finalPower = Math.Round(basePower * powerFactors[upgradeLevel], 0);
-                    double finalMassPower = Math.Round(finalWeight / finalPower, 3);
                     double finalPrice = Math.Round(basePrice * priceIncreaseFactors[upgradeLevel], 0);
+                    double finalTorque = Math.Round(baseTorque * conversionTorqueFactor, 0);
+                    double finalMassPower = Math.Round(finalWeight / finalPower, 3);
 
                     // Update vehicle stats
-                    vehicle.Acceleration0To100Kmh = finalAccel.ToString();
+                    vehicle.Acceleration0To100Kph = finalAccel.ToString();
+                    vehicle.TorqueNm = finalTorque.ToString();
                     vehicle.MaxTheoreticalSpeed = finalMaxSpeed.ToString();
                     vehicle.Mass = finalWeight.ToString();
                     vehicle.StatAcc = finalStatAcc.ToString();
@@ -307,6 +327,17 @@ namespace TDU2_Track_Records
                     MessageBox.Show("An unexpected error occurred: " + ex.Message);
                 }
             }
+        }
+        public double ConvertToZeroToSixtyTime(double zeroToHundredKmhTime)
+        {
+            // Define the constants for the conversion
+            const double scaleFactor = 0.9656; // 60 mph / 100 km/h
+            const double exponent = 0.8; // Empirical constant for non-linear acceleration
+
+            // Apply the conversion formula
+            double zeroToSixtyMphTime = zeroToHundredKmhTime * Math.Pow(scaleFactor, exponent);
+
+            return Math.Round(zeroToSixtyMphTime, 2); // Round to 2 decimal places
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

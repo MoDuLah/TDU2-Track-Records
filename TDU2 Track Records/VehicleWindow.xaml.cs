@@ -228,7 +228,7 @@ namespace TDU2_Track_Records
                                     // Double properties
                                     VehicleOdometerMetric = GetDouble(reader, columnIndices["_odometer_metric"]),
                                     VehicleOdometerImperial = GetDouble(reader, columnIndices["_odometer_imperial"]),
-                                    VehicleAccelerationTime = GetDouble(reader, columnIndices["_acceleration_0_100_kmh"]),
+                                    VehicleAccelerationTime = GetDouble(reader, columnIndices["_acceleration_0_100_kph"]),
                                     VehiclePowerWeightRatio = GetDouble(reader, columnIndices["_power_bhp"]) /
                                         (GetDouble(reader, columnIndices["_mass"]) == 0 ? 1 : GetDouble(reader, columnIndices["_mass"])),
             

@@ -111,7 +111,6 @@
                     <Grid.Background>
                         <ImageBrush x:Name="VehicleImage" ImageSource="{Binding VehicleImage}" Stretch="UniformToFill" TileMode="None" AlignmentX="Center" AlignmentY="Center"/>
                     </Grid.Background>
-
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <TextBlock x:Name="VehicleNameTextBlock" Foreground="#fff" FontSize="20" Padding="20" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5">
                             <TextBlock.Background>
@@ -340,9 +339,9 @@
                         </TextBlock>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,5,0,5">
-                        <Image Source="/Images/vehicleCard/accel2.png" Width="40" HorizontalAlignment="Left" />
+                        <Image x:Name="AccTimeImage" Source="/Images/vehicleCard/accel2.png" Width="40" HorizontalAlignment="Left" />
                         <TextBlock Foreground="#fff" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5,0,0,0">
-                        <Run Text="{Binding Acceleration0To100Kmh, StringFormat=N2}"/>
+                        <Run Text="{Binding Acceleration0To100Kph, StringFormat=N2}"/>
                         <Run Text="Sec."/>
                         </TextBlock>
                     </StackPanel>
