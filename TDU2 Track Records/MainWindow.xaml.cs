@@ -218,10 +218,9 @@ namespace TDU2_Track_Records
                 // Show only vehicles matching the selected class
                 query = $@"
             SELECT * FROM vehicles 
-            WHERE _is_active = 'true'
-            AND _vehiclecategory_name = '{selectedClass}'
-            OR _is_owned = 'true'
-            AND _vehiclecategory_name = '{selectedClass}'
+            WHERE _vehiclecategory_name = '{selectedClass}'
+            AND _is_active = 'true'
+            AND _is_owned = 'true'
             ORDER BY _vehicle_name ASC;";
             }
 
@@ -1393,8 +1392,8 @@ namespace TDU2_Track_Records
         // Final adjustments to the UI after updating track information.
         private void FinalizeUI()
         {
-            CheckProgress();     // Checks the current progress or state of the race/track
             calc_Lap_Length_And_LoadLapRecord();     // Loads the lap record for the selected track
+            CheckProgress();     // Checks the current progress or state of the race/track
         }
 
  
@@ -1538,9 +1537,9 @@ namespace TDU2_Track_Records
         private int GetCarsCount(SQLiteConnection dbConn, string param)
         {
             string query = string.IsNullOrEmpty(param)
-                ? "SELECT COUNT(*) FROM [vehicles] WHERE _is_active = 'true' and _is_purchasable = 'true' and _is_owned = 'true';"
-                : $"SELECT COUNT(*) FROM [vehicles] WHERE _vehiclecategory_name = '{param}' and _is_active = 'true' and _is_purchasable = 'true' and _is_owned = 'true';";
-
+                ? "SELECT COUNT(*) FROM [vehicles] WHERE _is_active = 'true' and _is_owned = 'true';"
+                : $"SELECT COUNT(*) FROM [vehicles] WHERE _vehiclecategory_name = '{param}' AND _is_active = 'true' AND _is_owned = 'true' ;";
+            
             using (var cmd = new SQLiteCommand(query, dbConn))
             using (var reader = cmd.ExecuteReader())
             {
@@ -2029,12 +2028,10 @@ namespace TDU2_Track_Records
                 this.DragMove();
             }
         }
-
-        private void LapMs_PreviewGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        private void Race_Ms_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             ResetAvgSpeedText(sender, e, AverageRace_Speed);
         }
-
         private void Lap1_Ms_PreviewLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
             HandleLapMsPreviewLostKeyboardFocus(Race_Min, Race_Sec, Race_Ms, AverageRace_Speed);
@@ -2044,6 +2041,7 @@ namespace TDU2_Track_Records
             avgSpeedTextBlock.Text = "0.00";
             Speed_Text.Text = speed;
         }
+
 
     }
 }

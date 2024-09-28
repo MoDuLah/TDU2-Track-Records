@@ -493,7 +493,7 @@
                                      MaxLength="2" 
                                      AutoWordSelection="True" 
                                      local:PlaceholderBehavior.PlaceholderText="000" 
-                                     local:PlaceholderBehavior.PlaceholderForeground="Gray" PreviewLostKeyboardFocus="Lap1_Ms_PreviewLostKeyboardFocus" TabIndex="1011" TextChanged="MyTextBox_TextChanged" />
+                                     local:PlaceholderBehavior.PlaceholderForeground="Gray" PreviewLostKeyboardFocus="Lap1_Ms_PreviewLostKeyboardFocus" TabIndex="1011" TextChanged="MyTextBox_TextChanged" GotKeyboardFocus="Race_Ms_GotKeyboardFocus" />
                             <TextBlock x:Name="AverageRace_Speed" Text="0.00" Grid.Column="6" Grid.Row="1" MinWidth="32" VerticalAlignment="Center"/>
                             <TextBlock x:Name="Speed_Text" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" Grid.Row="6" Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Grid>
