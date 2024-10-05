@@ -93,13 +93,16 @@ namespace TDU2_Track_Records
                 }
 
                 LapDataAccess lapDataAccess = new LapDataAccess(connectionString);
-                List<Lap> fastestLaps = lapDataAccess.GetTop10FastestLaps(trackId, conditions, orientation, carClass);
+
+                // Get the fastest lap for each car
+                List<Lap> fastestLaps = lapDataAccess.GetFastestLapForEachCar(trackId, conditions, orientation, carClass);
+
                 LapsListBox.ItemsSource = fastestLaps;
-                string lo, wc;
+
                 // Update ViewModel based on conditions
                 foreach (var lap in fastestLaps)
                 {
-                    
+                    string wc, lo;
 
                     if (lap.WeatherConditions == "0")
                     {
@@ -125,11 +128,10 @@ namespace TDU2_Track_Records
                         viewModel.IsOrientationImageVisible = true;
                         lo = viewModel.OrientationImageSource.ToString();
                     }
-                    //MessageBox.Show(lap.WeatherConditions + " " + lap.Orientation + "\n" + lo + "\n" + wc);
                 }
             }
-           
         }
+
         private void cb_conditions_StateChanged(object sender, RoutedEventArgs e)
         {
             if (cb_conditions.IsChecked == false)
@@ -328,25 +330,24 @@ namespace TDU2_Track_Records
             _connectionString = connectionString;
         }
 
-        public List<Lap> GetTop10FastestLaps(int trackId, int conditions, int orientation, string carClass)
+        public List<Lap> GetFastestLapForEachCar(int trackId, int conditions, int orientation, string carClass)
         {
             List<Lap> laps = new List<Lap>();
             try
             {
                 string query;
+
                 if (carClass == "All")
                 {
-                    var carClasses = new List<string> { "A1", "A2", "A3", "A4", "A5", "A6", "A7", "B2", "B3", "B4", "C1", "C2", "C3", "C4", "mA1", "mA2" };
-                    string carClassCondition = string.Join("', '", carClasses);
-                    query = $"SELECT carName, Total_Time, carClass, conditions, orientation FROM records " +
-                            $"WHERE trackId = @TrackId AND carClass IN ('{carClassCondition}') " +
-                            $"AND conditions = @Conditions AND orientation = @Orientation ORDER BY Total_Time ASC";
+                    query = $"SELECT carName, MIN(Total_Time) AS Fastest_Time, carClass, conditions, orientation " +
+                            $"FROM records WHERE trackId = @TrackId AND conditions = @Conditions AND orientation = @Orientation " +
+                            $"GROUP BY carName, carClass, conditions, orientation ORDER BY Fastest_Time ASC";
                 }
                 else
                 {
-                    query = $"SELECT carName, Total_Time, carClass, conditions, orientation FROM records " +
-                            $"WHERE trackId = @TrackId AND carClass = @CarClass " +
-                            $"AND conditions = @Conditions AND orientation = @Orientation ORDER BY Total_Time ASC";
+                    query = $"SELECT carName, MIN(Total_Time) AS Fastest_Time, carClass, conditions, orientation " +
+                            $"FROM records WHERE trackId = @TrackId AND carClass = @CarClass AND conditions = @Conditions AND orientation = @Orientation " +
+                            $"GROUP BY carName, carClass, conditions, orientation ORDER BY Fastest_Time ASC";
                 }
 
                 using (SQLiteConnection connection = new SQLiteConnection(_connectionString))
@@ -358,6 +359,7 @@ namespace TDU2_Track_Records
                         command.Parameters.AddWithValue("@CarClass", carClass);
                         command.Parameters.AddWithValue("@Conditions", conditions);
                         command.Parameters.AddWithValue("@Orientation", orientation);
+
                         using (SQLiteDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
@@ -366,7 +368,7 @@ namespace TDU2_Track_Records
                                 {
                                     carName = reader["carName"].ToString(),
                                     carClass = reader["carClass"].ToString(),
-                                    LapTime = reader["Total_Time"].ToString(),
+                                    LapTime = reader["Fastest_Time"].ToString(),
                                     WeatherConditions = reader["conditions"].ToString(),
                                     Orientation = reader["orientation"].ToString()
                                 };
@@ -383,6 +385,7 @@ namespace TDU2_Track_Records
 
             return laps;
         }
+
     }
     public class PowerLapViewModel : INotifyPropertyChanged
     {

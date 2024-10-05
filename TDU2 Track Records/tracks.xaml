@@ -29,6 +29,33 @@
                     <GroupBox Header="Event Name:">
                         <TextBox x:Name="TrackNameTextBox" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
                     </GroupBox>
+                    <GroupBox x:Name="OrientationGroupBox" Header="Orientation">
+                        <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <CheckBox x:Name="cb_orientation" BorderBrush="{x:Null}" Checked="cb_orientation_StateChanged" Unchecked="cb_orientation_StateChanged" Margin="5,0,0,0" Visibility="Collapsed"/>
+                            <ToggleButton Foreground="{x:Null}" x:Name="txt_orientation" MouseLeftButtonDown="txt_orientation_MouseLeftButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="32" MinHeight="32" Click="txt_orientation_Click" TabIndex="1003">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image>
+                                                <Image.Style>
+                                                    <Style>
+                                                        <Setter Property="Image.Source" Value="Images/clockwise.png" />
+                                                        <Setter Property="Image.ToolTip" Value="Clockwise"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsChecked,RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}" Value="True">
+                                                                <Setter Property="Image.Source" Value="Images/anticlockwise.png" />
+                                                                <Setter Property="Image.ToolTip" Value="Anticlockwise"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
+                                        </StackPanel>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                        </DockPanel>
+                    </GroupBox>
                     <GroupBox x:Name="DistanceGroupBox" Visibility="Visible">
                         <GroupBox.Header>
                             <StackPanel Orientation="Horizontal">

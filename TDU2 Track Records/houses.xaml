@@ -42,7 +42,7 @@
                              Width="200" 
                              SelectionChanged="IslandComboBox_SelectionChanged" FontSize="14" PreviewMouseRightButtonDown="IslandComboBox_PreviewMouseRightButtonDown">
                 <ComboBoxItem Content="Ibiza"/>
-                <ComboBoxItem Content="Oahu"/>
+                <ComboBoxItem Content="Hawaii"/>
             </ComboBox>
 
             <ScrollViewer MaxHeight="600" VerticalScrollBarVisibility="Auto" Padding="5,5,5,5" CanContentScroll="True" HorizontalContentAlignment="Stretch" VirtualizingStackPanel.IsVirtualizing="True">

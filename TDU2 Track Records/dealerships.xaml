@@ -40,7 +40,7 @@
                              Width="200" 
                              SelectionChanged="IslandComboBox_SelectionChanged" FontSize="14" PreviewMouseRightButtonDown="IslandComboBox_PreviewMouseRightButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                 <ComboBoxItem Content="Ibiza"/>
-                <ComboBoxItem Content="Oahu"/>
+                <ComboBoxItem Content="Hawaii"/>
             </ComboBox>
 
             <ListBox Visibility="Visible" MaxHeight="600" x:Name="DealershipListBox" MinWidth="200" ScrollViewer.CanContentScroll="False"

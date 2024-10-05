@@ -409,7 +409,7 @@ namespace TDU2_Track_Records
                                 VehiclePrice = reader["_price"].ToString(),
                                 VehicleCategory = reader["_vehiclecategory_name"].ToString(),
                                 VehicleLevel = reader["_upgrade_level"].ToString(),
-                                VehicleOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
+                                IsOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
                                 IsPurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
                                 IsReward = Convert.ToBoolean(reader["_is_reward"]),
                                 // Check if the "Image" column is DBNull before casting
@@ -490,7 +490,7 @@ namespace TDU2_Track_Records
         //    };
         //    CheckBox ownedCheckBox = new CheckBox
         //    {
-        //        IsChecked = vehicle.VehicleOwned == true,
+        //        IsChecked = vehicle.IsOwned == true,
         //        VerticalAlignment = VerticalAlignment.Center
         //    };
         //    TextBlock ownedText = new TextBlock
@@ -652,18 +652,18 @@ namespace TDU2_Track_Records
 
                 CheckBox ownedCheckBox = new CheckBox
             {
-                IsChecked = vehicle.VehicleOwned == true,
+                IsChecked = vehicle.IsOwned == true,
                 VerticalAlignment = VerticalAlignment.Center
             }; 
             // Add event handlers for CheckBox checked and unchecked events
             ownedCheckBox.Checked += (sender, e) =>
             {
-                UpdateVehicleOwnedStatus(vehicle.id, true);  // Update database when checked
+                UpdateIsOwnedStatus(vehicle.id, true);  // Update database when checked
             };
 
             ownedCheckBox.Unchecked += (sender, e) =>
             {
-                UpdateVehicleOwnedStatus(vehicle.id, false);  // Update database when unchecked
+                UpdateIsOwnedStatus(vehicle.id, false);  // Update database when unchecked
             };
 
             TextBlock ownedText = new TextBlock
@@ -753,9 +753,9 @@ namespace TDU2_Track_Records
             grid.Children.Add(vehicleGroupBox);
         }
         // Method to update the vehicle owned status in the database
-        private void UpdateVehicleOwnedStatus(int vehicleId, bool isOwned)
+        private void UpdateIsOwnedStatus(int vehicleId, bool isOwned)
         {
-            // SQL update command to update the 'VehicleOwned' column in the database
+            // SQL update command to update the 'IsOwned' column in the database
             string query = "UPDATE vehicles SET _is_owned = @isOwned WHERE id = @vehicleId";
 
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))

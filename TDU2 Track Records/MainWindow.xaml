@@ -11,7 +11,7 @@
         mc:Ignorable="d" WindowStyle="None" AllowsTransparency="True" 
         Title="TDU2 Track Records" SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterScreen"
-        Icon="/TDU2TR.ico" FontFamily="Adobe Gothic Std B" FontSize="16" 
+        Icon="/TDU2.ico" FontFamily="Adobe Gothic Std B" FontSize="16" 
         Background="{x:Null}"
         Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" MouseLeftButtonDown="Window_MouseLeftButtonDown" >
     <Window.Resources>
@@ -47,7 +47,7 @@
                 <RowDefinition Height="20"/>
             </Grid.RowDefinitions>
             <DockPanel Grid.Column="1" Grid.Row="1" Margin="0,10,0,0">
-                <Image Source="/Images/tdu2.ico" Stretch="None" Margin="80,0,5,0" DockPanel.Dock="Left"/>
+                <Image Source="/tdu2.ico" Width="60" Stretch="UniformToFill" Margin="80,0,5,0" DockPanel.Dock="Left"/>
                 <TextBlock x:Name="Currentversion" FontSize="48" Foreground="{DynamicResource HoverBackground}"
                            FontFamily="Gill Sans MT Ext Condensed Bold"
                            Background="{DynamicResource GlassBrush}" Margin="0,0,0,5"
@@ -55,6 +55,20 @@
 
             </DockPanel>
             <DockPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,5">
+                <Image x:Name="DragButton" 
+Margin="0,0,5,0" Width="42" Height="42"
+ToolTip="Drag Stats" MouseLeftButtonDown="Drag_MouseLeftButtonDown" Stretch="Fill">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/objectives/ico_duel.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/objectives/ico_casino_racing.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
                 <Image x:Name="vehicleButton" 
     Margin="0,0,5,0" Width="42" Height="42"
     ToolTip="Vehicle Management" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown">
@@ -139,9 +153,9 @@
                         </Style>
                     </Image.Style>
                 </Image>
-                <Image x:Name="VehicleManager_Button" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown"
-                       Margin="0,0,5,0" Width="32" Height="32"
-                       ToolTip="Vehicle Management" Visibility="Collapsed" >
+                <!--<Image x:Name="VehicleManager_Button" MouseLeftButtonDown="VehicleManager_MouseLeftButtonDown"
+                       Margin="0,0,5,0" Width="42" Height="42"
+                       ToolTip="Vehicle Management" Visibility="Visible" >
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Source" Value="Images/ico/navigation/cars.png"/>
@@ -152,7 +166,7 @@
                             </Style.Triggers>
                         </Style>
                     </Image.Style>
-                </Image>
+                </Image>-->
                 <Image x:Name="Settings_Button" MouseLeftButtonDown="Settings_MouseLeftButtonDown"
                        Margin="0,0,5,0" MinWidth="32" MinHeight="32"
                        ToolTip="Settings" Width="42" AutomationProperties.AccessKey="s">
@@ -204,7 +218,7 @@
             <GroupBox x:Name="EventGroupBox" Header="Event" Grid.Column="1" Grid.Row="2" Margin="20,0,5,0">
                 <StackPanel>
                     <DockPanel>
-                        <GroupBox Header="Event Type">
+                        <GroupBox Header="Event Type" MinWidth="150">
                             <ComboBox x:Name="combo_Type" ItemsSource="{Binding}" TabIndex="1000" SelectionChanged="combo_Type_SelectionChanged">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
@@ -216,7 +230,7 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </GroupBox>
-                        <GroupBox Header="Class">
+                        <GroupBox Header="Class" MinWidth="150">
                             <ComboBox x:Name="combo_Class" MinWidth="75" VerticalAlignment="Stretch"
                                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                       Height="38" MaxHeight="38" Padding="5,5,5,5" SelectionChanged="combo_Class_SelectionChanged" TabIndex="1005">
@@ -230,29 +244,13 @@
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
                         </GroupBox>
-                        <GroupBox Header="Event Name" MinWidth="200">
+                        <GroupBox Header="Event Name">
                             <ComboBox x:Name="combo_Track" ItemsSource="{Binding}"  DisplayMemberPath="Name" SelectedValuePath="Id" TabIndex="1001" LostFocus="Combo_Track_LostFocus" PreviewKeyUp="Combo_Track_PreviewKeyUp"
                                       SelectionChanged="Combo_Track_SelectionChanged" MinWidth="160" MaxDropDownHeight="250"/>
                         </GroupBox>
-                        <GroupBox x:Name="ClassRestictionGroupBox" Visibility="Collapsed" >
-                            <GroupBox.Header>
-                                <TextBlock Text="Class Resticted" 
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           TextAlignment="Center"/>
-                            </GroupBox.Header>
-                            <TextBlock x:Name="ClassRestrictionTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </GroupBox>
-                        <GroupBox x:Name="VehicleRestictionGroupBox" Visibility="Collapsed" >
-                            <GroupBox.Header>
-                                <TextBlock Text="Resticted to Vehicle"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           TextAlignment="Center"/>
-                            </GroupBox.Header>
-                            <TextBlock x:Name="VehicleRestrictionTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </GroupBox>
-                        <GroupBox Header="Information">
+                    </DockPanel>
+                    <DockPanel >
+                        <GroupBox x:Name="InfoGroupBox" Header="Information">
                             <Image MouseLeftButtonDown="Btn_TrackInfo_Click" Width="32" Height="32" MinWidth="32" MinHeight="32" ToolTip="Information">
                                 <Image.Style>
                                     <Style TargetType="{x:Type Image}">
@@ -269,7 +267,7 @@
                         <GroupBox x:Name="WeatherGroupBox" Header="Weather">
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <CheckBox x:Name="cb_conditions" BorderBrush="{x:Null}" Checked="cb_conditions_StateChanged" Unchecked="cb_conditions_StateChanged" Visibility="Collapsed"/>
-                                <ToggleButton Foreground="{x:Null}" x:Name="cb_weather" MouseLeftButtonDown="cb_weather_MouseLeftButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="32" MinHeight="32" Click="cb_weather_Click" TabIndex="1002" >
+                                <ToggleButton Foreground="{x:Null}" x:Name="cb_weather" MouseLeftButtonDown="cb_weather_MouseLeftButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="32" MinHeight="32" Click="cb_weather_Click" TabIndex="1002" Focusable="False" >
                                     <ToggleButton.Template>
                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                                             <StackPanel Orientation="Horizontal">
@@ -296,7 +294,7 @@
                         <GroupBox x:Name="OrientationGroupBox" Header="Orientation">
                             <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <CheckBox x:Name="cb_orientation" BorderBrush="{x:Null}" Checked="cb_orientation_StateChanged" Unchecked="cb_orientation_StateChanged" Margin="5,0,0,0" Visibility="Collapsed"/>
-                                <ToggleButton Foreground="{x:Null}" x:Name="txt_orientation" MouseLeftButtonDown="txt_orientation_MouseLeftButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="32" MinHeight="32" Click="txt_orientation_Click" TabIndex="1003">
+                                <ToggleButton Foreground="{x:Null}" x:Name="txt_orientation" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="32" MinHeight="32" Click="txt_orientation_Click" TabIndex="1003" MouseLeftButtonDown="txt_orientation_MouseLeftButtonDown" Focusable="False">
                                     <ToggleButton.Template>
                                         <ControlTemplate TargetType="{x:Type ToggleButton}">
                                             <StackPanel Orientation="Horizontal">
@@ -320,8 +318,6 @@
                                 </ToggleButton>
                             </DockPanel>
                         </GroupBox>
-                    </DockPanel>
-                    <DockPanel >
                         <GroupBox x:Name="LapLengthGroupBox" Header="Lap Length" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <DockPanel HorizontalAlignment="Center">
                                 <TextBlock x:Name="lap_Length"
@@ -340,7 +336,7 @@
                         <GroupBox x:Name="LapsGroupBox"  Header="Laps" MinWidth="100">
                             <StackPanel>
                                 <TextBlock x:Name="LapsTextBlock" Text="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <TextBox x:Name="LapsTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Panel.ZIndex="2" TextChanged="LapsTextBox_TextChanged"/>
+                                <TextBox x:Name="LapsTextBox" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed" Panel.ZIndex="2"/>
                             </StackPanel>
                         </GroupBox>
                         <GroupBox x:Name="RaceLengthGroupBox" Header="Race Length" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
@@ -352,9 +348,29 @@
                             </DockPanel>
                         </GroupBox>
                     </DockPanel>
+                    <DockPanel>
+                        <GroupBox x:Name="ClassRestictionGroupBox">
+                            <GroupBox.Header>
+                                <TextBlock Text="Class Restiction" 
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Center"/>
+                            </GroupBox.Header>
+                            <TextBlock x:Name="ClassRestrictionTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </GroupBox>
+                        <GroupBox x:Name="VehicleRestictionGroupBox">
+                            <GroupBox.Header>
+                                <TextBlock Text="Vehicle Restriction"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Center"/>
+                            </GroupBox.Header>
+                            <TextBlock x:Name="VehicleRestrictionTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </GroupBox>
+                    </DockPanel>
                     <StackPanel>
                         <StackPanel>
-                            <GroupBox Header="Event Record" x:Name="TrackRecordGroupbox">
+                            <GroupBox Header="Record" x:Name="TrackRecordGroupbox">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock x:Name="txt_lrecCar" Margin="5,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     <Border Width="1" Margin="5,0" Background="Red"/>
@@ -394,6 +410,22 @@
                 <StackPanel>
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Bottom" x:Name="GroupButtons" Orientation="Horizontal" UseLayoutRounding="True" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,8,10,0">
+                            <CheckBox x:Name="retry" TabIndex="1007" VerticalAlignment="Center" Foreground="Black" />
+                            <TextBlock Text="Retry?" 
+                                FontSize="16" 
+                                Foreground="#FFBBBBBB" 
+                                FontWeight="Bold" 
+                                Margin="0,0,20,0" 
+                                MouseLeftButtonDown="Retry_MouseLeftButtonDown" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel>
+                                            <TextBlock Text="Keeps Trackname and _vehiclecategory_name the same," FontWeight="Bold"/>
+                                            <TextBlock Text="Car goes to next in line when submit." FontStyle="Italic"/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </TextBlock.ToolTip>
+                </TextBlock>
                             <CheckBox x:Name="keep" TabIndex="1007" VerticalAlignment="Center" Foreground="Black" />
                             <TextBlock Text="Keep Choices?" 
                                        FontSize="16" 
@@ -412,7 +444,7 @@
                             </TextBlock>
                         </StackPanel>
                         <GroupBox Header="Name" DockPanel.Dock="Right">
-                            <ComboBox x:Name="combo_Vehicle" ItemsSource="{Binding}" LostFocus="Combo_Vehicle_LostFocus" TabIndex="1006" PreviewKeyUp="Combo_Vehicle_LostFocus" VerticalAlignment="Stretch" MinWidth="320" HorizontalAlignment="Center" Width="399"/>
+                            <ComboBox x:Name="combo_Vehicle" ItemsSource="{Binding}" LostFocus="Combo_Vehicle_LostFocus" TabIndex="1006" VerticalAlignment="Stretch" MinWidth="320" HorizontalAlignment="Center" Width="399"/>
                         </GroupBox>
                         
                     </DockPanel>
@@ -468,7 +500,7 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Min" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="Min" HorizontalAlignment="Center" MouseRightButtonDown="TextBlock_MouseRightButtonDown"/>
                             <TextBlock Grid.Column="1" Grid.Row="0" Text=":"/>
                             <TextBlock Grid.Column="2" Grid.Row="0" Text="Sec" HorizontalAlignment="Center"/>
                             <TextBlock Grid.Column="3" Grid.Row="0" Text="."/>

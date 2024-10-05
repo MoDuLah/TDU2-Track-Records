@@ -23,6 +23,7 @@ namespace TDU2_Track_Records
         public tracks()
         {
             InitializeComponent();
+            OrientationGroupBox.Visibility = Visibility.Collapsed;
             LapsGroupBox.Visibility = Visibility.Collapsed;
             DistanceGroupBox.Visibility = Visibility.Collapsed;
             SpeedGroupBox.Visibility = Visibility.Collapsed;
@@ -79,6 +80,7 @@ namespace TDU2_Track_Records
             RestrictedClassComboBox.ItemsSource = items;
             //RestrictedCarComboBox.ItemsSource = "";
         }
+
         private void ShowLastEntry()
         {
             try
@@ -223,15 +225,30 @@ namespace TDU2_Track_Records
             string lapsText = "";
             string restrictedClass = "";
             string restrictedCar = "";
+            string orientationCB = "";
             // Retrieve and trim input values
             var selectedItemType = RaceTypeComboBox.SelectedItem as ComboBoxItem;
             string raceType = selectedItemType.Value;
             string trackName = TrackNameTextBox.Text.Trim();
 
-            if (LapsGroupBox.Visibility == Visibility.Visible) { 
-                    lapsText = LapsTextBox.Text.Trim();
+            if (OrientationGroupBox.Visibility == Visibility.Visible) {
+                if (cb_orientation.IsChecked == true) {
+                    orientationCB = "1";
+                }
+                else
+                {
+                    orientationCB = "0";
+                }
             } else {
-                    lapsText = "1";
+                orientationCB = "0";
+            }
+            if (LapsGroupBox.Visibility == Visibility.Visible)
+            {
+                lapsText = LapsTextBox.Text.Trim();
+            }
+            else
+            {
+                lapsText = "1";
             }
             if (DistanceGroupBox.Visibility == Visibility.Visible) { 
             totalDistanceText = Convert.ToDouble(LapLengthTextBox.Text);
@@ -282,6 +299,7 @@ namespace TDU2_Track_Records
             int laps = ParseInt(lapsText, "Number of Laps", LapsTextBox);
             int minSpeed = ParseInt(minSpeedText, "Minimum Speed", MinSpeedTextBox);
             int checkpoints = ParseInt(checkpointsText, "Checkpoints", CheckpointsTextBox);
+            int orientation = Convert.ToInt32(orientationCB);
 
             if (totalDistance == -1 || laps == -1 || minSpeed == -1 || checkpoints == -1)
                 return;
@@ -290,7 +308,7 @@ namespace TDU2_Track_Records
             double lapLength = CalculateLapLength(raceType, totalDistance, laps);
 
             // Insert the event into the database
-            InsertTrackIntoDatabase(trackName, raceType, totalDistance, lapLength, laps, minSpeed, checkpoints, restrictedClass, restrictedCar);
+            InsertTrackIntoDatabase(trackName, raceType, orientation, totalDistance, lapLength, laps, minSpeed, checkpoints, restrictedClass, restrictedCar);
             LastEntry.Text = $"{trackName}, {raceType}, {totalDistance}";
             // Inform the user of success and clear input fields
             LastEntry.Text = $" Success: " + LastEntry.Text;
@@ -299,7 +317,7 @@ namespace TDU2_Track_Records
         }
 
         // Updated InsertTrackIntoDatabase to include the restricted class and car
-        private void InsertTrackIntoDatabase(string trackName, string raceType, double totalDistance, double lapLength, int laps, int minSpeed, int checkpoints, string restrictedClass, string restrictedCar)
+        private void InsertTrackIntoDatabase(string trackName, string raceType, int orientation, double totalDistance, double lapLength, int laps, int minSpeed, int checkpoints, string restrictedClass, string restrictedCar)
         {
             try
             {
@@ -313,6 +331,7 @@ namespace TDU2_Track_Records
                         // Prepare parameters for the insert statement
                         cmd.Parameters.Add("@name", DbType.String).Value = trackName;
                         cmd.Parameters.Add("@type", DbType.String).Value = raceType;
+                        cmd.Parameters.Add("@orientation", DbType.Int32).Value = orientation;
                         cmd.Parameters.Add("@length", DbType.String).Value = Math.Round(totalDistance / laps,2);
                         cmd.Parameters.Add("@laps", DbType.Int32).Value = laps;
                         cmd.Parameters.Add("@minSpeed", DbType.Int32).Value = minSpeed;
@@ -430,16 +449,19 @@ namespace TDU2_Track_Records
         /// </summary>
         private void ClearInputFields()
         {
+
             TrackNameTextBox.Clear();
             LapLengthTextBox.Clear();
             LapsTextBox.Text = "1";
             MinSpeedTextBox.Text = "0";
             CheckpointsTextBox.Text = "0";
             RaceTypeComboBox.SelectedIndex = -1; // Reset selection
+            cb_orientation.IsChecked = false; // Reset selection
             RestrictedCarComboBox.SelectedIndex = -1;
             if (keep == 0) { 
             RestrictedClassComboBox.SelectedIndex = -1;
             }
+            OrientationGroupBox.Visibility = Visibility.Collapsed;
             LapsGroupBox.Visibility = Visibility.Collapsed;
             DistanceGroupBox.Visibility = Visibility.Collapsed;
             SpeedGroupBox.Visibility = Visibility.Collapsed;
@@ -466,6 +488,7 @@ namespace TDU2_Track_Records
             // Show or hide group boxes based on the event type
             DistanceGroupBox.Visibility = requiresDistance ? Visibility.Visible : Visibility.Collapsed;
             LapsGroupBox.Visibility = isRaceOrEliminator ? Visibility.Visible : Visibility.Collapsed;
+            OrientationGroupBox.Visibility = isRaceOrEliminator && requiresDistance ? Visibility.Visible : Visibility.Collapsed;
             SpeedGroupBox.Visibility = isSpeedEvent ? Visibility.Visible : Visibility.Collapsed;
             CheckpointsGroupBox.Visibility = isSpeedTrap ? Visibility.Visible : Visibility.Collapsed;
 
@@ -479,6 +502,41 @@ namespace TDU2_Track_Records
             if (needsRestrictedClass)
             {
                 BindVehicleComboBox(RestrictedCarComboBox);
+            }
+        }
+        private void cb_orientation_StateChanged(object sender, RoutedEventArgs e)
+        {
+            if (cb_orientation.IsChecked == false)
+            {
+                txt_orientation.IsChecked = false;
+            }
+            else
+            {
+                txt_orientation.IsChecked = true;
+            }
+        }
+        private void txt_orientation_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (cb_orientation.IsChecked == false)
+            {
+                cb_orientation.IsChecked = true;
+            }
+            else
+            {
+                cb_orientation.IsChecked = false;
+            }
+
+        }
+        private void txt_orientation_Click(object sender, RoutedEventArgs e)
+        {
+            if (cb_orientation.IsChecked == false)
+            {
+
+                cb_orientation.IsChecked = true;
+            }
+            else
+            {
+                cb_orientation.IsChecked = false;
             }
         }
 

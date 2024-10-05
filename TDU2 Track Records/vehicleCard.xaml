@@ -395,8 +395,8 @@
                         <TextBlock Foreground="#FFFFFFFF" Margin="0,0,0,0"  Text="{Binding HouseStoredNameIbiza}" />
                     </StackPanel>
                     <StackPanel Grid.Row="7" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
-                        <TextBlock Foreground="#FFB9B9B9" FontWeight="Bold" Text="Stored In Oahu: " />
-                        <TextBlock Foreground="#FFFFFFFF" Margin="0,0,0,0"  Text="{Binding HouseStoredNameOahu}" />
+                        <TextBlock Foreground="#FFB9B9B9" FontWeight="Bold" Text="Stored In Hawaii: " />
+                        <TextBlock Foreground="#FFFFFFFF" Margin="0,0,0,0"  Text="{Binding HouseStoredNameHawaii}" />
                     </StackPanel>
                 </StackPanel>
             </Border>

@@ -114,7 +114,8 @@ namespace TDU2_Track_Records
                                 VehiclePrice = reader["_price"].ToString(),
                                 IsOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
                                 HouseStoredNameIbiza = reader["_house_name_in_ibiza"].ToString(),
-                                HouseStoredNameOahu = reader["_house_name_in_hawaii"].ToString()
+                                HouseStoredNameHawaii = reader["_house_name_in_hawaii"].ToString(),
+                                VehicleUpgradeLevel = reader["_upgrade_level"].ToString()
                             };
                         }
                     }

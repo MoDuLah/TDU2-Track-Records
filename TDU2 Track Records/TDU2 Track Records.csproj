@@ -141,16 +141,22 @@
     <Compile Include="dealerships.xaml.cs">
       <DependentUpon>dealerships.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Drag.xaml.cs">
+      <DependentUpon>Drag.xaml</DependentUpon>
+    </Compile>
     <Compile Include="houses.xaml.cs">
       <DependentUpon>houses.xaml</DependentUpon>
     </Compile>
     <Compile Include="InputRecords.xaml.cs">
       <DependentUpon>InputRecords.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LapInputWindow.xaml.cs">
+      <DependentUpon>LapInputWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Model\Lap.cs" />
     <Compile Include="Model\VehicleModel.cs" />
-    <Compile Include="objectives.xaml.cs">
-      <DependentUpon>objectives.xaml</DependentUpon>
+    <Compile Include="ObjectivesWindow.xaml.cs">
+      <DependentUpon>ObjectivesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="powerlap.xaml.cs">
       <DependentUpon>powerlap.xaml</DependentUpon>
@@ -177,11 +183,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Drag.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="houses.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="InputRecords.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LapInputWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -197,7 +211,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="objectives.xaml">
+    <Page Include="ObjectivesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -288,6 +302,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Images\ico\categories\ico_cat0.png" />
     <Resource Include="Images\vehicleCard\accKph.png" />
     <Resource Include="Images\vehicleCard\accMph.png" />
     <Resource Include="Images\houses\placeholder.png" />
@@ -367,8 +382,7 @@
     <Resource Include="Images\ico\objectives\ico_chase.png" />
     <Resource Include="Images\ico\objectives\ico_clothes.png" />
     <Resource Include="Images\ico\objectives\ico_club.png" />
-    <Resource Include="Images\ico\objectives\ico_cocktails.png" />
-    <Resource Include="Images\ico\objectives\ico_coop.png" />
+    <Resource Include="Images\ico\objectives\ico_coop_challenges.png" />
     <Resource Include="Images\ico\objectives\ico_cosmetic_clinic.png" />
     <Resource Include="Images\ico\objectives\ico_crc.png" />
     <Resource Include="Images\ico\objectives\ico_cups.png" />
@@ -445,9 +459,8 @@
     <Resource Include="Images\add.png" />
     <Resource Include="Images\Cancel.png" />
     <Resource Include="Images\tdu2.ico" />
-    <Resource Include="TDU2TR.ico" />
     <Content Include="database.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">

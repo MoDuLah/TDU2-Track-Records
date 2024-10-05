@@ -26,7 +26,7 @@
     <Window.DataContext>
         <local:PowerLapViewModel/>
     </Window.DataContext>
-    <Border BorderBrush="Red" BorderThickness="2,2,2,2" CornerRadius="20,20,20,20" Margin="0" MinHeight="900" MinWidth="992" HorizontalAlignment="Center" PreviewMouseRightButtonUp="LapsListBox_PreviewMouseRightButtonUp">
+    <Border BorderBrush="Red" BorderThickness="2,2,2,2" CornerRadius="20,20,20,20" Margin="0" MinHeight="900" MinWidth="992" PreviewMouseRightButtonUp="LapsListBox_PreviewMouseRightButtonUp" HorizontalAlignment="Center">
         <Border.Background>
             <ImageBrush ImageSource="/Images/powerLapbg.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" Stretch="Fill"/>
         </Border.Background>
