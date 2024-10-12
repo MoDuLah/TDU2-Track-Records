@@ -5,593 +5,231 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TDU2_Track_Records"
         mc:Ignorable="d"
-        Title="ObjectivesWindow" Height="450" Width="800">
+        Title="ObjectivesWindow" MinHeight="600" Width="800" SizeToContent="WidthAndHeight">
 
     <Window.Background>
         <ImageBrush ImageSource="/Images/BG.png"/>
     </Window.Background>
 
     <Grid>
-        <TabControl Name="ObjectivesTabControl" HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+            <!-- Define the space for the TabControl -->
+            <RowDefinition Height="*" />
+            <!-- TabControl takes most of the space -->
+            <!-- Define the space for the ScrollViewer -->
+            <RowDefinition Height="Auto" />
+            <!-- Adjust height based on content -->
+        </Grid.RowDefinitions>
+
+        <!-- TabControl in the first row of the grid -->
+        <TabControl Name="ObjectivesTabControl" HorizontalAlignment="Center" Grid.Row="0" SelectionChanged="ObjectivesTabControl_SelectionChanged">
+            <!-- TabItem 1: Summary -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel>
-                        <Image Source="/Images/ico/categories/ico_cat0.png" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Image Source="/Images/ico/objectives/cat_0.png" Width="60" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,5,5,0"/>
                         <TextBlock Text="Summary" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
+                <Grid Background="#FF161B1E" HorizontalAlignment="Center" Width="700" Height="500">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" MinHeight="250"/>
+                        <RowDefinition Height="Auto" MinHeight="250"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Circular Progress Bars -->
+                    <local:CircularProgressBar x:Name="competitionProgress" Progress="50" Grid.Row="0" Grid.Column="0" StrokeColor="#FF2F91F5" Margin="0,20,0,20" Width="100" Height="100">
+                        <local:CircularProgressBar.Background>
+                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat1.png" Stretch="UniformToFill"/>
+                        </local:CircularProgressBar.Background>
+                    </local:CircularProgressBar>
+                    <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20" >
+                        <TextBlock x:Name="CompetitionTitle" Foreground="#FF2F91F5" Text="Lonely" FontSize="20"></TextBlock>
+                        <TextBlock x:Name="CompetitionLevel" Foreground="#FF2F91F5" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                    <local:CircularProgressBar x:Name="socialProgress" Progress="70" Grid.Row="1" Grid.Column="2" StrokeColor="HotPink">
+                        <local:CircularProgressBar.Background>
+                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat4.png" Stretch="UniformToFill"/>
+                        </local:CircularProgressBar.Background>
+                    </local:CircularProgressBar>
+                    <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20" >
+                        <TextBlock x:Name="SocialTitle" Foreground="HotPink" Text="Lonely" FontSize="20"></TextBlock>
+                        <TextBlock x:Name="SocialLevel" Foreground="HotPink" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                    <local:CircularProgressBar x:Name="discoveryProgress" Progress="30" Grid.Row="1" Grid.Column="0" StrokeColor="DarkOrange">
+                        <local:CircularProgressBar.Background>
+                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat3.png" Stretch="UniformToFill"/>
+                        </local:CircularProgressBar.Background>
+                    </local:CircularProgressBar>
+                    <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20" >
+                        <TextBlock x:Name="DiscoveryTitle" Foreground="DarkOrange" Text="Lonely" FontSize="20"></TextBlock>
+                        <TextBlock x:Name="DiscoveryLevel" Foreground="DarkOrange" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                    <local:CircularProgressBar x:Name="collectionProgress" Progress="90" Grid.Row="0" Grid.Column="2" StrokeColor="#FFA5C33B" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <local:CircularProgressBar.Background>
+                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat2.png" Stretch="UniformToFill"/>
+                        </local:CircularProgressBar.Background>
+                    </local:CircularProgressBar>
+                    <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20" >
+                        <TextBlock x:Name="CollectionTitle" Foreground="#FFA5C33B" Text="Lonely" FontSize="20"></TextBlock>
+                        <TextBlock x:Name="CollectionLevel" Foreground="#FFA5C33B" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                    <local:CircularProgressBar x:Name="globalLevelProgress" Progress="60" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" StrokeColor="Gold" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <local:CircularProgressBar.Background>
+                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat0.png" Stretch="UniformToFill"/>
+                        </local:CircularProgressBar.Background>
+                    </local:CircularProgressBar>
+                    <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,140" >
+                        <TextBlock x:Name="GlobalTitle" Foreground="Gold" Text="Lonely" FontSize="20"></TextBlock>
+                        <TextBlock x:Name="GlobalLevel" Foreground="Gold" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                    </StackPanel>
+                </Grid>
             </TabItem>
+
+            <!-- TabItem 2: Competition -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel>
-                        <Image Source="/Images/ico/categories/ico_cat1.png" Width="60"/>
-                        <TextBlock Text="Competition" HorizontalAlignment="Center"/>
+                        <Image Width="60" Margin="5,5,5,0">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Source" Value="/Images/ico/objectives/cat_1.png"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Source" Value="/Images/ico/objectives/cat_1_over.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock x:Name="Tab1" Text="Competition" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab1Type" Text="Normal" Visibility="Collapsed"/>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel Background="#22ffffff" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="20"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="0,0,50,0">
-                            <Image Source="/Images/ico/objectives/ico_racing_school.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CompetitionSubcategoryname1" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CompetitionpercentageProgress1" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CompetitionStatus1" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="50,0,0,0">
-                            <Image Source="/Images/ico/objectives/ico_duel.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CompetitionSubcategoryname2" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CompetitionpercentageProgress2" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CompetitionStatus2" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_championships.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CompetitionSubcategoryname3" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CompetitionpercentageProgress3" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CompetitionStatus3" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="50,20,0,0">
-                            <Image Source="/Images/ico/objectives/ico_multiplayer_challenges.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CompetitionSubcategoryname4" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CompetitionpercentageProgress4" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CompetitionStatus4" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_cups.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CompetitionSubcategoryname5" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CompetitionpercentageProgress5" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CompetitionStatus5" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal" Background="#66000000" Margin="50,20,0,0">
-                            <Image Source="/Images/ico/objectives/ico_instant_challenges.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CompetitionSubcategoryname6" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CompetitionpercentageProgress6" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CompetitionStatus6" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                <Grid x:Name="Tab1Grid">
+                    <UniformGrid x:Name="Tab1SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400"/>
+                </Grid>
             </TabItem>
+
+            <!-- TabItem 3: Social -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel>
-                        <Image Source="/Images/ico/categories/ico_cat2.png" Width="60"/>
-                        <TextBlock Text="Collection" HorizontalAlignment="Center"/>
+                        <Image Width="60" Margin="5,5,5,0">
+                            <Image.Style>
+                                <Style TargetType="{x:Type Image}">
+                                    <Setter Property="Source" Value="/Images/ico/objectives/cat_2.png"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Source" Value="/Images/ico/objectives/cat_1_over.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <TextBlock x:Name="Tab2" Text="Collection" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab2Type" Text="Normal" Visibility="Collapsed"/>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel Background="#22ffffff" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="20"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="0,0,50,0">
-                            <Image Source="/Images/ico/objectives/ico_vehicles.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CollectionSubcategoryname1" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CollectionpercentageProgress1" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CollectionStatus1" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="50,0,0,0">
-                            <Image Source="/Images/ico/objectives/ico_haircuts.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CollectionSubcategoryname2" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CollectionpercentageProgress2" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CollectionStatus2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_houses_and_furniture.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CollectionSubcategoryname3" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CollectionercentageProgress3" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CollectionStatus3" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="50,20,0,0">
-                            <Image Source="/Images/ico/objectives/ico_cosmetic_clinic.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CollectionSubcategoryname4" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CollectionpercentageProgress4" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CollectionStatus4" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_clothes.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CollectionSubcategoryname5" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CollectionpercentageProgress5" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CollectionStatus5" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal" Background="#66000000" Margin="50,20,0,0">
-                            <Image Source="/Images/ico/objectives/ico_sticker_shop.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CollectionSubcategoryname6" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CollectionpercentageProgress6" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CollectionStatus6" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                <Grid x:Name="Tab2Grid">
+                    <UniformGrid x:Name="Tab2SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400"/>
+                </Grid>
             </TabItem>
+
+            <!-- TabItem 4: Discovery -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel>
-                        <Image Source="/Images/ico/categories/ico_cat3.png" Width="60"/>
-                        <TextBlock Text="Discovery" HorizontalAlignment="Center"/>
+                        <Image Source="/Images/ico/objectives/cat_3.png" Width="60" Margin="5,5,5,0"/>
+                        <TextBlock x:Name="Tab3" Text="Discovery" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab3Type" Text="Normal" Visibility="Collapsed"/>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel Background="#22ffffff" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="20"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="0,0,50,0">
-                            <Image Source="/Images/ico/objectives/ico_roads.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="DiscoverynSubcategoryname1" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="DiscoverynpercentageProgress1" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="DiscoveryStatus1" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="50,0,0,0">
-                            <Image Source="/Images/ico/objectives/ico_treasure_hunts.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="DiscoverySubcategoryname2" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="DiscoverypercentageProgress2" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="DiscoveryStatus2" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_events.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="DiscoverySubcategoryname3" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="DiscoverypercentageProgress3" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="DiscoveryStatus3" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="50,20,0,0">
-                            <Image Source="/Images/ico/objectives/ico_photographer.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="DiscoverySubcategoryname4" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="DiscoverypercentageProgress4" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="DiscoveryStatus4" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                <Grid x:Name="Tab3Grid">
+                    <UniformGrid x:Name="Tab3SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400" />
+                </Grid>
             </TabItem>
+
+            <!-- TabItem 5: Collection -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel>
-                        <Image Source="/Images/ico/categories/ico_cat4.png" Width="60"/>
-                        <TextBlock Text="Social" HorizontalAlignment="Center"/>
+                        <Image Source="/Images/ico/objectives/cat_4.png" Width="60" Margin="5,5,5,0"/>
+                        <TextBlock x:Name="Tab4" Text="Social" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab4Type" Text="Normal" Visibility="Collapsed"/>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel Background="#22ffffff" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="20"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="0,0,50,0">
-                            <Image Source="/Images/ico/objectives/ico_friends.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="SocialSubcategoryname1" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="SocialpercentageProgress1" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="SocialStatus1" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="50,0,0,0">
-                            <Image Source="/Images/ico/objectives/ico_chase.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="SocialSubcategoryname2" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="SocialpercentageProgress2" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="SocialStatus2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_club.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="SocialSubcategoryname3" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="SocialercentageProgress3" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="SocialStatus3" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="50,20,0,0">
-                            <Image Source="/Images/ico/objectives/ico_coop_challenges.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="SocialSubcategoryname4" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="SocialpercentageProgress4" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="SocialStatus4" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_crc.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="SocialSubcategoryname5" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="SocialpercentageProgress5" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="SocialStatus5" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                <Grid x:Name="Tab4Grid">
+                    <UniformGrid x:Name="Tab4SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400" />
+                </Grid>
             </TabItem>
+
+            <!-- TabItem 6: Competition (Casino) -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel>
                         <Image Source="/Images/ico/categories/ico_cat1casino.png" Width="60"/>
-                        <TextBlock Text="Competition" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab5" Text="Competition" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab5Type" Text="Casino" Visibility="Collapsed"/>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel Background="#22ffffff" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="20"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="0,0,50,0">
-                            <Image Source="/Images/ico/objectives/ico_slot_machine.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoCompetitionSubcategoryname1" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoCompetitionpercentageProgress1" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoCompetitionStatus1" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="50,0,0,0">
-                            <Image Source="/Images/ico/objectives/ico_roulette.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoCompetitionSubcategoryname2" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoCompetitionpercentageProgress2" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoCompetitionStatus2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_poker_cash.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoCompetitionSubcategoryname3" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoCompetitionercentageProgress3" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoCompetitionStatus3" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="50,20,0,0">
-                            <Image Source="/Images/ico/objectives/ico_sit_go.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoCompetitionSubcategoryname4" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoCompetitionpercentageProgress4" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoCompetitionStatus4" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_poker_tournament.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoCompetitionSubcategoryname5" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoCompetitionpercentageProgress5" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoCompetitionStatus5" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="3" Orientation="Horizontal" Background="#66000000" Margin="50,20,0,0">
-                            <Image Source="/Images/ico/objectives/ico_casino_racing.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoCompetitionSubcategoryname6" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoCompetitionpercentageProgress6" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoCompetitionStatus6" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                <Grid x:Name="Tab5Grid">
+                    <UniformGrid x:Name="Tab5SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400"/>
+                </Grid>
             </TabItem>
+
+            <!-- TabItem 7: Social (Casino) -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel>
                         <Image Source="/Images/ico/categories/ico_cat2casino.png" Width="60"/>
-                        <TextBlock Text="Collection" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab6" Text="Collection" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab6Type" Text="Casino" Visibility="Collapsed"/>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel Background="#22ffffff" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="20"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="0,0,50,0">
-                            <Image Source="/Images/ico/objectives/ico_emotes_cocktails.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoCollectionSubcategoryname1" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoCollectionpercentageProgress1" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoCollectionStatus1" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="50,0,0,0">
-                            <Image Source="/Images/ico/objectives/ico_exclusive_rewards.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoCollectionSubcategoryname2" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoCollectionpercentageProgress2" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoCollectionStatus2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_shopping.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoCollectionSubcategoryname3" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoCollectionercentageProgress3" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoCollectionStatus3" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                      </Grid>
-                </StackPanel>
+                <Grid x:Name="Tab6Grid">
+                    <UniformGrid x:Name="Tab6SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400"/>
+                </Grid>
             </TabItem>
+
+            <!-- TabItem 8: Discovery (Casino) -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel>
                         <Image Source="/Images/ico/categories/ico_cat3casino.png" Width="60"/>
-                        <TextBlock Text="Discovery" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab7" Text="Discovery" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab7Type" Text="Casino" Visibility="Collapsed"/>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel Background="#22ffffff" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="20"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="0,0,50,0">
-                            <Image Source="/Images/ico/objectives/ico_casino_games.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoDiscoverySubcategoryname1" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoDiscoverypercentageProgress1" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoDiscoveryStatus1" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="50,0,0,0">
-                            <Image Source="/Images/ico/objectives/ico_emotes_cocktails.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoDiscoverySubcategoryname2" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoDiscoverypercentageProgress2" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoDiscoveryStatus2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_features_and_actions.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoDiscoverySubcategoryname3" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoDiscoveryercentageProgress3" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoDiscoveryStatus3" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                <Grid x:Name="Tab7Grid">
+                    <UniformGrid x:Name="Tab7SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400" />
+                </Grid>
             </TabItem>
+
+            <!-- TabItem 9: Collection (Casino) -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel>
                         <Image Source="/Images/ico/categories/ico_cat4casino.png" Width="60"/>
-                        <TextBlock Text="Social" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab8" Text="Social" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="Tab8Type" Text="Casino" Visibility="Collapsed"/>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel Background="#22ffffff" HorizontalAlignment="Center" Margin="0,20,0,0">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="20"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="20"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="20"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="20"/>
-                        </Grid.RowDefinitions>
-                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="0,0,50,0">
-                            <Image Source="/Images/ico/objectives/ico_emotes_cocktails.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoSocialSubcategoryname1" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoSocialpercentageProgress1" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoSocialStatus1" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal" Background="#66000000" Margin="50,0,0,0">
-                            <Image Source="/Images/ico/objectives/ico_meeting_people.png"/>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoSocialSubcategoryname2" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoSocialpercentageProgress2" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoSocialStatus2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="50,0,0,0"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" Background="#66000000" Margin="0,20,50,0">
-                            <Image Source="/Images/ico/objectives/ico_meeting_people.png" RenderTransformOrigin="0.5,0.5">
-                                <Image.RenderTransform>
-                                    <TransformGroup>
-                                        <ScaleTransform/>
-                                        <SkewTransform/>
-                                        <RotateTransform Angle="270"/>
-                                        <TranslateTransform/>
-                                    </TransformGroup>
-                                </Image.RenderTransform>
-                            </Image>
-                            <StackPanel>
-                                <TextBlock x:Name="CasinoSocialSubcategoryname3" Text="SubcatName" FontSize="24" VerticalAlignment="Center" Margin="5,0,5,0"/>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <TextBlock x:Name="CasinoSocialercentageProgress3" Text="100%" FontSize="22" VerticalAlignment="Center" Foreground="#FFCCCCCC" FontWeight="Bold" Margin="0,0,50,0"/>
-                                    <CheckBox x:Name="CasinoSocialStatus3" VerticalAlignment="Center" Margin="50,0,0,0" HorizontalAlignment="Right"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
+                <Grid x:Name="Tab8Grid">
+                    <UniformGrid x:Name="Tab8SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400" />
+                </Grid>
             </TabItem>
         </TabControl>
-        <!-- Dynamic Main Tabs for Categories will be added here -->
+
+        <!-- ScrollViewer in the second row of the grid -->
+        <ScrollViewer Grid.Row="1" x:Name="ObjectiveScrollViewer" FocusVisualStyle="{x:Null}" MinHeight="300" MaxHeight="300" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
+            <StackPanel x:Name="ObjectiveScrollViewerContent" />
+        </ScrollViewer>
 
     </Grid>
 </Window>

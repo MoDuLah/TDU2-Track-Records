@@ -7,8 +7,10 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Themes\Button.xaml"/>
+                <ResourceDictionary Source="Themes\CheckBox.xaml"/>
                 <ResourceDictionary Source="Themes\DataGrid.xaml"/>
                 <ResourceDictionary Source="Themes\TabControl.xaml"/>
+                <ResourceDictionary Source="Themes\DatePicker.xaml"/>
                 <ResourceDictionary Source="Themes\TabItem.xaml"/>
                 <ResourceDictionary Source="Themes\GroupBox.xaml"/>
                 <ResourceDictionary Source="Themes\TextBox.xaml"/>

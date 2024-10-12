@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="TDU2_Track_Records.CircularProgressBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="CircularProgressBarControl" Width="100" Height="100">
+    <Grid>
+        <Canvas Width="100" Height="100">
+            <Ellipse Width="100" Height="100" Stroke="DarkGray" StrokeThickness="5"/>
+            <Path x:Name="progressPath"
+              Stroke="{Binding StrokeColor, RelativeSource={RelativeSource AncestorType=UserControl}}"
+              StrokeThickness="10" 
+              Data="{Binding ArcData}" />
+        </Canvas>
+        <TextBlock Text="{Binding ProgressText, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                   Foreground="White" FontSize="16" FontWeight="Bold"
+               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>

@@ -135,7 +135,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppState.cs" />
+    <Compile Include="CircularProgressBar.xaml.cs">
+      <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Classes\ByteArrayToImageSourceConverter.cs" />
+    <Compile Include="Classes\Points.cs" />
     <Compile Include="Classes\StringToDoubleConverter.cs" />
     <Compile Include="Classes\DVLA.cs" />
     <Compile Include="dealerships.xaml.cs">
@@ -147,9 +151,6 @@
     <Compile Include="houses.xaml.cs">
       <DependentUpon>houses.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InputRecords.xaml.cs">
-      <DependentUpon>InputRecords.xaml</DependentUpon>
-    </Compile>
     <Compile Include="LapInputWindow.xaml.cs">
       <DependentUpon>LapInputWindow.xaml</DependentUpon>
     </Compile>
@@ -160,6 +161,9 @@
     </Compile>
     <Compile Include="powerlap.xaml.cs">
       <DependentUpon>powerlap.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SubCategoryCard.xaml.cs">
+      <DependentUpon>SubCategoryCard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vehicled.cs" />
     <Compile Include="vehicleCard.xaml.cs">
@@ -179,6 +183,10 @@
     </Compile>
     <Compile Include="ViewModels\powerlapViewModel.cs" />
     <Compile Include="ViewModels\vehicleCardViewModel.cs" />
+    <Page Include="CircularProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="dealerships.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -188,10 +196,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="houses.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="InputRecords.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -222,6 +226,18 @@
     <Page Include="SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SubCategoryCard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\CheckBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\DatePicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\ListBox.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -302,6 +318,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Images\ico\objectives\cat_0_over.png" />
+    <Resource Include="Images\ico\objectives\cat_1_over.png" />
+    <Resource Include="Images\ico\objectives\cat_2_over.png" />
+    <Resource Include="Images\ico\objectives\cat_3_over.png" />
+    <Resource Include="Images\ico\objectives\cat_4_over.png" />
+    <Resource Include="Images\ico\objectives\cat_0.png" />
+    <Resource Include="Images\ico\objectives\cat_1.png" />
+    <Resource Include="Images\ico\objectives\cat_2.png" />
+    <Resource Include="Images\ico\objectives\cat_3.png" />
+    <Resource Include="Images\ico\objectives\cat_4.png" />
+    <Resource Include="Images\ico\navigation\drag.png" />
+    <Resource Include="Images\ico\navigation\drag_over.png" />
     <Resource Include="Images\ico\categories\ico_cat0.png" />
     <Resource Include="Images\vehicleCard\accKph.png" />
     <Resource Include="Images\vehicleCard\accMph.png" />
