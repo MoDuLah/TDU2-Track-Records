@@ -483,7 +483,6 @@
     <Resource Include="TDU2.ico" />
     <Resource Include="Images\Restore.png" />
     <Resource Include="Images\Save.png" />
-    <Resource Include="Images\vehicles\placeholder.png" />
     <Resource Include="Images\backgrounds\dealership1.png" />
     <Resource Include="Images\backgrounds\dealershipbg.png" />
     <Resource Include="Images\backgrounds\housesbg.png" />
