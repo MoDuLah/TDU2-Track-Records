@@ -20,7 +20,7 @@ namespace TDU2_Track_Records
         double conversionWeightFactor;
         double conversionTorqueFactor;
         string conversionAccImage;
-        bool isCalculated = false;
+        //bool isCalculated = false;
 
         bool canUpgrade;
 

@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using TDU2_Track_Records.Properties;
 
 namespace TDU2_Track_Records
@@ -25,7 +20,7 @@ namespace TDU2_Track_Records
         public string distance, speed;
         public string slotColumn;
         readonly string SI = Settings.Default.system;
-        bool isUnlocked = false;
+        bool isUnlocked = true;
         public houses()
         {
             InitializeComponent();
@@ -127,6 +122,9 @@ namespace TDU2_Track_Records
             int slotIndex = 0;
             string island = IslandComboBox.SelectedValue?.ToString();
 
+            // Initialize the flag to check if any vehicle is found
+            bool hasVehicle = false;
+
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
@@ -143,11 +141,19 @@ namespace TDU2_Track_Records
                             HouseName.Header = reader["Name"].ToString();
                             HouseRating.Text = reader["Stars"].ToString();
                             HousePrice.Text = reader["Price"].ToString();
-                            HouseOwned.Text = (reader["Owned"].ToString() == "1") ? "Yes" : "No";
                             int houseMaxSlot = Convert.ToInt32(reader["Slots"]);
                             HouseMaxSlots.Text = houseMaxSlot.ToString();
-                            // Load house image
-                            HouseImage.Source = LoadImage((byte[])reader["Image"]);
+
+                            // Load house image from file system
+                            string houseName = reader["Name"].ToString().ToLower();
+                            if (houseName.Contains("yacht"))
+                            {
+                                houseName = IslandComboBox.Text == "Ibiza" ? "yachtibiza" : "yachthawaii";
+                            }
+                            BitmapImage imagePath = new BitmapImage(new Uri("/Images/houses/" + houseName + ".png", UriKind.Relative));
+                            HouseImage.Source = imagePath;
+                            HouseImage.Width = imagePath.Width * 0.65;
+                            HouseImage.Height = imagePath.Height * 0.65;
 
                             // Load vehicles in slots
                             for (int i = 1; i <= houseMaxSlot; i++)
@@ -165,16 +171,19 @@ namespace TDU2_Track_Records
                                     if (vehicle != null)
                                     {
                                         AddVehicleToUI(vehicle, slotIndex, slotColumn);
+                                        hasVehicle = true; // Mark that at least one vehicle is found
                                     }
                                 }
-
                                 slotIndex++;
                             }
+                            // Set HouseOwned.Text based on whether any vehicle was found
+                            HouseOwned.Text = hasVehicle ? "Yes" : "No";
                         }
                     }
                 }
             }
         }
+
 
 
         private void AddComboBoxToUI(string dealershipName, int slotIndex, string slotColumn)
@@ -325,7 +334,7 @@ namespace TDU2_Track_Records
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT * FROM vehicles WHERE Id = @Id ";
+                string query = "SELECT * FROM vehicles WHERE Id = @Id";
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Id", vehicleId);
@@ -338,10 +347,11 @@ namespace TDU2_Track_Records
                                 id = Convert.ToInt32(reader["id"]),
                                 VehicleName = reader["_vehicle_name"].ToString(),
                                 VehicleCategory = reader["_vehiclecategory_name"].ToString(),
-                                IsPurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
-                                IsActive = Convert.ToBoolean(reader["_is_active"]),
+                                VehicleLevel = reader["_upgrade_level"].ToString(),
+                                IsOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
                                 // Check if the "Image" column is DBNull before casting
                                 VehicleImage = reader["_vehicle_image"] != DBNull.Value ? (byte[])reader["_vehicle_image"] : null
+
                             };
                         }
                     }
@@ -397,6 +407,58 @@ namespace TDU2_Track_Records
             classBox.Content = classImage;
             infoStack.Children.Add(classBox);
 
+            // Vehicle Class
+            GroupBox levelBox = new GroupBox
+            {
+                Header = "Tune",
+            };
+            Image tuneImage = new Image
+            {
+                Width = 32,
+                Height = 32,
+                Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative))
+            };
+            levelBox.Content = tuneImage;
+            infoStack.Children.Add(levelBox);
+ 
+            // Vehicle Status
+            if (vehicle.IsPurchasable || vehicle.IsReward)
+            {
+                GroupBox statusBox = new GroupBox
+                {
+                    Header = "Status",
+                };
+
+                CheckBox ownedCheckBox = new CheckBox
+                {
+                    IsChecked = vehicle.IsOwned == true,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                // Add event handlers for CheckBox checked and unchecked events
+                ownedCheckBox.Checked += (sender, e) =>
+                {
+                    UpdateIsOwnedStatus(vehicle.id, true);  // Update database when checked
+                };
+
+                ownedCheckBox.Unchecked += (sender, e) =>
+                {
+                    UpdateIsOwnedStatus(vehicle.id, false);  // Update database when unchecked
+                };
+
+                TextBlock ownedText = new TextBlock
+                {
+                    Text = "Owned",
+                    FontSize = 16,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+
+                DockPanel statusPanel = new DockPanel();
+                statusPanel.Children.Add(ownedCheckBox);
+                statusPanel.Children.Add(ownedText);
+
+                statusBox.Content = statusPanel;
+                infoStack.Children.Add(statusBox);
+            }
             // Vehicle Id
             TextBlock vehicleIdd = new TextBlock
             {
@@ -424,6 +486,7 @@ namespace TDU2_Track_Records
                 Button deleteButton = new Button
                 {
                     Content = "Remove",
+                    VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(5),
                     Tag = slotColumn // Store the actual column name (e.g., "Slot1_VehicleId")
                 };
@@ -470,6 +533,24 @@ namespace TDU2_Track_Records
             Grid.SetRow(vehicleGroupBox, row);
 
             grid.Children.Add(vehicleGroupBox);
+        }
+        // Method to update the vehicle owned status in the database
+        private void UpdateIsOwnedStatus(int vehicleId, bool isOwned)
+        {
+            // SQL update command to update the 'IsOwned' column in the database
+            string query = "UPDATE vehicles SET _is_owned = @isOwned WHERE id = @vehicleId";
+
+            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+            {
+                conn.Open();
+                using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@isOwned", isOwned ? "true" : "false");
+                    cmd.Parameters.AddWithValue("@vehicleId", vehicleId);
+                    cmd.ExecuteNonQuery();
+                }
+                conn.Close();
+            }
         }
 
         private void ViewDetailsButton_Click(object sender, RoutedEventArgs e)
@@ -577,6 +658,30 @@ namespace TDU2_Track_Records
                 this.DragMove();
             }
         }
+        private void Settings_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Prompt the user before closing the parent window
+            MessageBoxResult result = MessageBox.Show(
+                "Results will not take effect until you re-open this window.",
+                "Warning",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
 
+            var settingsWindow = new SettingsWindow();
+
+            settingsWindow.Left = this.Left + this.Width + 10;
+            settingsWindow.Top = this.Top;
+            settingsWindow.ShowDialog();
+        }
+
+        private void Minimize_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Window.GetWindow(this).WindowState = WindowState.Minimized;
+        }
+
+        private void Close_Button_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Window.GetWindow(this)?.Close();
+        }
     }
 }

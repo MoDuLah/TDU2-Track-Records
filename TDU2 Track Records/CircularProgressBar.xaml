@@ -3,11 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Name="CircularProgressBarControl" Width="100" Height="100">
     <Grid>
-        <Canvas Width="100" Height="100">
-            <Ellipse Width="100" Height="100" Stroke="DarkGray" StrokeThickness="5"/>
+        <!-- Smaller canvas size if needed to match the smaller arc radius -->
+        <Canvas Width="80" Height="80">
+            <!-- Decrease the Canvas size for smaller arcs -->
+            <Ellipse Width="80" Height="80" Stroke="DarkGray" StrokeThickness="10" Visibility="Hidden"/>
             <Path x:Name="progressPath"
               Stroke="{Binding StrokeColor, RelativeSource={RelativeSource AncestorType=UserControl}}"
-              StrokeThickness="10" 
+              StrokeThickness="15" 
               Data="{Binding ArcData}" />
         </Canvas>
         <TextBlock Text="{Binding ProgressText, RelativeSource={RelativeSource AncestorType=UserControl}}"

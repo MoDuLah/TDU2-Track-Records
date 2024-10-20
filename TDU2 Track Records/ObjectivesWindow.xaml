@@ -5,10 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TDU2_Track_Records"
         mc:Ignorable="d"
-        Title="ObjectivesWindow" MinHeight="600" Width="800" SizeToContent="WidthAndHeight">
+        Title="ObjectivesWindow" Width="800" SizeToContent="WidthAndHeight">
 
     <Window.Background>
-        <ImageBrush ImageSource="/Images/BG.png"/>
+        <ImageBrush ImageSource="/Images/backgrounds/carbon.png"
+                    TileMode="Tile" 
+                    Viewport="0,0,256,256" 
+                    ViewportUnits="Absolute" 
+                    Stretch="None"/>
     </Window.Background>
 
     <Grid>
@@ -31,64 +35,68 @@
                         <TextBlock Text="Summary" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
-                <Grid Background="#FF161B1E" HorizontalAlignment="Center" Width="700" Height="500">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" MinHeight="250"/>
-                        <RowDefinition Height="Auto" MinHeight="250"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
+                <Border CornerRadius="20" Background="#FF161B1E" Width="700">
+                    <Grid >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" MinHeight="200"/>
+                            <RowDefinition Height="Auto" MinHeight="200"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                    <!-- Circular Progress Bars -->
-                    <local:CircularProgressBar x:Name="competitionProgress" Progress="50" Grid.Row="0" Grid.Column="0" StrokeColor="#FF2F91F5" Margin="0,20,0,20" Width="100" Height="100">
-                        <local:CircularProgressBar.Background>
-                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat1.png" Stretch="UniformToFill"/>
-                        </local:CircularProgressBar.Background>
-                    </local:CircularProgressBar>
-                    <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20" >
-                        <TextBlock x:Name="CompetitionTitle" Foreground="#FF2F91F5" Text="Lonely" FontSize="20"></TextBlock>
-                        <TextBlock x:Name="CompetitionLevel" Foreground="#FF2F91F5" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                    </StackPanel>
-                    <local:CircularProgressBar x:Name="socialProgress" Progress="70" Grid.Row="1" Grid.Column="2" StrokeColor="HotPink">
-                        <local:CircularProgressBar.Background>
-                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat4.png" Stretch="UniformToFill"/>
-                        </local:CircularProgressBar.Background>
-                    </local:CircularProgressBar>
-                    <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20" >
-                        <TextBlock x:Name="SocialTitle" Foreground="HotPink" Text="Lonely" FontSize="20"></TextBlock>
-                        <TextBlock x:Name="SocialLevel" Foreground="HotPink" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                    </StackPanel>
-                    <local:CircularProgressBar x:Name="discoveryProgress" Progress="30" Grid.Row="1" Grid.Column="0" StrokeColor="DarkOrange">
-                        <local:CircularProgressBar.Background>
-                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat3.png" Stretch="UniformToFill"/>
-                        </local:CircularProgressBar.Background>
-                    </local:CircularProgressBar>
-                    <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20" >
-                        <TextBlock x:Name="DiscoveryTitle" Foreground="DarkOrange" Text="Lonely" FontSize="20"></TextBlock>
-                        <TextBlock x:Name="DiscoveryLevel" Foreground="DarkOrange" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                    </StackPanel>
-                    <local:CircularProgressBar x:Name="collectionProgress" Progress="90" Grid.Row="0" Grid.Column="2" StrokeColor="#FFA5C33B" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <local:CircularProgressBar.Background>
-                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat2.png" Stretch="UniformToFill"/>
-                        </local:CircularProgressBar.Background>
-                    </local:CircularProgressBar>
-                    <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,20" >
-                        <TextBlock x:Name="CollectionTitle" Foreground="#FFA5C33B" Text="Lonely" FontSize="20"></TextBlock>
-                        <TextBlock x:Name="CollectionLevel" Foreground="#FFA5C33B" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                    </StackPanel>
-                    <local:CircularProgressBar x:Name="globalLevelProgress" Progress="60" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" StrokeColor="Gold" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <local:CircularProgressBar.Background>
-                            <ImageBrush ImageSource="/Images/ico/categories/ico_cat0.png" Stretch="UniformToFill"/>
-                        </local:CircularProgressBar.Background>
-                    </local:CircularProgressBar>
-                    <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,140" >
-                        <TextBlock x:Name="GlobalTitle" Foreground="Gold" Text="Lonely" FontSize="20"></TextBlock>
-                        <TextBlock x:Name="GlobalLevel" Foreground="Gold" Text="1/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                    </StackPanel>
-                </Grid>
+                        <!-- Circular Progress Bars -->
+                        <local:CircularProgressBar x:Name="competitionProgress" Progress="50" Grid.Row="0" Grid.Column="0"
+                        StrokeColor="#FF2F91F5" Margin="0,20,0,20" Width="120" Height="120" VerticalAlignment="Top">
+                            <local:CircularProgressBar.Background>
+                                <ImageBrush ImageSource="/Images/ico/objectives/icons_competition.png" Stretch="None" Opacity="0.65"/>
+                            </local:CircularProgressBar.Background>
+                        </local:CircularProgressBar>
+                        <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,0,15" >
+                            <TextBlock x:Name="CompetitionTitle" Foreground="#FF2F91F5" Text="Trainee" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                            <TextBlock x:Name="CompetitionLevel" Foreground="#FF2F91F5" Text="0/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                        </StackPanel>
+                        <local:CircularProgressBar x:Name="collectionProgress" Progress="90" Grid.Row="0" Grid.Column="2" StrokeColor="#FFA5C33B" Margin="0,20,0,20" Width="120" Height="120" VerticalAlignment="Top">
+                            <local:CircularProgressBar.Background>
+                                <ImageBrush ImageSource="/Images/ico/objectives/icons_collection.png" Stretch="None" Opacity="0.65"/>
+                            </local:CircularProgressBar.Background>
+                        </local:CircularProgressBar>
+                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,15" VerticalAlignment="Bottom" >
+                            <TextBlock x:Name="CollectionTitle" Foreground="#FFA5C33B" Text="Poor" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                            <TextBlock x:Name="CollectionLevel" Foreground="#FFA5C33B" Text="0/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                        </StackPanel>
+                        <local:CircularProgressBar x:Name="socialProgress" Progress="70" Grid.Row="1" Grid.Column="2" StrokeColor="HotPink" Margin="0,20,0,20" Width="120" Height="120" VerticalAlignment="Top">
+                            <local:CircularProgressBar.Background>
+                                <ImageBrush ImageSource="/Images/ico/Objectives/icons_social.png" Stretch="None" Opacity="0.65"/>
+                            </local:CircularProgressBar.Background>
+                        </local:CircularProgressBar>
+                        <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,15" >
+                            <TextBlock x:Name="SocialTitle" Foreground="HotPink" Text="Lonely" FontSize="20"></TextBlock>
+                            <TextBlock x:Name="SocialLevel" Foreground="HotPink" Text="0/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                        </StackPanel>
+                        <local:CircularProgressBar x:Name="discoveryProgress" Progress="10" Grid.Row="1" Grid.Column="0" StrokeColor="DarkOrange" Margin="0,20,0,20" Width="120" Height="120" VerticalAlignment="Top">
+                            <local:CircularProgressBar.Background>
+                                <ImageBrush ImageSource="/Images/ico/objectives/icons_discovery.png" Stretch="None" Opacity="0.65"/>
+                            </local:CircularProgressBar.Background>
+                        </local:CircularProgressBar>
+                        <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,15" >
+                            <TextBlock x:Name="DiscoveryTitle" Foreground="DarkOrange" Text="Homebody" FontSize="20"></TextBlock>
+                            <TextBlock x:Name="DiscoveryLevel" Foreground="DarkOrange" Text="0/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                        </StackPanel>
+
+                        <local:CircularProgressBar x:Name="globalLevelProgress" Progress="99.9" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" StrokeColor="Gold" Margin="0,20,0,20" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" Height="120">
+                            <local:CircularProgressBar.Background>
+                                <ImageBrush ImageSource="/Images/ico/Objectives/icons_global.png" Stretch="None" Opacity="0.65"/>
+                            </local:CircularProgressBar.Background>
+                        </local:CircularProgressBar>
+                        <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,90" >
+                            <TextBlock x:Name="GlobalTitle" Foreground="White" Text="Global Level" FontSize="20"></TextBlock>
+                            <TextBlock x:Name="GlobalLevel" Foreground="Gold" Text="1/73" FontSize="20" HorizontalAlignment="Center"></TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </Border>
             </TabItem>
 
             <!-- TabItem 2: Competition -->
@@ -227,7 +235,7 @@
         </TabControl>
 
         <!-- ScrollViewer in the second row of the grid -->
-        <ScrollViewer Grid.Row="1" x:Name="ObjectiveScrollViewer" FocusVisualStyle="{x:Null}" MinHeight="300" MaxHeight="300" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
+        <ScrollViewer Grid.Row="1" x:Name="ObjectiveScrollViewer" Visibility="Collapsed" FocusVisualStyle="{x:Null}" MinHeight="300" MaxHeight="300" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
             <StackPanel x:Name="ObjectiveScrollViewerContent" />
         </ScrollViewer>
 

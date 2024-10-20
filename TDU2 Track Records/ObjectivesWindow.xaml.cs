@@ -30,6 +30,7 @@ namespace TDU2_Track_Records
             InitializeComponent();
             LoadProgressFromDatabase();
             UpdatePointsAndRecalculateProgress();
+
             LoadSubCategories(Tab1.Text, Tab1Type.Text, Tab1SubCategoryGrid);
             LoadSubCategories(Tab2.Text, Tab2Type.Text, Tab2SubCategoryGrid);
             LoadSubCategories(Tab3.Text, Tab3Type.Text, Tab3SubCategoryGrid);
@@ -405,7 +406,6 @@ namespace TDU2_Track_Records
             return card;
         }
 
-
         private void SubCategoryCard_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Border clickedCard && clickedCard.Tag is string subcategoryName)
@@ -753,6 +753,14 @@ namespace TDU2_Track_Records
 
         private void ObjectivesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (ObjectivesTabControl.SelectedIndex == 0)
+            {
+                ObjectiveScrollViewer.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ObjectiveScrollViewer.Visibility = Visibility.Visible;
+            }
             ObjectiveScrollViewerContent.Children.Clear();
         }
     }

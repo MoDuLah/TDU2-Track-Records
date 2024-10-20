@@ -13,7 +13,11 @@
         ScrollViewer.HorizontalScrollBarVisibility="Auto" MouseLeftButtonDown="VehicleManagement_MouseLeftButtonDown">
     <Grid>
         <Grid.Background>
-            <ImageBrush ImageSource="/Images/BG.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}"/>
+            <ImageBrush ImageSource="/Images/backgrounds/carbon.png"
+                    TileMode="Tile" 
+                    Viewport="0,0,256,256" 
+                    ViewportUnits="Absolute" 
+                    Stretch="None" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}"/>
         </Grid.Background>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>

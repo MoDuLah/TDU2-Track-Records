@@ -5,121 +5,143 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
         xmlns:local="clr-namespace:TDU2_Track_Records"
-        mc:Ignorable="d" FontFamily="Adobe Gothic Std B" FontSize="20" MaxHeight="900" 
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d" FontFamily="Adobe Gothic Std B" FontSize="20" MinHeight="900" MaxHeight="900" 
         Title="Dealerships" WindowStyle="None" AllowsTransparency="True" 
         Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
         Background="{x:Null}"
-        ResizeMode="CanResizeWithGrip" SizeToContent="WidthAndHeight" HorizontalContentAlignment="Stretch"
+        SizeToContent="WidthAndHeight" HorizontalContentAlignment="Stretch"
         ScrollViewer.HorizontalScrollBarVisibility="Auto" MouseLeftButtonDown="dealerships_MouseLeftButtonDown">
-    <Grid>
-        <!-- Background Image -->
-        <Grid.Background>
-            <ImageBrush ImageSource="/Images/backgrounds/dealership1.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}" Stretch="UniformToFill"/>
-        </Grid.Background>
+    <Border BorderBrush="Red" BorderThickness="1,1,1,1"
+            CornerRadius="50,50,50,50"
+            Margin="0"
+            >
+        <Border.Background>
+            <ImageBrush ImageSource="/Images/backgrounds/carbon.png"
+                    TileMode="Tile" 
+                    Viewport="0,0,32,32" 
+                    ViewportUnits="Absolute" 
+                    Stretch="None"/>
+        </Border.Background>
+        <Grid>
+            <!-- Background Image -->
+            <!-- Column and Row Definitions -->
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" MinWidth="20" MaxWidth="20"/>
+                <ColumnDefinition Width="Auto" MinWidth="200"/>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="20" MinWidth="20" MaxWidth="20"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+            <DockPanel x:Name="ThumbAndIsland" Grid.Row="1" Grid.Column="1" MinWidth="260">
+                <GroupBox x:Name="Dealership" DockPanel.Dock="Bottom" Visibility="Collapsed" >
+                    <StackPanel Orientation="Horizontal">
+                        <Image x:Name="DealershipImage" Margin="5,2,0,0" Focusable="True" IsHitTestVisible="True" MouseRightButtonDown="Dealership_MouseRightButtonDown"/>
+                    </StackPanel>
+                </GroupBox>
+                <ComboBox x:Name="IslandComboBox"
+                   DockPanel.Dock="Top"
+                   Margin="0,10,0,10"
+                   MinWidth="200" 
+                   SelectionChanged="IslandComboBox_SelectionChanged"
+                   FontSize="14"
+                   PreviewMouseRightButtonDown="IslandComboBox_PreviewMouseRightButtonDown"
+                   HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Row="1" Grid.Column="1">
+                    <ComboBoxItem Content="Ibiza"/>
+                    <ComboBoxItem Content="Hawaii"/>
+                </ComboBox>
+            </DockPanel>
+            <!-- Island Selector -->
+            <ListBox Grid.Column="1" Grid.Row="2" Grid.RowSpan="2" 
+                    x:Name="DealershipListBox"
+                    SelectionChanged="DealershipListBox_SelectionChanged"
+                    DockPanel.Dock="Top"
+                    d:ItemsSource="{d:SampleData ItemCount=25}" FontSize="14"
+                    MinWidth="200"
+                    ScrollViewer.CanContentScroll="True"
+                    Visibility="Visible"
+                    MaxHeight="600"
+                    BorderBrush="{x:Null}"
+                    Background="{x:Null}" VerticalAlignment="Top"/>
 
-        <!-- Column and Row Definitions -->
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="20" MinWidth="20" MaxWidth="20"/>
-            <ColumnDefinition Width="Auto" MinWidth="200"/>
-            <ColumnDefinition/>
-            <ColumnDefinition Width="20" MinWidth="20" MaxWidth="20"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-
-        <!-- Island Selector -->
-        <DockPanel x:Name="IslandSelector" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">
-            <ComboBox DockPanel.Dock="Top" x:Name="IslandComboBox" 
-                             VerticalAlignment="Stretch" 
-                             Margin="0,10,0,10"
-                             Width="200" 
-                             SelectionChanged="IslandComboBox_SelectionChanged" FontSize="14" PreviewMouseRightButtonDown="IslandComboBox_PreviewMouseRightButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                <ComboBoxItem Content="Ibiza"/>
-                <ComboBoxItem Content="Hawaii"/>
-            </ComboBox>
-
-            <ListBox Visibility="Visible" MaxHeight="600" x:Name="DealershipListBox" MinWidth="200" ScrollViewer.CanContentScroll="False"
-                 SelectionChanged="DealershipListBox_SelectionChanged" Background="#FF8A8A8A" Foreground="Black" d:ItemsSource="{d:SampleData ItemCount=25}" FontSize="14" VerticalAlignment="Top" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-
-        </DockPanel>
-        <DockPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,30,5">
-            
-            <Image x:Name="Settings_Button" MouseLeftButtonDown="Settings_MouseLeftButtonDown"
+            <DockPanel Grid.Column="2" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,30,0">
+                <Image x:Name="Settings_Button" MouseLeftButtonDown="Settings_MouseLeftButtonDown"
                    Margin="0,0,5,0" MinWidth="32" MinHeight="32"
-                   ToolTip="Settings" Width="42">
-                <Image.Style>
-                    <Style TargetType="{x:Type Image}">
-                        <Setter Property="Source" Value="Images/ico/navigation/settings.png"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Source" Value="Images/ico/navigation/settings_over.png"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
-            <Image x:Name="Minimize_Button" MouseLeftButtonDown="Minimize_MouseLeftButtonDown"
+                   ToolTip="Settings" Width="50" Height="50">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/navigation/settings.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/navigation/settings_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="Minimize_Button" MouseLeftButtonDown="Minimize_MouseLeftButtonDown"
                    Margin="0,0,5,0"
-                   Width="42" Height="42" MinWidth="32" MinHeight="32"
+                   Width="50" Height="50" MinWidth="32" MinHeight="32"
                    ToolTip="Minimize Application">
-                <Image.Style>
-                    <Style TargetType="{x:Type Image}">
-                        <Setter Property="Source" Value="Images/ico/navigation/minimize.png"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Source" Value="Images/ico/navigation/minimize_over.png"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
-            <Image x:Name="Close_Button" MouseLeftButtonDown="Close_Button_MouseLeftButtonDown"
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/navigation/minimize.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/navigation/minimize_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Image x:Name="Close_Button" MouseLeftButtonDown="Close_Button_MouseLeftButtonDown"
                    Margin="0,0,5,0"
-                   Width="42" Height="42" MinWidth="32" MinHeight="32"
+                   Width="50" Height="50" MinWidth="32" MinHeight="32"
                    ToolTip="Close Application">
-                <Image.Style>
-                    <Style TargetType="{x:Type Image}">
-                        <Setter Property="Source" Value="Images/ico/navigation/close.png"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Source" Value="Images/ico/navigation/close_over.png"/>
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </Image.Style>
-            </Image>
-        </DockPanel>
-
-        <!-- Vehicles Display -->
-        <ScrollViewer Grid.Column="2" Grid.Row="2" Grid.RowSpan="2" x:Name="VehiclesScrollViewer" FocusVisualStyle="{x:Null}"
-              Margin="10,10,10,10" MinWidth="900" Visibility="Hidden" MinHeight="600" MaxHeight="750"
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Setter Property="Source" Value="Images/ico/navigation/close.png"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Source" Value="Images/ico/navigation/close_over.png"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </DockPanel>
+            <!-- Vehicles Display -->
+            <ScrollViewer Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" x:Name="VehiclesScrollViewer" FocusVisualStyle="{x:Null}"
+              Margin="10,55,10,10" MinWidth="900" Visibility="Visible" MaxHeight="750"
                       MouseLeftButtonDown="dealerships_MouseLeftButtonDown" VirtualizingStackPanel.IsVirtualizing="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <Grid x:Name="VehiclesStackPanel">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-</Grid.RowDefinitions>
-            </Grid>
-        </ScrollViewer>
-    </Grid>
+                <Grid x:Name="VehiclesStackPanel">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Border>
 </Window>

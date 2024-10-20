@@ -1,0 +1,39 @@
+﻿<Window x:Class="TDU2_Track_Records.CircularProgressBarExample"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CircularProgressBarExample" Height="450" Width="450">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+
+        <!-- Outer circle to represent the full progress area -->
+        <Ellipse Width="134" Height="134" Fill="Yellow" StrokeThickness="2" Visibility="Visible" 
+                 Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" />
+
+        <!-- Opening at the top -->
+        <Path Stroke="Transparent" StrokeThickness="20" 
+              Data="M67,0 A67,67 0 0,1 134,67" 
+              HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Visibility="Hidden"/>
+
+        <!-- This Path will show the circular progress -->
+        <Path StrokeThickness="10" Stroke="Green" Data="{Binding ProgressArc}" 
+              Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" />
+
+        <!-- Opening at the bottom -->
+        <Path Stroke="Transparent" StrokeThickness="20" 
+              Data="M67,134 A67,67 0 0,1 134,67" 
+              HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1"/>
+
+        <!-- Center content or image -->
+        <Image Source="/Images/ico/objectives/icons_social.png" Width="136" Height="136" 
+               HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Column="1" Grid.Row="1" Stretch="UniformToFill"/>
+    </Grid>
+</Window>

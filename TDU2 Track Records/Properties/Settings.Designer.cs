@@ -226,5 +226,17 @@ namespace TDU2_Track_Records.Properties {
                 this["Language"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public int dealershipSlots {
+            get {
+                return ((int)(this["dealershipSlots"]));
+            }
+            set {
+                this["dealershipSlots"] = value;
+            }
+        }
     }
 }

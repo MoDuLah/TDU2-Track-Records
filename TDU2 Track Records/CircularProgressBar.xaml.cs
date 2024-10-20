@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace TDU2_Track_Records
 {
@@ -20,7 +19,7 @@ namespace TDU2_Track_Records
             DependencyProperty.Register("StrokeColor", typeof(Brush), typeof(CircularProgressBar), new PropertyMetadata(Brushes.Blue));
 
         public static readonly DependencyProperty PathColorProperty =
-            DependencyProperty.Register("PathColor", typeof(Brush), typeof(CircularProgressBar), new PropertyMetadata(Brushes.Gray));
+            DependencyProperty.Register("PathColor", typeof(Brush), typeof(CircularProgressBar), new PropertyMetadata(Brushes.Silver));
 
 
         // Public properties
@@ -89,7 +88,9 @@ namespace TDU2_Track_Records
         // Helper to create the arc based on the current progress
         private Geometry CreateArcGeometry(double angle)
         {
-            double radius = Math.Min(ActualWidth, ActualHeight) / 2; // Use half of the minimum dimension
+            // Reducing the radius by multiplying it by a factor (e.g., 0.75 for 75% of the original size)
+            double radiusFactor = 0.65; // Adjust this factor as needed to decrease the arc's radius
+            double radius = (Math.Min(ActualWidth, ActualHeight) / 2) * radiusFactor; // Scale down the radius
             Point startPoint = new Point(radius, 0);
             Point endPoint = ComputeCartesianCoordinate(angle, radius);
             endPoint.X += radius;
@@ -120,6 +121,7 @@ namespace TDU2_Track_Records
             geometry.Figures.Add(figure);
             return geometry;
         }
+
 
         private Point ComputeCartesianCoordinate(double angle, double radius)
         {

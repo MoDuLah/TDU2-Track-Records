@@ -6,14 +6,19 @@
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
         xmlns:local="clr-namespace:TDU2_Track_Records.Classes"
         Title="Car Info"
-        Background="#FF606060"
         FontSize="18"
         MinWidth="800"
         MaxWidth="900"
         WindowStyle="None"
         MinHeight="710" MouseLeftButtonDown="Window_MouseLeftButtonDown" SizeToContent="WidthAndHeight"
         >
-
+    <Window.Background>
+        <ImageBrush ImageSource="/Images/backgrounds/carbon.png"
+                    TileMode="Tile" 
+                    Viewport="0,0,256,256" 
+                    ViewportUnits="Absolute" 
+                    Stretch="None"/>
+    </Window.Background>
     <Window.Resources>
         <local:StringToDoubleConverter x:Key="StringToDoubleConverter"/>
         <local:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
