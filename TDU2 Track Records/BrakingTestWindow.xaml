@@ -1,0 +1,123 @@
+﻿<Window x:Class="TDU2_Track_Records.BrakingTestWindow" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Braking Test" WindowStyle="None" 
+        Background="Transparent" AllowsTransparency="True" 
+        SizeToContent="WidthAndHeight" Topmost="True" 
+        FontSize="16" Foreground="White" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+
+    <!-- Main Grid Container -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <GroupBox Header="Select Vehicle" VerticalAlignment="Center" Margin="0,5,0,5" Grid.Row="1">
+            <StackPanel>
+                <ComboBox x:Name="VehicleComboBox" VerticalAlignment="Stretch" MaxDropDownHeight="200" MaxWidth="200" Margin="0,5,0,5" SelectionChanged="VehicleComboBox_SelectionChanged"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock x:Name="Attempts" FontSize="12" Text="Attempts: "/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,5">
+                    <CheckBox x:Name="VehicleOwnedCheckBox" ToolTip="Owned"/>
+                    <TextBlock Text="O" FontSize="14" VerticalAlignment="Center" Margin="2,0,5,0"/>
+                    <CheckBox x:Name="VehicleActiveCheckBox" ToolTip="Active" VerticalAlignment="Center"/>
+                    <TextBlock Text="A" FontSize="14" VerticalAlignment="Center" Margin="2,0,5,0"/>
+                    <CheckBox x:Name="VehiclePurchasableCheckBox" ToolTip="Purchasable" Click="VehiclePurchasableCheckBox_Click"/>
+                    <TextBlock Text="P" FontSize="14" VerticalAlignment="Center" Margin="2,0,5,0"/>
+                    <CheckBox x:Name="VehicleRewardCheckBox" ToolTip="Reward" Click="VehicleRewardCheckBox_Click"/>
+                    <TextBlock Text="R" FontSize="14" VerticalAlignment="Center" Margin="2,0,5,0"/>
+                    <Button x:Name="ReloadButton" Content="Reload" Margin="0,0,0,0" Padding="5,0,5,0" FontSize="8" Click="ReloadButton_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+        <!-- Title Bar Section with Minimize/Close Buttons -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Image x:Name="Minimize_Button" MouseLeftButtonDown="Minimize_MouseLeftButtonDown"
+                     Margin="0,0,5,0"
+                     ToolTip="Minimize Application" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Source" Value="Images/ico/navigation/minimize.png"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Source" Value="Images/ico/navigation/minimize_over.png"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+            <Image x:Name="Close_Button" MouseLeftButtonDown="Close_Button_MouseLeftButtonDown"
+                      Margin="0,0,0,0"
+                      ToolTip="Close Application" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image.Style>
+                    <Style TargetType="{x:Type Image}">
+                        <Setter Property="Source" Value="Images/ico/navigation/close.png"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Source" Value="Images/ico/navigation/close_over.png"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Image.Style>
+            </Image>
+        </StackPanel>
+
+        <!-- Main Content for Braking Test -->
+        <GroupBox Grid.Row="2" Header="Braking Test">
+            <StackPanel>
+                <!-- Braking Distance for 100 kph to 0 -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <DockPanel Margin="5,0">
+                            <TextBlock DockPanel.Dock="Left" Text="100 kph to 0 Distance m: " FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBox DockPanel.Dock="Right" x:Name="Braking100KphDistanceMBox"
+                                     Style="{x:Null}" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}"
+                                     FontSize="14" Width="50" HorizontalContentAlignment="Center"
+                                     MaxLength="4" LostFocus="BrakingDistance_LostFocus" TextChanged="Braking_TextChanged" Loaded="TextBox_Loaded"/>
+                        </DockPanel>
+                    </StackPanel>
+                <!-- Braking Distance for 80 mph to 0 -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <DockPanel Margin="5,0">
+                            <TextBlock DockPanel.Dock="Left" Text="80 mph to 0 Distance m: " FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <TextBox DockPanel.Dock="Right" x:Name="Braking80MphDistanceMBox"
+                                     Style="{x:Null}" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}"
+                                     FontSize="14" Width="50" HorizontalContentAlignment="Center"
+                                     MaxLength="4" LostFocus="BrakingDistance_LostFocus" TextChanged="Braking_TextChanged" Loaded="TextBox_Loaded"/>
+                        </DockPanel>
+                    </StackPanel>
+                
+                <!-- Braking Distance for 70 mph to 0 -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <DockPanel Margin="5,0">
+                        <TextBlock DockPanel.Dock="Left" Text="70 mph to 0 Distance m: "
+                                   FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox DockPanel.Dock="Right" x:Name="Braking70MphDistanceMBox"
+                                 Style="{x:Null}" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}"
+                                 FontSize="14" Width="50" HorizontalContentAlignment="Center"
+                                 MaxLength="4" LostFocus="BrakingDistance_LostFocus" TextChanged="Braking_TextChanged" Loaded="TextBox_Loaded"/>
+                    </DockPanel>
+                </StackPanel>
+                <!-- Braking Distance for 60 mph to 0 -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <DockPanel Margin="5,0">
+                        <TextBlock DockPanel.Dock="Left" Text="60 mph to 0 Distance m: " FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <TextBox DockPanel.Dock="Right" x:Name="Braking60MphDistanceMBox"
+                                 Style="{x:Null}" Background="{x:Null}" BorderBrush="{x:Null}" SelectionBrush="{x:Null}"
+                                 FontSize="14" Width="50" HorizontalContentAlignment="Center"
+                                 MaxLength="4" LostFocus="BrakingDistance_LostFocus" TextChanged="Braking_TextChanged" Loaded="TextBox_Loaded"/>
+                    </DockPanel>
+                </StackPanel>
+
+                <!-- Action Buttons -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Reset" Width="100" Margin="5" Click="ResetData_Click" Focusable="False" IsHitTestVisible="False" IsCancel="True"/>
+                    <Button Content="Save" Width="100" Margin="5" Click="SaveData_Click" IsDefault="True"/>
+                </StackPanel>
+            <TextBlock x:Name="YourMessageTextBlock" Foreground="Red" Text="" Visibility="Collapsed" Margin="5,0,0,0"/>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>

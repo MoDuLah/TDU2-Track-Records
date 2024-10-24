@@ -863,7 +863,7 @@ namespace TDU2_Track_Records
         private void PrepareSI(out string odo, out string otherSiName, out double calcOtherSIOdometer, out double calcOtherSIAVG,
                                out string otherSIAVG, out string avg, out string epidia)
         {
-            string answer = AverageRace_Speed.Text.Substring(0, AverageRace_Speed.Text.Length - speed.Length);
+            string answer = AverageRace_Speed.Text; //.Substring(0, AverageRace_Speed.Text.Length - speed.Length)
             if (SI == "Metric")
             {
                 odo = "_odometer_metric";
@@ -2015,7 +2015,7 @@ namespace TDU2_Track_Records
             childWindow.Closed += (sender, e) => ChildWindow_Closed(sender, windowIdentifier);
 
             // Show the child window
-            if (windowIdentifier == "PowerLapBoard" || windowIdentifier == "DragWindow")
+            if (windowIdentifier == "PowerLapBoard" || windowIdentifier == "DragWindow" || windowIdentifier == "BrakingTestWindow")
             {
                 childWindow.Show();
             }
@@ -2049,6 +2049,10 @@ namespace TDU2_Track_Records
         private void Drag_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             OpenChildWindow<Drag>("DragWindow");
+        }
+        private void BrakeTest_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            OpenChildWindow<BrakingTestWindow>("BrakingTestWindow");
         }
 
         private void Objectives_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

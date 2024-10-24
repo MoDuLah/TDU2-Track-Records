@@ -46,7 +46,6 @@ namespace TDU2_Track_Records
                 SetDifficultyImages(vehicle.Difficulty);
                 SetPaintStickerUpgradeVisibility(vehicle.CanPaint,vehicle.CanSticker,vehicle.CanUpgrade);
                 UpdateVehicleDetails(vehicle.id);
-
             }
             else
             {
@@ -113,6 +112,8 @@ namespace TDU2_Track_Records
                                 DealershipNameInHawaii = reader["_dealership_name_in_hawaii"].ToString(),
                                 VehiclePrice = reader["_price"].ToString(),
                                 IsOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
+                                IsPurchasable = Convert.ToBoolean(reader["_is_purchasable"].ToString()),
+                                IsReward = Convert.ToBoolean(reader["_is_reward"].ToString()),
                                 HouseStoredNameIbiza = reader["_house_name_in_ibiza"].ToString(),
                                 HouseStoredNameHawaii = reader["_house_name_in_hawaii"].ToString(),
                                 VehicleUpgradeLevel = reader["_upgrade_level"].ToString()
@@ -121,14 +122,51 @@ namespace TDU2_Track_Records
                     }
                 }
             }
-            
-            if(vehicle.CanUpgrade == false) { canUpgrade = false; } else { canUpgrade = true; }
+
+            // Simplify the canUpgrade check
+            canUpgrade = vehicle.CanUpgrade;
+
+            // Handle purchase visibility and upgrade availability
+            if (!vehicle.IsPurchasable && !vehicle.IsReward)
+            {
+                CanPurchase.Visibility = Visibility.Collapsed;
+                canUpgrade = false;
+            }
+            else
+            {
+                CanPurchase.Visibility = Visibility.Visible;
+            }
+
+            // Handle Ibiza dealership visibility and text
+            if (vehicle.DealershipNameInIbiza == "Rival")
+            {
+                DealerHawaii.Visibility = Visibility.Collapsed;
+                DealerIbizaText.Text = "Can be won from: ";
+            }
+            else
+            {
+                DealerHawaii.Visibility = Visibility.Visible;
+                DealerIbizaText.Text = "Dealership In Ibiza: ";
+            }
+
+            // Handle Hawaii dealership visibility and text with combined conditions
+            if (vehicle.DealershipNameInHawaii == "Rival")
+            {
+                DealerIbiza.Visibility = Visibility.Collapsed;
+                DealerHawaiiText.Text = "Can be won from: ";
+            }
+            else if (vehicle.DealershipNameInHawaii == "Casino")
+            {
+                DealerIbiza.Visibility = Visibility.Collapsed;
+                DealerHawaiiText.Text = "Can be bought at: ";
+            }
+            else
+            {
+                DealerIbiza.Visibility = Visibility.Visible;
+                DealerHawaiiText.Text = "Dealership In Hawaii: ";
+            }
+
             return vehicle;
-        }
-        private void ChangeMeasuringSystem(string speed, string mass, string torque)
-        {
-
-
         }
 
         private void SetPaintStickerUpgradeVisibility(bool canPaints, bool canStickers, bool canUpgrades)
@@ -311,7 +349,7 @@ namespace TDU2_Track_Records
                     vehicle.StatBrake = finalStatBrake.ToString();
                     vehicle.PowerBhp = finalPower.ToString();
                     vehicle.PowerWeightRatio = finalMassPower.ToString();
-                    vehicle.VehiclePrice = finalPrice.ToString();
+                    vehicle.VehiclePrice = "$" + finalPrice.ToString("N0");
 
                     // Update the UI
                     this.DataContext = vehicle;

@@ -153,28 +153,28 @@ namespace TDU2_Track_Records
                                     VehicleModel = GetString(reader, columnIndices["_modelfull_name"]),
                                     VehicleTags = GetString(reader, columnIndices["_vehicle_tags"]),
                                     Braking100To0 = GetDouble(reader, columnIndices["_braking_100_0"]).ToString(),
-                                    QuarterMile = reader.IsDBNull(columnIndices["_quartermile_sec"]) ? string.Empty : GetDouble(reader, columnIndices["_quartermile_sec"]).ToString(),
+                                    QuarterMile = GetDouble(reader, columnIndices["_quartermile_sec"]).ToString(),
 
                                     VehicleCategory = GetString(reader, columnIndices["_vehiclecategory_name"]),
                                     VehiclePrice = GetInt(reader, columnIndices["_price"]).ToString(),
                                     VehicleOdometerMetric = GetDouble(reader, columnIndices["_odometer_metric"]),
                                     VehicleOdometerImperial = GetDouble(reader, columnIndices["_odometer_imperial"]),
-                                    
+
                                     IsActive = Convert.ToBoolean(GetString(reader, columnIndices["_is_active"])),
                                     IsOwned = Convert.ToBoolean(GetString(reader, columnIndices["_is_owned"])),
                                     IsPurchasable = Convert.ToBoolean(GetString(reader, columnIndices["_is_purchasable"])),
                                     IsReward = Convert.ToBoolean(GetString(reader, columnIndices["_is_reward"])),
-                                    
-                                    VehicleAccelerationStat = Convert.ToDouble(GetInt(reader, columnIndices["_stat_acc"])),
-                                    VehicleSpeedStat = Convert.ToDouble(GetInt(reader, columnIndices["_stat_speed"])),
-                                    VehicleBrakingStat = Convert.ToDouble(GetInt(reader, columnIndices["_stat_break"])),
-                                    VehicleDifficultyStat = Convert.ToDouble(GetInt(reader, columnIndices["_difficulty"])),
-                                    
+
+                                    VehicleAccelerationStat = GetDouble(reader, columnIndices["_stat_acc"]),
+                                    VehicleSpeedStat = GetDouble(reader, columnIndices["_stat_speed"]),
+                                    VehicleBrakingStat = GetDouble(reader, columnIndices["_stat_break"]),
+                                    VehicleDifficultyStat = GetDouble(reader, columnIndices["_difficulty"]),
+
                                     VehicleEngineDisplacement = GetInt(reader, columnIndices["_displacement"]).ToString(),
                                     EngineTypeName = GetString(reader, columnIndices["_engine_type_name"]),
                                     DriveName = GetString(reader, columnIndices["_drive_name"]),
                                     EnginePosition = GetString(reader, columnIndices["_engine_position_name"]),
-                                    
+
                                     VehicleMaxPower = GetInt(reader, columnIndices["_power_bhp"]).ToString(),
                                     VehicleMaxTorque = GetInt(reader, columnIndices["_torque_nm"]).ToString(),
                                     VehicleMaxTorqueRPM = GetInt(reader, columnIndices["_torque_rpm"]).ToString(),
@@ -288,7 +288,7 @@ namespace TDU2_Track_Records
             }
 
             // Set other vehicle details
-            VehiclePriceTextBox.Text = selectedVehicle.VehiclePrice.ToString();
+            VehiclePriceTextBox.Text = selectedVehicle.VehiclePrice?.ToString() ?? string.Empty;
             VehicleActiveCheckBox.IsChecked = selectedVehicle.IsActive;
             VehicleOwnedCheckBox.IsChecked = selectedVehicle.IsOwned;
             VehiclePurchasableCheckBox.IsChecked = selectedVehicle.IsPurchasable;

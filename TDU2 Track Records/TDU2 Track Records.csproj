@@ -129,6 +129,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppState.cs" />
+    <Compile Include="BrakingTestWindow.xaml.cs">
+      <DependentUpon>BrakingTestWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
@@ -180,6 +183,10 @@
     </Compile>
     <Compile Include="ViewModels\powerlapViewModel.cs" />
     <Compile Include="ViewModels\vehicleCardViewModel.cs" />
+    <Page Include="BrakingTestWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CircularProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

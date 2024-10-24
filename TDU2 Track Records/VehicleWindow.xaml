@@ -201,7 +201,7 @@
                                 <GroupBox Header="Tags" VerticalAlignment="Top">
                                     <TextBox x:Name="VehicleTags" MinWidth="100"/>
                                 </GroupBox>
-                                <GroupBox Header="100 To 0" VerticalAlignment="Top">
+                                <GroupBox Header="100 To 0 (ft.)" VerticalAlignment="Top">
                                     <TextBox x:Name="VehicleBrake100_0" MinWidth="100"/>
                                 </GroupBox>
                                 <GroupBox Header="1/4 Mile Time" VerticalAlignment="Top">
@@ -214,8 +214,8 @@
                                 <GroupBox Header="Status" HorizontalContentAlignment="Stretch" MinWidth="218">
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal">
-                                        <CheckBox x:Name="VehicleOwnedCheckBox" Margin="5"/>
-                                        <TextBlock Text="Owned" FontSize="14" Margin="0,0,0,0" />
+                                            <CheckBox x:Name="VehicleOwnedCheckBox" Margin="5"/>
+                                            <TextBlock Text="Owned" FontSize="14" Margin="0,0,0,0" />
                                         </StackPanel>
                                         <StackPanel Orientation="Horizontal">
                                             <CheckBox x:Name="VehicleActiveCheckBox" Margin="5"/>
@@ -235,126 +235,6 @@
                             </StackPanel>
                         </StackPanel>
                     </DockPanel>
-
-                    <!--<StackPanel VerticalAlignment="Top">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="0" >
-                                <GroupBox x:Name="VehicleIdGroupBox" Header="ID" Margin="5">
-                                    <TextBox x:Name="VehicleIdTextBox" Margin="5" Text="0"
-                                             local:PlaceholderBehavior.PlaceholderText="0" 
-                                                PreviewTextInput="OneDecimalPointTextBox_PreviewTextInput"
-                                                DataObject.Pasting="OneDecimalPointTextBox_DataObject_Pasting"
-                                                TextChanged="OneDecimalPointTextBox_TextChanged" 
-                                             HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutoWordSelection="True" MaxLength="64" MinWidth="180" MaxWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                </GroupBox>
-                                <GroupBox Header="Brand" MinWidth="200" Margin="5">
-                                    <DockPanel>
-                                        <ComboBox x:Name="VehicleBrandComboBox" Margin="5" VerticalAlignment="Center" MinWidth="150"/>
-                                        <TextBox x:Name="VehicleBrandTextBox" Margin="5" VerticalAlignment="Center"  MinWidth="150" Visibility="Collapsed" />
-                                        <Image x:Name="btn_BrandAdd" Source="/Images/add.png" Width="32" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Add New Brand?" MouseLeftButtonUp="Image_MouseLeftButtonUp"/>
-                                        <Image x:Name="btn_BrandCancel" Source="/Images/cancel.png" Width="32" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Cancel?" MouseLeftButtonUp="Image_MouseLeftButtonUp" Visibility="Collapsed"/>
-                                    </DockPanel>
-                                </GroupBox>
-                                <GroupBox x:Name="VehicleModelGroupBox" Header="Model" Margin="5">
-                                    <TextBox x:Name="VehicleModelTextBox" Margin="5" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutoWordSelection="True" MaxLength="64" MinWidth="200" MaxWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                </GroupBox>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="1">
-                                
-                                <GroupBox Header="Category" MinWidth="200" MinHeight="100" Margin="5">
-                                    <ComboBox x:Name="VehicleClassComboBox" Margin="5" VerticalAlignment="Center" MinWidth="80">
-                                        <ComboBoxItem Content="A1"/>
-                                        <ComboBoxItem Content="A2"/>
-                                        <ComboBoxItem Content="A3"/>
-                                        <ComboBoxItem Content="A4"/>
-                                        <ComboBoxItem Content="A5"/>
-                                        <ComboBoxItem Content="A6"/>
-                                        <ComboBoxItem Content="A7"/>
-                                        <ComboBoxItem Content="B1"/>
-                                        <ComboBoxItem Content="B2"/>
-                                        <ComboBoxItem Content="B3"/>
-                                        <ComboBoxItem Content="B4"/>
-                                        <ComboBoxItem Content="C1"/>
-                                        <ComboBoxItem Content="C2"/>
-                                        <ComboBoxItem Content="C3"/>
-                                        <ComboBoxItem Content="C4"/>
-                                        <ComboBoxItem Content="mA1"/>
-                                        <ComboBoxItem Content="mA2"/>
-                                    </ComboBox>
-                                </GroupBox>
-                                <GroupBox Header="Odometer" MinWidth="218"  Margin="5">
-                                    <DockPanel>
-                                        <TextBox x:Name="_odometer_metric" MinWidth="200" Margin="5"
-                                                 local:PlaceholderBehavior.PlaceholderText="0.0" 
-                                                 PreviewTextInput="OneDecimalPointTextBox_PreviewTextInput"
-                                                 DataObject.Pasting="OneDecimalPointTextBox_DataObject_Pasting"
-                                                 TextChanged="OneDecimalPointTextBox_TextChanged" Text="0.0" />
-                                        <TextBox x:Name="_odometer_imperial" MinWidth="200" Margin="5"
-                                                 local:PlaceholderBehavior.PlaceholderText="0.0" 
-                                                 PreviewTextInput="OneDecimalPointTextBox_PreviewTextInput"
-                                                 DataObject.Pasting="OneDecimalPointTextBox_DataObject_Pasting"
-                                                 TextChanged="OneDecimalPointTextBox_TextChanged" Visibility="Collapsed" />
-                                    </DockPanel>
-                                </GroupBox>
-                                <GroupBox Header="Price" MinWidth="200" Margin="5">
-                                    <TextBox x:Name="VehiclePriceTextBox" Margin="5" VerticalAlignment="Center" />
-                                </GroupBox>
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left">
-                                <GroupBox Header="Status" Margin="5" HorizontalContentAlignment="Stretch" MinWidth="218">
-                                    <StackPanel>
-                                        <CheckBox x:Name="VehicleOwnedCheckBox" Margin="5" >
-                                            <TextBlock Text="Owned" FontSize="14" Margin="0,-5,0,0" />
-                                        </CheckBox>
-                                        <CheckBox x:Name="VehicleActiveCheckBox" Margin="5">
-                                            <TextBlock Text="Active" FontSize="14" Margin="0,-5,0,0"/>
-                                        </CheckBox>
-                                        <CheckBox x:Name="VehiclePurchasableCheckBox" Margin="5">
-                                            <TextBlock Text="Purchasable" FontSize="14" Margin="0,-5,0,0"/>
-                                        </CheckBox>
-                                        <CheckBox x:Name="VehicleRewardCheckBox" Margin="5">
-                                            <TextBlock Text="Reward" FontSize="14" Margin="0,-5,0,0"/>
-                                        </CheckBox>
-                                    </StackPanel>
-                                </GroupBox>
-                            </StackPanel>
-                            <StackPanel Grid.Column="0" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <GroupBox Header="Tags" VerticalAlignment="Top">
-                                    <TextBox x:Name="VehicleTags" MinWidth="100"/>
-                                </GroupBox>
-                                <GroupBox Header="Braking 100 To 0" VerticalAlignment="Top">
-                                    <TextBox x:Name="VehicleBrake100_0" MinWidth="100"/>
-                                </GroupBox>
-                                <GroupBox Header="1/4 Mile Time" VerticalAlignment="Top">
-                                    <TextBox x:Name="VehicleQuartermile" MinWidth="100"/>
-                                </GroupBox>
-                            </StackPanel>
-                            <StackPanel Grid.Column="0" Grid.Row="3" Orientation="Horizontal">
-                                <Button x:Name="AddVehicle" Content="Add Vehicle" Margin="5" Click="AddVehicleButton_Click" 
-                                            VerticalAlignment="Bottom" HorizontalAlignment="Center" IsEnabled="{Binding IsFormValid}" />
-                                <Button x:Name="SaveVehicle" Content="Save Changes" Margin="5" Click="SaveChangesButton_Click" />
-                                <Button x:Name="ResetVehicle" Content="Clear Form" Margin="5" Click="ResetVehicle_Click"/>
-                                <Button x:Name="DeleteVehicle" Content="Delete Vehicle" Margin="5" Click="DeleteVehicleButton_Click"/>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>-->
                 </GroupBox>
                 <GroupBox Header="Stats" Margin="5">
                     <StackPanel Margin="5">

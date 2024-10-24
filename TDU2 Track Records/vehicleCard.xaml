@@ -380,28 +380,27 @@
                             </TextBlock>
                         </StackPanel>
                     </StackPanel>
-                    <StackPanel Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
-                        <TextBlock Foreground="#FFB9B9B9" Text="Price: " FontWeight="Bold" />
-                        <TextBlock Foreground="#FFFFFFFF" Margin="0,0,0,0">
-                            <Run Text="$"/>
-                            <Run Text="{Binding VehiclePrice}"/>
-                        </TextBlock>
-                    </StackPanel>
-                    <StackPanel Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
-                        <TextBlock Foreground="#FFB9B9B9" FontWeight="Bold" Text="Dealership In Ibiza: " />
+                    <StackPanel x:Name="CanPurchase" Grid.Row="3" Grid.ColumnSpan="2">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
+                        <TextBlock Foreground="#FFB9B9B9" Text="Value: " FontWeight="Bold" />
+                        <TextBlock Foreground="#FFFFFFFF" Margin="0,0,0,0" Text="{Binding VehiclePrice}"/>
+                        </StackPanel>
+                    <StackPanel x:Name="DealerIbiza" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
+                        <TextBlock x:Name="DealerIbizaText" Foreground="#FFB9B9B9" FontWeight="Bold" Text="Dealership In Ibiza: " />
                         <TextBlock Foreground="#FFFFFFFF" Margin="0,0,0,0" Text="{Binding DealershipNameInIbiza}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
-                        <TextBlock Foreground="#FFB9B9B9" FontWeight="Bold" Text="Dealership In Hawaii: " />
+                    <StackPanel x:Name="DealerHawaii" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
+                        <TextBlock x:Name="DealerHawaiiText" Foreground="#FFB9B9B9" FontWeight="Bold" Text="Dealership In Hawaii: " />
                         <TextBlock Foreground="#FFFFFFFF" Margin="0,0,0,0" Text="{Binding DealershipNameInHawaii}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="6" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
+                    <StackPanel x:Name="HouseIbiza" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
                         <TextBlock Foreground="#FFB9B9B9" FontWeight="Bold" Text="Stored In Ibiza: " />
                         <TextBlock Foreground="#FFFFFFFF" Margin="0,0,0,0"  Text="{Binding HouseStoredNameIbiza}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="7" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
+                    <StackPanel x:Name="HouseHawaii" VerticalAlignment="Center" HorizontalAlignment="Center" Orientation="Horizontal" >
                         <TextBlock Foreground="#FFB9B9B9" FontWeight="Bold" Text="Stored In Hawaii: " />
                         <TextBlock Foreground="#FFFFFFFF" Margin="0,0,0,0"  Text="{Binding HouseStoredNameHawaii}" />
+                    </StackPanel>
                     </StackPanel>
                 </StackPanel>
             </Border>

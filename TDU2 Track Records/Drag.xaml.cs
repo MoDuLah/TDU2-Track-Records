@@ -392,7 +392,7 @@ namespace TDU2_Track_Records
         }
 
 
-        private void DecimalTextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void DecimalTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
             if (textBox != null)

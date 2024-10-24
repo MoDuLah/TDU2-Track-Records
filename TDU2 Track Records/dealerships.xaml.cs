@@ -354,6 +354,7 @@ namespace TDU2_Track_Records
                                 IsOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
                                 IsPurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
                                 IsReward = Convert.ToBoolean(reader["_is_reward"]),
+                                //CanUpgrade = Convert.ToBoolean(reader["_can_upgrade"]),
                                 // Check if the "Image" column is DBNull before casting
                                 VehicleImage = reader["_vehicle_image"] != DBNull.Value ? (byte[])reader["_vehicle_image"] : null
 
@@ -395,17 +396,18 @@ namespace TDU2_Track_Records
                 Margin = new Thickness(10),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
-            if (vehicle.IsPurchasable)
+            if (vehicle.IsPurchasable || vehicle.IsReward)
             {
                 // Vehicle Price
                 GroupBox priceBox = new GroupBox
                 {
-                    Header = "Price $",
+                    Header = "Value",
                 };
                 priceBox.Content = new TextBlock
                 {
-                    Text = vehicle.VehiclePrice.ToString(),
+                    Text = "$" + decimal.Parse(vehicle.VehiclePrice).ToString("N0"),
                     HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(5),
                     FontSize = 18
                 };
                 infoStack.Children.Add(priceBox);
@@ -424,23 +426,23 @@ namespace TDU2_Track_Records
             classBox.Content = classImage;
             infoStack.Children.Add(classBox);
 
-            // Vehicle Class
-            GroupBox levelBox = new GroupBox
+            // Vehicle Tune
+            if (vehicle.IsPurchasable || vehicle.IsReward )
             {
-                Header = "Tune",
-            };
-            Image tuneImage = new Image
-            {
-                Width = 32,
-                Height = 32,
-                Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative))
-            };
-            levelBox.Content = tuneImage;
-            infoStack.Children.Add(levelBox);
+                GroupBox levelBox = new GroupBox
+                {
+                    Header = "Tune",
+                };
+                Image tuneImage = new Image
+                {
+                    Width = 32,
+                    Height = 32,
+                    Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative))
+                };
+                levelBox.Content = tuneImage;
+                infoStack.Children.Add(levelBox);
 
             // Vehicle Status
-            if (vehicle.IsPurchasable || vehicle.IsReward)
-            {
                 GroupBox statusBox = new GroupBox
             {
                 Header = "Status",
