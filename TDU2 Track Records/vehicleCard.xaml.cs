@@ -122,8 +122,6 @@ namespace TDU2_Track_Records
                     }
                 }
             }
-
-            // Simplify the canUpgrade check
             canUpgrade = vehicle.CanUpgrade;
 
             // Handle purchase visibility and upgrade availability

@@ -190,10 +190,10 @@ namespace TDU2_Track_Records
                 GroupBox emptySlotGroupBox = new GroupBox
                 {
                     Header = $"Empty Slot {slotIndex + 1}",
-                    Margin = new Thickness(10),
+                    Margin = new Thickness(5, 0, 5, 0),
                     BorderBrush = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
                     BorderThickness = new Thickness(2),
-                    Padding = new Thickness(10)
+                    Padding = new Thickness(5, 0, 5, 0)
                 };
 
                 // Create a StackPanel to hold the ComboBox
@@ -354,8 +354,6 @@ namespace TDU2_Track_Records
                                 IsOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
                                 IsPurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
                                 IsReward = Convert.ToBoolean(reader["_is_reward"]),
-                                //CanUpgrade = Convert.ToBoolean(reader["_can_upgrade"]),
-                                // Check if the "Image" column is DBNull before casting
                                 VehicleImage = reader["_vehicle_image"] != DBNull.Value ? (byte[])reader["_vehicle_image"] : null
 
                             };
@@ -372,10 +370,11 @@ namespace TDU2_Track_Records
             GroupBox vehicleGroupBox = new GroupBox
             {
                 Header = vehicle.VehicleName, // Set the vehicle name as the header
-                Margin = new Thickness(10),
+                Margin = new Thickness(5, 5, 5, 5),
                 BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
                 BorderThickness = new Thickness(2),
-                Padding = new Thickness(10)
+                MinWidth = 450,
+                Padding = new Thickness(5, 0, 5, 0)
             };
 
             // Create a StackPanel to hold all vehicle information
@@ -384,7 +383,7 @@ namespace TDU2_Track_Records
             // Add the vehicle image
             Image vehicleImage = new Image
             {
-                Width = 300,
+                Width = 400,
                 Source = LoadImage(vehicle.VehicleImage) // Convert byte[] to ImageSource
             };
             contentStack.Children.Add(vehicleImage);
@@ -393,7 +392,7 @@ namespace TDU2_Track_Records
             StackPanel infoStack = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                Margin = new Thickness(10),
+                Margin = new Thickness(5,5,5,5),
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             if (vehicle.IsPurchasable || vehicle.IsReward)
@@ -402,6 +401,7 @@ namespace TDU2_Track_Records
                 GroupBox priceBox = new GroupBox
                 {
                     Header = "Value",
+                    MinWidth = 120
                 };
                 priceBox.Content = new TextBlock
                 {
@@ -419,8 +419,9 @@ namespace TDU2_Track_Records
             };
             Image classImage = new Image
             {
-                Width = 32,
-                Height = 32,
+                Width = 42,
+                Height = 42,
+                Margin = new Thickness(5),
                 Source = new BitmapImage(new Uri("/Images/carClasses/" + vehicle.VehicleCategory + ".png", UriKind.Relative))
             };
             classBox.Content = classImage;
@@ -435,8 +436,9 @@ namespace TDU2_Track_Records
                 };
                 Image tuneImage = new Image
                 {
-                    Width = 32,
-                    Height = 32,
+                    Width = 40,
+                    Height = 40,
+                    Margin = new Thickness(5),
                     Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative))
                 };
                 levelBox.Content = tuneImage;
@@ -451,6 +453,7 @@ namespace TDU2_Track_Records
                 CheckBox ownedCheckBox = new CheckBox
             {
                 IsChecked = vehicle.IsOwned == true,
+                Margin = new Thickness(5),
                 VerticalAlignment = VerticalAlignment.Center
             }; 
             // Add event handlers for CheckBox checked and unchecked events
@@ -484,7 +487,7 @@ namespace TDU2_Track_Records
             {
                 Content = "Card",
                 VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(10),
+                Margin = new Thickness(5, 0, 5, 0),
                 Tag = vehicle.id // Store the vehicle ID in the button's Tag
             };
             viewDetailsButton.Click += ViewDetailsButton_Click;
@@ -496,7 +499,7 @@ namespace TDU2_Track_Records
                 Button deleteButton = new Button
                 {
                     Content = "Remove",
-                    Margin = new Thickness(10),
+                    Margin = new Thickness(5, 0, 5, 0),
                     VerticalAlignment = VerticalAlignment.Center,
                     Tag = slotColumn // Store the actual column name (e.g., "Slot1_VehicleId")
                     

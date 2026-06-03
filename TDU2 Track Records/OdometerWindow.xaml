@@ -1,0 +1,40 @@
+﻿<Window x:Class="TDU2_Track_Records.OdometerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
+        xmlns:local="clr-namespace:TDU2_Track_Records.Classes"
+        mc:Ignorable="d" FontFamily="Adobe Gothic Std B" FontSize="16"
+        Title="Odometer Fix" WindowStyle="None" AllowsTransparency="True" 
+        Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
+        Background="{x:Null}" SizeToContent="WidthAndHeight" HorizontalContentAlignment="Stretch"
+        MouseLeftButtonDown="VehicleManagement_MouseLeftButtonDown" Topmost="True">
+    <Grid>
+        <StackPanel>
+            <GroupBox Header="Select Vehicle" Margin="2.5" DockPanel.Dock="Top">
+                <StackPanel>
+                    <ComboBox x:Name="VehicleComboBox" SelectionChanged="VehicleComboBox_SelectionChanged"
+                              Margin="0" MinWidth="200" MaxWidth="200"/>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="Odometer" Margin="2.5" Padding="5,5,5,5" VerticalAlignment="Top">
+                <DockPanel HorizontalAlignment="Center">
+                   <TextBox x:Name="_odometer_metric"
+                            DockPanel.Dock="Left"
+                            Margin="0"
+                            PreviewTextInput="OneDecimalPointTextBox_PreviewTextInput"
+                            MinWidth="100" Height="36" HorizontalAlignment="Center"
+                            VerticalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
+                   <TextBox x:Name="_odometer_imperial" Margin="0"
+                            DockPanel.Dock="Left"
+                            PreviewTextInput="OneDecimalPointTextBox_PreviewTextInput" 
+                            MinWidth="100" Height="36" 
+                            Visibility="Collapsed" />
+                   <TextBlock x:Name="Distance" DockPanel.Dock="Right" Text="{Binding distance}" VerticalAlignment="Center"/>
+                    </DockPanel>
+            </GroupBox>
+            <Button x:Name="SaveVehicle" Content="Save Changes" Margin="2.5" Click="SaveChangesButton_Click" IsDefault="True" />
+        </StackPanel>
+    </Grid>
+</Window>

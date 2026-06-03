@@ -163,59 +163,59 @@
 	],
 	"DBCasinoLevel" : [
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_level" : 1,
 			"_pointsneeded" : 450
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_level" : 2,
 			"_pointsneeded" : 1000
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_level" : 3,
 			"_pointsneeded" : 2500
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_level" : 4,
 			"_pointsneeded" : 4000
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_level" : 1,
 			"_pointsneeded" : 350
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_level" : 2,
 			"_pointsneeded" : 1000
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_level" : 1,
 			"_pointsneeded" : 300
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_level" : 2,
 			"_pointsneeded" : 1000
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_level" : 1,
 			"_pointsneeded" : 300
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_level" : 2,
 			"_pointsneeded" : 1000
 		}
 	],
 	"DBCasinoObjectiveDetail" : [
 		{
-			"_axis" : 32,
+			"_axis" : 32, 	//Competition
 			"_category" : 5,
 			"_filtera" : 10,
 			"_filterb" : 1,
@@ -227,7 +227,7 @@
 			"_text_hc" : 5261
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 14,
 			"_filterb" : 1,
@@ -239,7 +239,7 @@
 			"_text_hc" : 5262
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 11,
 			"_filterb" : 1,
@@ -251,7 +251,7 @@
 			"_text_hc" : 5263
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 12,
 			"_filterb" : 1,
@@ -263,7 +263,7 @@
 			"_text_hc" : 5264
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 15,
 			"_filterb" : 1,
@@ -275,7 +275,7 @@
 			"_text_hc" : 5265
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 13,
 			"_filterb" : 1,
@@ -287,7 +287,7 @@
 			"_text_hc" : 5266
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -299,7 +299,7 @@
 			"_text_hc" : 5268
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -311,7 +311,7 @@
 			"_text_hc" : 5269
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 13,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -323,7 +323,7 @@
 			"_text_hc" : 5270
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 6,
 			"_filtera" : 2,
 			"_filterb" : 1,
@@ -335,7 +335,7 @@
 			"_text_hc" : 5271
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 6,
 			"_filtera" : 2,
 			"_filterb" : 1,
@@ -347,7 +347,7 @@
 			"_text_hc" : 5272
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 36,
@@ -359,7 +359,7 @@
 			"_text_hc" : 5273
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 37,
@@ -371,7 +371,7 @@
 			"_text_hc" : 5274
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 38,
@@ -383,7 +383,7 @@
 			"_text_hc" : 5275
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 39,
@@ -395,7 +395,7 @@
 			"_text_hc" : 5276
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 40,
@@ -407,7 +407,7 @@
 			"_text_hc" : 5277
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 41,
@@ -419,7 +419,7 @@
 			"_text_hc" : 5278
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 42,
@@ -431,7 +431,7 @@
 			"_text_hc" : 5279
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 43,
@@ -443,7 +443,7 @@
 			"_text_hc" : 5280
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 44,
@@ -455,7 +455,7 @@
 			"_text_hc" : 5281
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 45,
@@ -467,7 +467,7 @@
 			"_text_hc" : 5282
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 46,
@@ -479,7 +479,7 @@
 			"_text_hc" : 5283
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 47,
@@ -491,7 +491,7 @@
 			"_text_hc" : 5284
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 2,
 			"_filterb" : 48,
@@ -503,7 +503,7 @@
 			"_text_hc" : 5285
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 2,
 			"_filterb" : 1,
@@ -515,7 +515,7 @@
 			"_text_hc" : 5286
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 2,
 			"_filterb" : 1,
@@ -527,7 +527,7 @@
 			"_text_hc" : 5287
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 2,
 			"_filterb" : 1,
@@ -539,7 +539,7 @@
 			"_text_hc" : 5288
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -551,7 +551,7 @@
 			"_text_hc" : 5289
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -563,7 +563,7 @@
 			"_text_hc" : 5290
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -575,7 +575,7 @@
 			"_text_hc" : 5291
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 9,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -587,7 +587,7 @@
 			"_text_hc" : 5292
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 9,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -599,7 +599,7 @@
 			"_text_hc" : 5293
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 9,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -611,7 +611,7 @@
 			"_text_hc" : 5294
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 6,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -623,7 +623,7 @@
 			"_text_hc" : 5295
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 6,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -635,7 +635,7 @@
 			"_text_hc" : 5296
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 3,
 			"_filterb" : 60,
@@ -647,7 +647,7 @@
 			"_text_hc" : 5297
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 3,
 			"_filterb" : 61,
@@ -659,7 +659,7 @@
 			"_text_hc" : 5298
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 3,
 			"_filterb" : 62,
@@ -671,7 +671,7 @@
 			"_text_hc" : 5299
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 3,
 			"_filterb" : 63,
@@ -683,7 +683,7 @@
 			"_text_hc" : 5300
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 3,
 			"_filterb" : 64,
@@ -695,7 +695,7 @@
 			"_text_hc" : 5301
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 5,
 			"_filtera" : 3,
 			"_filterb" : 65,
@@ -707,7 +707,7 @@
 			"_text_hc" : 5302
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -719,7 +719,7 @@
 			"_text_hc" : 5304
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -731,7 +731,7 @@
 			"_text_hc" : 5305
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -743,7 +743,7 @@
 			"_text_hc" : 5306
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 21,
 			"_filterb" : 49,
@@ -755,7 +755,7 @@
 			"_text_hc" : 5307
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 18,
 			"_filterb" : 31,
@@ -767,7 +767,7 @@
 			"_text_hc" : 5308
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 18,
 			"_filterb" : 31,
@@ -779,7 +779,7 @@
 			"_text_hc" : 5309
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 18,
 			"_filterb" : 31,
@@ -791,7 +791,7 @@
 			"_text_hc" : 5310
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 18,
 			"_filterb" : 31,
@@ -803,7 +803,7 @@
 			"_text_hc" : 5311
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 18,
 			"_filterb" : 31,
@@ -815,7 +815,7 @@
 			"_text_hc" : 5312
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 9,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -827,7 +827,7 @@
 			"_text_hc" : 5313
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 9,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -839,7 +839,7 @@
 			"_text_hc" : 5314
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 6,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -851,7 +851,7 @@
 			"_text_hc" : 5315
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 6,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -863,7 +863,7 @@
 			"_text_hc" : 5316
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 40,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -875,7 +875,7 @@
 			"_text_hc" : 5317
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 40,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -887,7 +887,7 @@
 			"_text_hc" : 5318
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 41,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -899,7 +899,7 @@
 			"_text_hc" : 5319
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 42,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -911,7 +911,7 @@
 			"_text_hc" : 5320
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 19,
 			"_filterb" : 23,
@@ -923,7 +923,7 @@
 			"_text_hc" : 5321
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 19,
 			"_filterb" : 24,
@@ -935,7 +935,7 @@
 			"_text_hc" : 5322
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 19,
 			"_filterb" : 25,
@@ -947,7 +947,7 @@
 			"_text_hc" : 5323
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 19,
 			"_filterb" : 26,
@@ -959,7 +959,7 @@
 			"_text_hc" : 5324
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 19,
 			"_filterb" : 23,
@@ -971,7 +971,7 @@
 			"_text_hc" : 5325
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 19,
 			"_filterb" : 24,
@@ -983,7 +983,7 @@
 			"_text_hc" : 5326
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 19,
 			"_filterb" : 25,
@@ -995,7 +995,7 @@
 			"_text_hc" : 5327
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 19,
 			"_filterb" : 26,
@@ -1007,7 +1007,7 @@
 			"_text_hc" : 5328
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 19,
 			"_filterb" : 1,
@@ -1019,7 +1019,7 @@
 			"_text_hc" : 5329
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 1,
 			"_filtera" : 19,
 			"_filterb" : 1,
@@ -1031,7 +1031,7 @@
 			"_text_hc" : 5330
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 7,
 			"_filtera" : 19,
 			"_filterb" : 1,
@@ -1043,7 +1043,7 @@
 			"_text_hc" : 5331
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 11,
 			"_filtera" : 55,
 			"_filterb" : 1,
@@ -1055,7 +1055,7 @@
 			"_text_hc" : 5332
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 11,
 			"_filtera" : 55,
 			"_filterb" : 1,
@@ -1067,7 +1067,7 @@
 			"_text_hc" : 5333
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -1079,7 +1079,7 @@
 			"_text_hc" : 5334
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -1091,7 +1091,7 @@
 			"_text_hc" : 5335
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 14,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -1103,7 +1103,7 @@
 			"_text_hc" : 5336
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 14,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -1115,7 +1115,7 @@
 			"_text_hc" : 5337
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 15,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -1127,7 +1127,7 @@
 			"_text_hc" : 5338
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 16,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -1139,7 +1139,7 @@
 			"_text_hc" : 5339
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 17,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -1151,7 +1151,7 @@
 			"_text_hc" : 5340
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 18,
 			"_filtera" : 4,
 			"_filterb" : 1,
@@ -1163,7 +1163,7 @@
 			"_text_hc" : 5341
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 54,
 			"_filtera" : 2,
 			"_filterb" : 36,
@@ -1175,7 +1175,7 @@
 			"_text_hc" : 5342
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 54,
 			"_filtera" : 2,
 			"_filterb" : 36,
@@ -1187,7 +1187,7 @@
 			"_text_hc" : 5343
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 54,
 			"_filtera" : 2,
 			"_filterb" : 48,
@@ -1199,7 +1199,7 @@
 			"_text_hc" : 5344
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 4,
 			"_filtera" : 2,
 			"_filterb" : 1,
@@ -1211,7 +1211,7 @@
 			"_text_hc" : 5345
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -1223,7 +1223,7 @@
 			"_text_hc" : 5348
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 20,
 			"_filterb" : 1,
@@ -1235,7 +1235,7 @@
 			"_text_hc" : 5349
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 21,
 			"_filterb" : 27,
@@ -1247,7 +1247,7 @@
 			"_text_hc" : 5351
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 21,
 			"_filterb" : 67,
@@ -1259,7 +1259,7 @@
 			"_text_hc" : 5350
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 19,
 			"_filterb" : 23,
@@ -1271,7 +1271,7 @@
 			"_text_hc" : 5352
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 19,
 			"_filterb" : 24,
@@ -1283,7 +1283,7 @@
 			"_text_hc" : 5353
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 19,
 			"_filterb" : 25,
@@ -1295,7 +1295,7 @@
 			"_text_hc" : 5354
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 43,
 			"_filtera" : 19,
 			"_filterb" : 26,
@@ -1307,7 +1307,7 @@
 			"_text_hc" : 5355
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 12,
 			"_filtera" : 55,
 			"_filterb" : 1,
@@ -1319,7 +1319,7 @@
 			"_text_hc" : 5356
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 19,
 			"_filtera" : 56,
 			"_filterb" : 1,
@@ -1331,7 +1331,7 @@
 			"_text_hc" : 5357
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 19,
 			"_filtera" : 57,
 			"_filterb" : 1,
@@ -1343,7 +1343,7 @@
 			"_text_hc" : 5358
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 19,
 			"_filtera" : 58,
 			"_filterb" : 1,
@@ -1355,7 +1355,7 @@
 			"_text_hc" : 5359
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 19,
 			"_filtera" : 59,
 			"_filterb" : 1,
@@ -1367,7 +1367,7 @@
 			"_text_hc" : 5360
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 23,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1379,7 +1379,7 @@
 			"_text_hc" : 5361
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 23,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1391,7 +1391,7 @@
 			"_text_hc" : 5362
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 23,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1403,7 +1403,7 @@
 			"_text_hc" : 5363
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 25,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1415,7 +1415,7 @@
 			"_text_hc" : 5364
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 27,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1427,7 +1427,7 @@
 			"_text_hc" : 5365
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 29,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1439,7 +1439,7 @@
 			"_text_hc" : 5366
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 32,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1451,7 +1451,7 @@
 			"_text_hc" : 5367
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 34,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1463,7 +1463,7 @@
 			"_text_hc" : 5369
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 45,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1475,7 +1475,7 @@
 			"_text_hc" : 5390
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 45,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1487,7 +1487,7 @@
 			"_text_hc" : 5391
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 55,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1499,7 +1499,7 @@
 			"_text_hc" : 5392
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 55,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1511,7 +1511,7 @@
 			"_text_hc" : 5393
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 21,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1523,7 +1523,7 @@
 			"_text_hc" : 5394
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 36,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1535,7 +1535,7 @@
 			"_text_hc" : 5395
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 36,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1547,7 +1547,7 @@
 			"_text_hc" : 5396
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 37,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1559,7 +1559,7 @@
 			"_text_hc" : 5398
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 26,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1571,7 +1571,7 @@
 			"_text_hc" : 5397
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 10,
 			"_filtera" : 19,
 			"_filterb" : 1,
@@ -1583,7 +1583,7 @@
 			"_text_hc" : 5399
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 46,
 			"_filtera" : 21,
 			"_filterb" : 1,
@@ -1595,7 +1595,7 @@
 			"_text_hc" : 5400
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 47,
 			"_filtera" : 21,
 			"_filterb" : 1,
@@ -1607,7 +1607,7 @@
 			"_text_hc" : 5401
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 48,
 			"_filtera" : 18,
 			"_filterb" : 1,
@@ -1619,7 +1619,7 @@
 			"_text_hc" : 5402
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 38,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -1631,7 +1631,7 @@
 			"_text_hc" : 5403
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 38,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -1643,7 +1643,7 @@
 			"_text_hc" : 5404
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 39,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -1655,7 +1655,7 @@
 			"_text_hc" : 5405
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 39,
 			"_filtera" : 17,
 			"_filterb" : 1,
@@ -1667,7 +1667,7 @@
 			"_text_hc" : 5406
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 22,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1679,7 +1679,7 @@
 			"_text_hc" : 5375
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 22,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1691,7 +1691,7 @@
 			"_text_hc" : 5376
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 24,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1703,7 +1703,7 @@
 			"_text_hc" : 5377
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 24,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1715,7 +1715,7 @@
 			"_text_hc" : 5378
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 24,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1727,7 +1727,7 @@
 			"_text_hc" : 5379
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 31,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1739,7 +1739,7 @@
 			"_text_hc" : 5380
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 31,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1751,7 +1751,7 @@
 			"_text_hc" : 5381
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 49,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1763,7 +1763,7 @@
 			"_text_hc" : 5382
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 50,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1775,7 +1775,7 @@
 			"_text_hc" : 5383
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 51,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1787,7 +1787,7 @@
 			"_text_hc" : 5384
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 34,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1799,7 +1799,7 @@
 			"_text_hc" : 5385
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 34,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1811,7 +1811,7 @@
 			"_text_hc" : 5386
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 34,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1823,7 +1823,7 @@
 			"_text_hc" : 5387
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 52,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1835,7 +1835,7 @@
 			"_text_hc" : 5388
 		},
 		{
-			"_axis" : 35,
+			"_axis" : 35,		//Social
 			"_category" : 53,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1847,7 +1847,7 @@
 			"_text_hc" : 5389
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 56,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1859,7 +1859,7 @@
 			"_text_hc" : 5371
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 57,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1871,7 +1871,7 @@
 			"_text_hc" : 5346
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 58,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1883,7 +1883,7 @@
 			"_text_hc" : 5372
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 59,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1895,7 +1895,7 @@
 			"_text_hc" : 5347
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 60,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1907,7 +1907,7 @@
 			"_text_hc" : 5374
 		},
 		{
-			"_axis" : 33,
+			"_axis" : 33,		//Collection
 			"_category" : 61,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1919,7 +1919,7 @@
 			"_text_hc" : 5373
 		},
 		{
-			"_axis" : 34,
+			"_axis" : 34,		//Discovery
 			"_category" : 62,
 			"_filtera" : 1,
 			"_filterb" : 1,
@@ -1931,7 +1931,7 @@
 			"_text_hc" : 5407
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 70,
 			"_filtera" : 55,
 			"_filterb" : 1,
@@ -1943,7 +1943,7 @@
 			"_text_hc" : 6893
 		},
 		{
-			"_axis" : 32,
+			"_axis" : 32,	//Competition
 			"_category" : 70,
 			"_filtera" : 55,
 			"_filterb" : 1,

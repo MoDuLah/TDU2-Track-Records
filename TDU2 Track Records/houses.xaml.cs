@@ -140,7 +140,7 @@ namespace TDU2_Track_Records
                             // Set house details
                             HouseName.Header = reader["Name"].ToString();
                             HouseRating.Text = reader["Stars"].ToString();
-                            HousePrice.Text = reader["Price"].ToString();
+                            HousePrice.Text = "$" + Convert.ToInt32(reader["Price"]).ToString("N0");
                             int houseMaxSlot = Convert.ToInt32(reader["Slots"]);
                             HouseMaxSlots.Text = houseMaxSlot.ToString();
 

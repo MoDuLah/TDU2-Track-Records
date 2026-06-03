@@ -29,8 +29,6 @@ namespace TDU2_Track_Records
         {
             InitializeComponent();
             LoadProgressFromDatabase();
-            UpdatePointsAndRecalculateProgress();
-
             LoadSubCategories(Tab1.Text, Tab1Type.Text, Tab1SubCategoryGrid);
             LoadSubCategories(Tab2.Text, Tab2Type.Text, Tab2SubCategoryGrid);
             LoadSubCategories(Tab3.Text, Tab3Type.Text, Tab3SubCategoryGrid);
@@ -39,6 +37,7 @@ namespace TDU2_Track_Records
             LoadSubCategories(Tab6.Text, Tab6Type.Text, Tab6SubCategoryGrid);
             LoadSubCategories(Tab7.Text, Tab7Type.Text, Tab7SubCategoryGrid);
             LoadSubCategories(Tab8.Text, Tab8Type.Text, Tab8SubCategoryGrid);
+            UpdatePointsAndRecalculateProgress();
         }
 
         private void LoadPointsIntoDictionaries()
@@ -189,36 +188,80 @@ namespace TDU2_Track_Records
                     }
                 }
 
-                // Calculate and update progress
-                competitionProgress.Progress = competitionMaxPoints > 0 ? Math.Round((competitionCurrentPoints * 100.0 / competitionMaxPoints),0) : 0;
-                socialProgress.Progress = socialMaxPoints > 0 ? Math.Round((socialCurrentPoints * 100.0 / socialMaxPoints),0) : 0;
+                // Competition Category
+                competitionProgress.Progress = competitionMaxPoints > 0 ? Math.Round((competitionCurrentPoints * 100.0 / competitionMaxPoints), 0) : 0;
+                var (competitionLevel, competitionTitle) = GetLevelAndTitle(competitionCurrentPoints, "Competition");
+                int competitionMaxLevel = GetMaxLevel("Competition");
+                CompetitionTitle.Text = competitionTitle;
+                CompetitionLevel.Text = $"{competitionLevel}/{competitionMaxLevel}";
+
+                // Social Category
+                socialProgress.Progress = socialMaxPoints > 0 ? Math.Round((socialCurrentPoints * 100.0 / socialMaxPoints), 0) : 0;
+                var (socialLevel, socialTitle) = GetLevelAndTitle(socialCurrentPoints, "Social");
+                int socialMaxLevel = GetMaxLevel("Social");
+                SocialTitle.Text = socialTitle;
+                SocialLevel.Text = $"{socialLevel}/{socialMaxLevel}";
+
+                // Discovery Category
                 discoveryProgress.Progress = discoveryMaxPoints > 0 ? Math.Round((discoveryCurrentPoints * 100.0 / discoveryMaxPoints), 0) : 0;
+                var (discoveryLevel, discoveryTitle) = GetLevelAndTitle(discoveryCurrentPoints, "Discovery");
+                int discoveryMaxLevel = GetMaxLevel("Discovery");
+                DiscoveryTitle.Text = discoveryTitle;
+                DiscoveryLevel.Text = $"{discoveryLevel}/{discoveryMaxLevel}";
+
+                // Collection Category
                 collectionProgress.Progress = collectionMaxPoints > 0 ? Math.Round((collectionCurrentPoints * 100.0 / collectionMaxPoints), 0) : 0;
+                var (collectionLevel, collectionTitle) = GetLevelAndTitle(collectionCurrentPoints, "Collection");
+                int collectionMaxLevel = GetMaxLevel("Collection");
+                CollectionTitle.Text = collectionTitle;
+                CollectionLevel.Text = $"{collectionLevel}/{collectionMaxLevel}";
+                
+                // Global Category
                 globalLevelProgress.Progress = globalMaxPoints > 0 ? Math.Round((globalCurrentPoints * 100.0 / globalMaxPoints), 0) : 0;
+                int globalLevel = collectionLevel+discoveryLevel+socialLevel+competitionLevel;
+                int globalMaxlevel = GetMaxLevel("Competition") + GetMaxLevel("Social") + GetMaxLevel("Collection") + GetMaxLevel("Discovery");
+                //GlobalTitle.Text = globalTitle;
+                GlobalLevel.Text = $"{globalLevel}/{globalMaxlevel}";
             }
         }
-        private void UpdatePointsAndRecalculateProgress(string subcategoryName)
-        {
-            // After updating an objective, recalculate the points and progress for the subcategory and category
-            LoadPointsIntoDictionaries();  // Recalculate dictionaries
-
-            // Assuming the category is known here, update the UI for the subcategory
-            foreach (UIElement child in Tab1SubCategoryGrid.Children) // Replace with the relevant tab's grid
+        private (int currentLevel, string title) GetLevelAndTitle(int currentPoints, string category)
             {
-                if (child is Border card && card.Tag is string tag && tag == subcategoryName)
+                using (var connection = new SQLiteConnection(connectionString))
                 {
-                    var grid = (Grid)card.Child;
-                    var middleStackPanel = (StackPanel)grid.Children[1];
-                    // Update points and progress bar for the subcategory
-                    int currentPoints = subcategoryProgress[subcategoryName].currentPoints;
-                    int maxPoints = subcategoryProgress[subcategoryName].maxPoints;
-                    double progress = maxPoints > 0 ? (double)currentPoints / maxPoints * 100 : 0;
+                    connection.Open();
+                    string query = @"SELECT Level, Title FROM objectives_levels
+                         WHERE Category = @Category AND PointsNeeded <= @CurrentPoints
+                         ORDER BY PointsNeeded DESC LIMIT 1";
 
-                    var pointsTextBlock = (TextBlock)middleStackPanel.Children[1]; // Assuming the points text is at index 1
-                    pointsTextBlock.Text = $"Points: {currentPoints} / {maxPoints}";
+                    using (var command = new SQLiteCommand(query, connection))
+                    {
+                        command.Parameters.AddWithValue("@Category", category);
+                        command.Parameters.AddWithValue("@CurrentPoints", currentPoints);
 
-                    var progressBar = (ProgressBar)middleStackPanel.Children[2]; // Assuming progress bar is at index 2
-                    progressBar.Value = progress;
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                int currentLevel = reader.GetInt32(0);
+                                string title = reader.GetString(1);
+                                return (currentLevel, title);
+                            }
+                            return (0, "Unknown"); // Default if no level is found
+                        }
+                    }
+                }
+            }
+        private int GetMaxLevel(string category)
+        {
+            using (var connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+                string query = @"SELECT MAX(Level) FROM objectives_levels WHERE Category = @Category";
+
+                using (var command = new SQLiteCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Category", category);
+                    return Convert.ToInt32(command.ExecuteScalar());
                 }
             }
         }

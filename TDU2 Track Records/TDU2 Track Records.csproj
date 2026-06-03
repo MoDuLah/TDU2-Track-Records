@@ -135,9 +135,6 @@
     <Compile Include="CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CircularProgressBarExample.xaml.cs">
-      <DependentUpon>CircularProgressBarExample.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Classes\ByteArrayToImageSourceConverter.cs" />
     <Compile Include="Classes\Points.cs" />
     <Compile Include="Classes\StringToDoubleConverter.cs" />
@@ -158,6 +155,9 @@
     <Compile Include="Model\VehicleModel.cs" />
     <Compile Include="ObjectivesWindow.xaml.cs">
       <DependentUpon>ObjectivesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="OdometerWindow.xaml.cs">
+      <DependentUpon>OdometerWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="powerlap.xaml.cs">
       <DependentUpon>powerlap.xaml</DependentUpon>
@@ -191,10 +191,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="CircularProgressBarExample.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="dealerships.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -224,6 +220,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ObjectivesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OdometerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
