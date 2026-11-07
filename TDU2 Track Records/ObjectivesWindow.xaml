@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TDU2_Track_Records"
         mc:Ignorable="d"
-        Title="ObjectivesWindow" Width="800" SizeToContent="WidthAndHeight">
+        Title="Objectives" Width="1180" Height="660" MinWidth="900" MinHeight="600"
+        SizeToContent="Manual" ResizeMode="CanResize">
 
     <Window.Background>
         <ImageBrush ImageSource="/Images/backgrounds/carbon.png"
@@ -17,12 +18,18 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition x:Name="SubCategoryRow" Height="*" />
+            <RowDefinition x:Name="ObjectiveDetailsRow" Height="0" />
         </Grid.RowDefinitions>
 
         <!-- TabControl in the first row of the grid -->
-        <TabControl Name="ObjectivesTabControl" HorizontalAlignment="Center" Grid.Row="0" SelectionChanged="ObjectivesTabControl_SelectionChanged">
+        <TabControl Name="ObjectivesTabControl" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                    Grid.Row="0" SelectionChanged="ObjectivesTabControl_SelectionChanged">
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabPanel}">
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                </Style>
+            </TabControl.Resources>
             <!-- TabItem 1: Summary -->
             <TabItem>
                 <TabItem.Header>
@@ -31,84 +38,64 @@
                         <TextBlock Text="Summary" HorizontalAlignment="Center"/>
                     </StackPanel>
                 </TabItem.Header>
-                <Border CornerRadius="20" Background="#FF161B1E" Width="700">
-                    <Grid >
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" MinHeight="200"/>
-                            <RowDefinition Height="Auto" MinHeight="200"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                              Focusable="False" FocusVisualStyle="{x:Null}">
+                    <Border CornerRadius="20" Background="#FF161B1E" MaxWidth="760"
+                            Margin="10,12" Padding="10" VerticalAlignment="Top">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <!-- Circular Progress Bars -->
-                        <local:CircularProgressBar x:Name="competitionProgress" Progress="50" Grid.Row="0" Grid.Column="0" Margin="0,20,0,20" Width="120" Height="120" VerticalAlignment="Top">
-                            <local:CircularProgressBar.StrokeColor>
-                                <SolidColorBrush Color="#FF2F91F5" Opacity="0.6"/>
-                            </local:CircularProgressBar.StrokeColor>
-                            <local:CircularProgressBar.Background>
-                                <ImageBrush ImageSource="/Images/ico/objectives/cat_1.png" Stretch="None" Opacity="0.70"/>
-                            </local:CircularProgressBar.Background>
-                        </local:CircularProgressBar>
-                        <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,0,15" >
-                            <TextBlock x:Name="CompetitionTitle" Foreground="#FF2F91F5" Text="Trainee" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                            <TextBlock x:Name="CompetitionLevel" Foreground="#FF2F91F5" Text="0/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                        </StackPanel>
-                        <local:CircularProgressBar x:Name="collectionProgress" Progress="90" Grid.Row="0" Grid.Column="2" Margin="0,20,0,20" Width="120" Height="120" VerticalAlignment="Top">
-                            <local:CircularProgressBar.StrokeColor>
-                                <SolidColorBrush Color="#FFA5C33B" Opacity="0.6"/>
-                            </local:CircularProgressBar.StrokeColor>
-                            <local:CircularProgressBar.Background>
-                                <ImageBrush ImageSource="/Images/ico/objectives/cat_2.png" Stretch="None" Opacity="0.7"/>
-                            </local:CircularProgressBar.Background>
-                        </local:CircularProgressBar>
-                        <StackPanel Grid.Row="0" Grid.Column="2" Margin="0,0,0,15" VerticalAlignment="Bottom" >
-                            <TextBlock x:Name="CollectionTitle" Foreground="#FFA5C33B" Text="Poor" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                            <TextBlock x:Name="CollectionLevel" Foreground="#FFA5C33B" Text="0/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                        </StackPanel>
-                        <local:CircularProgressBar x:Name="socialProgress" Progress="70" Grid.Row="1" Grid.Column="2" Margin="0,20,0,20" Width="120" Height="120" VerticalAlignment="Top">
-                            <local:CircularProgressBar.StrokeColor>
-                                <SolidColorBrush Color="HotPink" Opacity="0.6"/>
-                            </local:CircularProgressBar.StrokeColor>
-                            <local:CircularProgressBar.Background>
-                                <ImageBrush ImageSource="/Images/ico/objectives/cat_4.png" Stretch="None" Opacity="0.7"/>
-                            </local:CircularProgressBar.Background>
-                        </local:CircularProgressBar>
-                        <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,15" >
-                            <TextBlock x:Name="SocialTitle" Foreground="HotPink" Text="Lonely" FontSize="20"></TextBlock>
-                            <TextBlock x:Name="SocialLevel" Foreground="HotPink" Text="0/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                        </StackPanel>
-                        <local:CircularProgressBar x:Name="discoveryProgress" Progress="90" Grid.Row="1" Grid.Column="0" Margin="0,20,0,20" Width="120" Height="120" VerticalAlignment="Top">
-                            <local:CircularProgressBar.StrokeColor>
-                                <SolidColorBrush Color="DarkOrange" Opacity="0.6"/>
-                            </local:CircularProgressBar.StrokeColor>
-                            <local:CircularProgressBar.Background>
-                                <ImageBrush ImageSource="/Images/ico/objectives/cat_3.png" Stretch="None" Opacity="0.7"/>
-                            </local:CircularProgressBar.Background>
-                        </local:CircularProgressBar>
-
-
-                        <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,15" >
-                            <TextBlock x:Name="DiscoveryTitle" Foreground="DarkOrange" Text="Homebody" FontSize="20"></TextBlock>
-                            <TextBlock x:Name="DiscoveryLevel" Foreground="DarkOrange" Text="0/15" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                        </StackPanel>
-
-                        <local:CircularProgressBar x:Name="globalLevelProgress" Progress="20" Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Margin="0,20,0,20" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" Height="120">
-                            <local:CircularProgressBar.StrokeColor>
-                                <SolidColorBrush Color="Gold" Opacity="0.6"/>
-                            </local:CircularProgressBar.StrokeColor>
-                            <local:CircularProgressBar.Background>
-                                <ImageBrush ImageSource="/Images/ico/objectives/cat_0.png" Stretch="None" Opacity="0.75"/>
-                            </local:CircularProgressBar.Background>
-                        </local:CircularProgressBar>
-                        <StackPanel Grid.Row="0" Grid.RowSpan="2" Grid.Column="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,90" >
-                            <TextBlock x:Name="GlobalTitle" Foreground="White" Text="Global Level" FontSize="20"></TextBlock>
-                            <TextBlock x:Name="GlobalLevel" Foreground="Gold" Text="1/73" FontSize="20" HorizontalAlignment="Center"></TextBlock>
-                        </StackPanel>
-                    </Grid>
-                </Border>
+                            <StackPanel Grid.Row="0" Grid.Column="0"
+                                        Margin="8" VerticalAlignment="Center">
+                                <local:CircularProgressBar x:Name="competitionProgress" Icon="/Images/ico/objectives/cat_1.png" StrokeColor="#FF2F91F5"/>
+                                <TextBlock x:Name="CompetitionTitle" Text="Trainee" Foreground="#FF2F91F5"
+                                           FontSize="18" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                <TextBlock x:Name="CompetitionLevel" Text="0/15" Foreground="#FF2F91F5"
+                                           FontSize="18" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="2"
+                                        Margin="8" VerticalAlignment="Center">
+                                <local:CircularProgressBar x:Name="collectionProgress" Icon="/Images/ico/objectives/cat_2.png" StrokeColor="#FFA5C33B"/>
+                                <TextBlock x:Name="CollectionTitle" Text="Poor" Foreground="#FFA5C33B"
+                                           FontSize="18" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                <TextBlock x:Name="CollectionLevel" Text="0/15" Foreground="#FFA5C33B"
+                                           FontSize="18" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="0"
+                                        Margin="8" VerticalAlignment="Center">
+                                <local:CircularProgressBar x:Name="discoveryProgress" Icon="/Images/ico/objectives/cat_3.png" StrokeColor="DarkOrange"/>
+                                <TextBlock x:Name="DiscoveryTitle" Text="Homebody" Foreground="DarkOrange"
+                                           FontSize="18" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                <TextBlock x:Name="DiscoveryLevel" Text="0/15" Foreground="DarkOrange"
+                                           FontSize="18" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="2"
+                                        Margin="8" VerticalAlignment="Center">
+                                <local:CircularProgressBar x:Name="socialProgress" Icon="/Images/ico/objectives/cat_4.png" StrokeColor="HotPink"/>
+                                <TextBlock x:Name="SocialTitle" Text="Lonely" Foreground="HotPink"
+                                           FontSize="18" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                <TextBlock x:Name="SocialLevel" Text="0/15" Foreground="HotPink"
+                                           FontSize="18" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                                        Margin="8" VerticalAlignment="Center">
+                                <local:CircularProgressBar x:Name="globalLevelProgress" Icon="/Images/ico/objectives/cat_0.png" StrokeColor="Gold"/>
+                                <TextBlock x:Name="GlobalTitle" Text="Global Level" Foreground="White"
+                                           FontSize="18" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                <TextBlock x:Name="GlobalLevel" Text="1/73" Foreground="Gold"
+                                           FontSize="18" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </ScrollViewer>
             </TabItem>
 
             <!-- TabItem 2: Competition -->
@@ -132,7 +119,9 @@
                     </StackPanel>
                 </TabItem.Header>
                 <Grid x:Name="Tab1Grid">
-                    <UniformGrid x:Name="Tab1SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <UniformGrid x:Name="Tab1SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top"/>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
 
@@ -157,7 +146,9 @@
                     </StackPanel>
                 </TabItem.Header>
                 <Grid x:Name="Tab2Grid">
-                    <UniformGrid x:Name="Tab2SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <UniformGrid x:Name="Tab2SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top"/>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
 
@@ -171,7 +162,9 @@
                     </StackPanel>
                 </TabItem.Header>
                 <Grid x:Name="Tab3Grid">
-                    <UniformGrid x:Name="Tab3SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <UniformGrid x:Name="Tab3SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" />
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
 
@@ -185,7 +178,9 @@
                     </StackPanel>
                 </TabItem.Header>
                 <Grid x:Name="Tab4Grid">
-                    <UniformGrid x:Name="Tab4SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <UniformGrid x:Name="Tab4SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" />
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
 
@@ -199,7 +194,9 @@
                     </StackPanel>
                 </TabItem.Header>
                 <Grid x:Name="Tab5Grid">
-                    <UniformGrid x:Name="Tab5SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <UniformGrid x:Name="Tab5SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top"/>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
 
@@ -213,7 +210,9 @@
                     </StackPanel>
                 </TabItem.Header>
                 <Grid x:Name="Tab6Grid">
-                    <UniformGrid x:Name="Tab6SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400"/>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <UniformGrid x:Name="Tab6SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top"/>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
 
@@ -227,7 +226,9 @@
                     </StackPanel>
                 </TabItem.Header>
                 <Grid x:Name="Tab7Grid">
-                    <UniformGrid x:Name="Tab7SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <UniformGrid x:Name="Tab7SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" />
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
 
@@ -241,13 +242,16 @@
                     </StackPanel>
                 </TabItem.Header>
                 <Grid x:Name="Tab8Grid">
-                    <UniformGrid x:Name="Tab8SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" Height="400" />
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <UniformGrid x:Name="Tab8SubCategoryGrid" Columns="2" Margin="10" VerticalAlignment="Top" />
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>
 
         <!-- ScrollViewer in the second row of the grid -->
-        <ScrollViewer Grid.Row="1" x:Name="ObjectiveScrollViewer" Visibility="Collapsed" FocusVisualStyle="{x:Null}" MinHeight="300" MaxHeight="300" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
+        <ScrollViewer Grid.Row="1" x:Name="ObjectiveScrollViewer" Visibility="Collapsed" FocusVisualStyle="{x:Null}"
+                      VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10">
             <StackPanel x:Name="ObjectiveScrollViewerContent" />
         </ScrollViewer>
 

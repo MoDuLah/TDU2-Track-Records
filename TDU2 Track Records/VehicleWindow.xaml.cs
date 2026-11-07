@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SQLite;
 using System.IO;
 using System.Windows;
@@ -12,6 +11,7 @@ using TDU2_Track_Records.Properties;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using System.Linq;
+using System.Globalization;
 
 namespace TDU2_Track_Records
 {
@@ -20,94 +20,48 @@ namespace TDU2_Track_Records
     /// </summary>
     public partial class Vehicle : Window
     {
-        private List<VehicleManagement> _vehicles = new List<VehicleManagement>();
         readonly string connectionString = Settings.Default.connectionString;
         public string distance, speed;
-        readonly string SI = Settings.Default.system;
+        private string SI => Settings.Default.system;
 
         public Vehicle()
         {
             InitializeComponent();
+            ThemeManager.ApplyScopedControlStyles(this);
             BindComboBoxes();
+            if (VehicleComboBox.Items.Count > 0)
+                VehicleComboBox.SelectedIndex = 0;
         }
 
         private void BindComboBoxes()
         {
-            // Bind VehicleBrandComboBox and VehicleSelection without any filter
-            BindComboBox(VehicleBrandComboBox);
-            BindComboBox(VehicleComboBox);
+            try
+            {
+                LoadBrands();
+            }
+            catch (SQLiteException ex)
+            {
+                MessageBox.Show($"Vehicle brands could not be loaded.\n{ex.Message}",
+                    "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             LoadVehicles();
         }
 
-        private void BindComboBox(ComboBox comboBox, string filter = null)
+        private void LoadBrands()
         {
-            string query = GetQueryForComboBox(comboBox, filter);
-
-            if (string.IsNullOrEmpty(query))
+            const string query = "SELECT DISTINCT _brand_name FROM vehicles ORDER BY _brand_name;";
+            var brands = new List<string>();
+            using (var connection = new SQLiteConnection(connectionString))
+            using (var command = new SQLiteCommand(query, connection))
             {
-                MessageBox.Show("Invalid ComboBox provided.");
-                return;
-            }
-
-            try
-            {
-                string origin = "vehicles";
-
-                using (var dbConn = new SQLiteConnection(connectionString))
-                using (var dbCmd = new SQLiteCommand(query, dbConn))
+                connection.Open();
+                using (var reader = command.ExecuteReader())
                 {
-                    if (filter != null)
-                    {
-                        dbCmd.Parameters.AddWithValue("filter", filter); // Use ? placeholder for SQLite
-                    }
-
-                    using (var dbAdapter = new SQLiteDataAdapter(dbCmd))
-                    {
-                        dbConn.Open();
-
-                        var ds = new DataSet();
-                        dbAdapter.Fill(ds, origin);
-
-                        comboBox.ItemsSource = ds.Tables[0].DefaultView;
-                        comboBox.DisplayMemberPath = GetDisplayMemberPath(comboBox);
-                        comboBox.SelectedValuePath = "id";
-
-                    }
+                    while (reader.Read())
+                        brands.Add(reader[0].ToString());
                 }
             }
-            catch (SQLiteException sqlEx)
-            {
-                MessageBox.Show($"Database error occurred while loading data.\n{sqlEx.Message}", "Database Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"An error occurred while loading data.\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-
-        private string GetQueryForComboBox(ComboBox comboBox, string filter = null)
-        {
-            if (comboBox == VehicleBrandComboBox)
-            {
-                return @"
-            SELECT id, _brand_name
-            FROM vehicles 
-            GROUP BY _brand_name 
-            ORDER BY _brand_name ASC;";
-            }
-            else if (comboBox == VehicleComboBox)
-            {
-                return "SELECT id, _vehicle_name FROM vehicles ORDER BY _vehicle_name ASC;";
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private string GetDisplayMemberPath(ComboBox comboBox)
-        {
-            return comboBox == VehicleBrandComboBox ? "_brand_name" : "_vehicle_name";
+            VehicleBrandComboBox.ItemsSource = brands;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -115,15 +69,6 @@ namespace TDU2_Track_Records
             string height = this.Height.ToString();
             string width = this.Width.ToString();
             MessageBox.Show($"Width: {width} \n Height: {height}");
-        }
-        private double ConvertSpeedToSelectedUnit(double speed, string unit)
-        {
-            return unit == "mph" ? Math.Round(speed * 0.621371, 0) : speed;  // Convert to mph if selected
-        }
-
-        private double ConvertWeightToSelectedUnit(double weight, string unit)
-        {
-            return unit == "lbs" ? Math.Round(weight * 2.20462, 0) : weight;  // Convert to lbs if selected
         }
 
         private void LoadVehicles()
@@ -133,12 +78,15 @@ namespace TDU2_Track_Records
                 using (var conn = new SQLiteConnection(connectionString))
                 {
                     conn.Open();
-                    string query = $"SELECT * FROM vehicles ORDER BY _vehicle_name ASC;";
+                    string query = @"SELECT vehicles.*,
+                                            CAST(_vehicle_image AS BLOB) AS _vehicle_image_bytes
+                                     FROM vehicles
+                                     ORDER BY _vehicle_name ASC;";
                     using (var cmd = new SQLiteCommand(query, conn))
                     {
                         using (SQLiteDataReader reader = cmd.ExecuteReader())
                         {
-                            _vehicles.Clear(); // Clear the list before reloading data.
+                            var vehicles = new List<VehicleManagement>();
 
                             // Retrieve column indices once
                             var columnIndices = GetColumnIndices(reader);
@@ -186,16 +134,18 @@ namespace TDU2_Track_Records
                                     Acceleration0To100Kph = GetDouble(reader, columnIndices["_acceleration_0_100_kph"]).ToString(),
                                     VehicleWeight = GetInt(reader, columnIndices["_mass"]).ToString(),
 
-                                    VehicleImage = reader.IsDBNull(columnIndices["_vehicle_image"]) ? null : (byte[])reader["_vehicle_image"],
+                                    VehicleImage = reader.IsDBNull(columnIndices["_vehicle_image_bytes"])
+                                        ? null
+                                        : (byte[])reader["_vehicle_image_bytes"],
                                 };
-                                _vehicles.Add(vehicle);
+                                vehicles.Add(vehicle);
                             }
 
 
                             // Bind the vehicles list to the ComboBox
-                            VehicleComboBox.ItemsSource = _vehicles;
-                            VehicleComboBox.DisplayMemberPath = "VehicleName"; // Or another property to display
-                            VehicleComboBox.SelectedValuePath = "id"; // Optional, use if you need to bind the Id
+                            VehicleComboBox.DisplayMemberPath = nameof(VehicleManagement.VehicleName);
+                            VehicleComboBox.SelectedValuePath = nameof(VehicleManagement.id);
+                            VehicleComboBox.ItemsSource = vehicles;
                         }
                     }
                 }
@@ -230,9 +180,17 @@ namespace TDU2_Track_Records
             return indices;
         }
 
-        private int GetInt(SQLiteDataReader reader, int index) => reader.IsDBNull(index) ? default : reader.GetInt32(index);
-        private string GetString(SQLiteDataReader reader, int index) => reader.IsDBNull(index) ? null : reader.GetString(index);
-        private double GetDouble(SQLiteDataReader reader, int index) => reader.IsDBNull(index) ? default : reader.GetDouble(index);
+        private int GetInt(SQLiteDataReader reader, int index) => reader.IsDBNull(index)
+            ? default
+            : Convert.ToInt32(reader.GetValue(index), CultureInfo.InvariantCulture);
+
+        private string GetString(SQLiteDataReader reader, int index) => reader.IsDBNull(index)
+            ? null
+            : Convert.ToString(reader.GetValue(index), CultureInfo.InvariantCulture);
+
+        private double GetDouble(SQLiteDataReader reader, int index) => reader.IsDBNull(index)
+            ? default
+            : Convert.ToDouble(reader.GetValue(index), CultureInfo.InvariantCulture);
 
 
         private void VehicleComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -260,32 +218,20 @@ namespace TDU2_Track_Records
 
         private void PopulateVehicleDetails(VehicleManagement selectedVehicle)
         {
-            string selectedSpeedUnit = Settings.Default.speed;
-            string selectedWeightUnit = Settings.Default.weight;
-
             // Set Vehicle Id
             VehicleIdTextBox.Text = selectedVehicle.id.ToString();
 
             // Set Vehicle Brand
-            VehicleBrandComboBox.Text = selectedVehicle.VehicleBrand ?? string.Empty;
+            VehicleBrandComboBox.SelectedItem = selectedVehicle.VehicleBrand;
 
             // Set Vehicle Model and Category
             VehicleModelTextBox.Text = selectedVehicle.VehicleModel ?? string.Empty;
-            VehicleClassComboBox.Text = selectedVehicle.VehicleCategory ?? string.Empty;
+            VehicleClassComboBox.SelectedValue = selectedVehicle.VehicleCategory;
 
             // Set Odometer visibility and text
-            if (SI == "Metric")
-            {
-                _odometer_metric.Text = selectedVehicle.VehicleOdometerMetric.ToString("F2");
-                _odometer_metric.Visibility = Visibility.Visible;
-                _odometer_imperial.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                _odometer_imperial.Text = selectedVehicle.VehicleOdometerImperial.ToString("F2");
-                _odometer_metric.Visibility = Visibility.Collapsed;
-                _odometer_imperial.Visibility = Visibility.Visible;
-            }
+            _odometer_metric.Text = selectedVehicle.VehicleOdometerMetric.ToString("F2");
+            _odometer_imperial.Text = selectedVehicle.VehicleOdometerImperial.ToString("F2");
+            UpdateOdometerVisibility();
 
             // Set other vehicle details
             VehiclePriceTextBox.Text = selectedVehicle.VehiclePrice?.ToString() ?? string.Empty;
@@ -302,21 +248,21 @@ namespace TDU2_Track_Records
             DifficultyStatSlider.Value = selectedVehicle.VehicleDifficultyStat;
 
             EngineDisplacementTextBox.Text = selectedVehicle.VehicleEngineDisplacement;
-            EngineTypeComboBox.Text = selectedVehicle.EngineTypeName;
-            EngineDriveComboBox.Text = selectedVehicle.DriveName;
-            EnginePositionComboBox.Text = selectedVehicle.EnginePosition;
+            EngineTypeComboBox.SelectedValue = selectedVehicle.EngineTypeName;
+            EngineDriveComboBox.SelectedValue = selectedVehicle.DriveName;
+            EnginePositionComboBox.SelectedValue = selectedVehicle.EnginePosition;
 
-            MaxTorqueTextBox.Text = selectedVehicle.VehicleMaxTorque;
+            MaxTorqueTextBox.Text = FormatMetricSpec(selectedVehicle.VehicleMaxTorque, MeasurementUnits.PoundFeetPerNewtonMeter);
             MaxTorqueRPMTextBox.Text = selectedVehicle.VehicleMaxTorqueRPM;
             MaxPowerTextBox.Text = selectedVehicle.VehicleMaxPower;
             MaxPowerRPMTextBox.Text = selectedVehicle.VehicleMaxPowerRPM;
 
-            GearboxComboBox.Text = selectedVehicle.GearboxName;
-            GearsComboBox.Text = selectedVehicle.NbGears;
+            GearboxComboBox.SelectedValue = selectedVehicle.GearboxName;
+            GearsComboBox.SelectedValue = selectedVehicle.NbGears;
 
-            TopSpeedTextBox.Text = selectedVehicle.VehicleTopSpeed;
+            TopSpeedTextBox.Text = FormatMetricSpec(selectedVehicle.VehicleTopSpeed, MeasurementUnits.MilesPerKilometer);
             AccelerationTextBox.Text = selectedVehicle.Acceleration0To100Kph;
-            WeightTextBox.Text = selectedVehicle.VehicleWeight;
+            WeightTextBox.Text = FormatMetricSpec(selectedVehicle.VehicleWeight, MeasurementUnits.PoundsPerKilogram);
             VehicleTags.Text = selectedVehicle.VehicleTags;
 
             // Set the vehicle image if available
@@ -338,6 +284,27 @@ namespace TDU2_Track_Records
             }
         }
 
+
+        private static string FormatMetricSpec(string text, double factor) =>
+            MeasurementUnits.IsImperial ? MeasurementUnits.ConvertText(text, factor, true) : text;
+
+        private void UpdateOdometerVisibility()
+        {
+            _odometer_metric.Visibility = MeasurementUnits.IsImperial ? Visibility.Collapsed : Visibility.Visible;
+            _odometer_imperial.Visibility = MeasurementUnits.IsImperial ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        internal void RefreshMeasurementUnits()
+        {
+            bool imperial = MeasurementUnits.IsImperial;
+            TextBox previousOdometer = imperial ? _odometer_metric : _odometer_imperial;
+            TextBox currentOdometer = imperial ? _odometer_imperial : _odometer_metric;
+            MeasurementUnits.ConvertDraft(previousOdometer, MeasurementUnits.MilesPerKilometer, imperial, currentOdometer);
+            UpdateOdometerVisibility();
+            MeasurementUnits.ConvertDraft(TopSpeedTextBox, MeasurementUnits.MilesPerKilometer, imperial);
+            MeasurementUnits.ConvertDraft(WeightTextBox, MeasurementUnits.PoundsPerKilogram, imperial);
+            MeasurementUnits.ConvertDraft(MaxTorqueTextBox, MeasurementUnits.PoundFeetPerNewtonMeter, imperial);
+        }
 
         private void ExecuteNonQuery(string query, Action<SQLiteCommand> setParameters)
         {
@@ -425,7 +392,7 @@ namespace TDU2_Track_Records
                     MessageBox.Show("Vehicle details updated successfully.");
                     AddVehicle.IsEnabled = true;
                     BindComboBoxes(); // Refresh the ComboBoxes
-                    LoadVehicles();  // Refresh the list
+
                     ResetControls(this);
                 }
                 catch (Exception ex)
@@ -469,8 +436,8 @@ namespace TDU2_Track_Records
 
             // Validate mileage
             bool isMileageValid = SI == "Metric"
-                ? double.TryParse(_odometer_metric.Text, out mileage)
-                : double.TryParse(_odometer_imperial.Text, out mileage);
+                ? MeasurementUnits.TryParse(_odometer_metric.Text, out mileage)
+                : MeasurementUnits.TryParse(_odometer_imperial.Text, out mileage);
 
             if (!isMileageValid || mileage < 0)
             {
@@ -484,7 +451,7 @@ namespace TDU2_Track_Records
             }
 
             // Validate top speed
-            if (string.IsNullOrWhiteSpace(TopSpeedTextBox.Text) || !int.TryParse(TopSpeedTextBox.Text, out topSpeed) || topSpeed <= 0)
+            if (!MeasurementUnits.TryReadMetricInteger(TopSpeedTextBox.Text, MeasurementUnits.MilesPerKilometer, out topSpeed) || topSpeed <= 0)
             {
                 errorMessages.Add("Invalid or empty top speed.");
             }
@@ -529,7 +496,7 @@ namespace TDU2_Track_Records
             }
 
             // Validate max torque
-            if (string.IsNullOrWhiteSpace(MaxTorqueTextBox.Text) || !int.TryParse(MaxTorqueTextBox.Text, out maxTorque) || maxTorque <= 0)
+            if (!MeasurementUnits.TryReadMetricInteger(MaxTorqueTextBox.Text, MeasurementUnits.PoundFeetPerNewtonMeter, out maxTorque) || maxTorque <= 0)
             {
                 errorMessages.Add("Invalid or empty max torque.");
             }
@@ -541,7 +508,7 @@ namespace TDU2_Track_Records
             }
 
             // Validate weight
-            if (string.IsNullOrWhiteSpace(WeightTextBox.Text) || !int.TryParse(WeightTextBox.Text, out weight) || weight <= 0)
+            if (!MeasurementUnits.TryReadMetricInteger(WeightTextBox.Text, MeasurementUnits.PoundsPerKilogram, out weight) || weight <= 0)
             {
                 errorMessages.Add("Invalid or empty weight.");
             }
@@ -587,13 +554,13 @@ namespace TDU2_Track_Records
 
             if (SI == "Metric")
             {
-                vehicle.VehicleOdometerMetric = mileage;
-                vehicle.VehicleOdometerImperial = Math.Round(mileage * 0.621371, 1);
+                vehicle.VehicleOdometerMetric = Math.Round(mileage, 2);
+                vehicle.VehicleOdometerImperial = Math.Round(mileage * 0.621371, 2);
             }
             else
             {
-                vehicle.VehicleOdometerImperial = mileage;
-                vehicle.VehicleOdometerMetric = Math.Round(mileage * 1.60934, 1);
+                vehicle.VehicleOdometerImperial = Math.Round(mileage, 2);
+                vehicle.VehicleOdometerMetric = Math.Round(mileage * 1.60934, 2);
             }
 
             vehicle.IsOwned = VehicleOwnedCheckBox.IsChecked == true ? true : false;
@@ -674,8 +641,8 @@ namespace TDU2_Track_Records
             string name = $"{brand} {model}";
             string vehicleClass = VehicleClassComboBox.Text;
 
-            double meter_Metric = SI == "Metric" ? double.Parse(_odometer_metric.Text) : Math.Round(double.Parse(_odometer_imperial.Text) * 1.60934, 1);
-            double meter_Imperial = SI == "Metric" ? Math.Round(meter_Metric * 0.621371, 1) : double.Parse(_odometer_imperial.Text);
+            double meter_Metric = Math.Round(MeasurementUnits.ToMetric(mileage, MeasurementUnits.MilesPerKilometer), 2);
+            double meter_Imperial = Math.Round(MeasurementUnits.IsImperial ? mileage : mileage * MeasurementUnits.MilesPerKilometer, 2);
 
             price = Convert.ToInt32(VehiclePriceTextBox.Text);
             bool isActive = VehicleActiveCheckBox.IsChecked == true;
@@ -736,7 +703,7 @@ namespace TDU2_Track_Records
             }
             MessageBox.Show("Vehicle Added");
             BindComboBoxes(); // Refresh ComboBoxes
-            LoadVehicles();  // Refresh the list
+
             ResetControls(this);
         }
 
@@ -791,7 +758,7 @@ namespace TDU2_Track_Records
         private void OneDecimalPointTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             // Define a regular expression pattern to allow only non-negative numbers with one decimal point
-            var regex = new Regex(@"^\d*\.?\d{0,1}$");
+            var regex = new Regex(@"^\d*[.,]?\d{0,2}$");
             e.Handled = !regex.IsMatch(e.Text);
         }
 
@@ -800,7 +767,7 @@ namespace TDU2_Track_Records
             if (e.DataObject.GetDataPresent(DataFormats.Text))
             {
                 var pasteText = e.DataObject.GetData(DataFormats.Text) as string;
-                var regex = new Regex(@"^\d*\.?\d{0,1}$");
+                var regex = new Regex(@"^\d*[.,]?\d{0,2}$");
 
                 if (!regex.IsMatch(pasteText))
                 {
@@ -813,7 +780,7 @@ namespace TDU2_Track_Records
         {
             if (!(sender is TextBox textBox)) return;
 
-            var regex = new Regex(@"^\d*\.?\d{0,1}$");
+            var regex = new Regex(@"^\d*[.,]?\d{0,2}$");
             var text = textBox.Text;
             if (!regex.IsMatch(text))
             {
@@ -862,6 +829,9 @@ namespace TDU2_Track_Records
 
         private void VehicleManagement_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (Window.GetWindow(e.OriginalSource as DependencyObject) != this)
+                return;
+
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 this.DragMove();

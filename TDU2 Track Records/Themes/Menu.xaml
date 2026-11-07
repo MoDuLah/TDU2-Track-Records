@@ -389,4 +389,53 @@
         </Setter>
     </Style>
 
+    <Style x:Key="LocationMenuRegionStyle" TargetType="{x:Type MenuItem}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="#FF1C1E23"/>
+        <Setter Property="BorderBrush" Value="#FF424650"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Padding" Value="10,0"/>
+        <Setter Property="Margin" Value="0,0,4,0"/>
+        <Setter Property="MinHeight" Value="34"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <Grid>
+                        <Border x:Name="RegionBorder" CornerRadius="2"
+                                Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1" Padding="{TemplateBinding Padding}">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <ContentPresenter ContentSource="Header" RecognizesAccessKey="True"/>
+                                <Path Data="M 0 0 L 7 0 L 3.5 4 Z" Fill="White"
+                                      VerticalAlignment="Center" Margin="8,0,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True" Focusable="False"
+                               IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}">
+                            <Border Background="#FF27292E" BorderBrush="#FF424650" BorderThickness="1" Padding="2">
+                                <ScrollViewer MinWidth="210" MaxHeight="420" VerticalScrollBarVisibility="Auto"
+                                              HorizontalScrollBarVisibility="Disabled" Focusable="False">
+                                    <ItemsPresenter Grid.IsSharedSizeScope="True"
+                                                    KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}" Value="True">
+                            <Setter TargetName="RegionBorder" Property="Background" Value="#FFE52521"/>
+                        </DataTrigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="RegionBorder" Property="BorderBrush" Value="#FFFF8A86"/>
+                        </Trigger>
+                        <Trigger Property="IsSubmenuOpen" Value="True">
+                            <Setter TargetName="RegionBorder" Property="BorderBrush" Value="#FFFF8A86"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

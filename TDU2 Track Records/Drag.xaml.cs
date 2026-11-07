@@ -22,8 +22,22 @@ namespace TDU2_Track_Records
         public Drag()
         {
             InitializeComponent();
+            ThemeManager.ApplyScopedControlStyles(this);
+            MaxHeight = Math.Max(320, SystemParameters.WorkArea.Height - 24);
+            MaxWidth = Math.Max(320, SystemParameters.WorkArea.Width - 24);
             LoadVehicleData(); // Load vehicle data into the dictionary
             LoadVehicleNames(); // Populate ComboBox
+        }
+
+        private void BrakeAttempts_Click(object sender, RoutedEventArgs e)
+        {
+            var attempts = new BrakingTestWindow
+            {
+                Owner = Window.GetWindow((DependencyObject)sender),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            ThemeManager.ApplyScopedControlStyles(attempts);
+            attempts.ShowDialog();
         }
 
         // Load vehicle data into a dictionary
@@ -493,6 +507,9 @@ namespace TDU2_Track_Records
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (Window.GetWindow(e.OriginalSource as DependencyObject) != this)
+                return;
+
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 this.DragMove();

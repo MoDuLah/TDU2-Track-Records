@@ -238,5 +238,18 @@ namespace TDU2_Track_Records.Properties {
                 this["dealershipSlots"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string liveSavePath {
+            get {
+                return ((string)(this["liveSavePath"]));
+            }
+            set {
+                this["liveSavePath"] = value;
+            }
+        }
+
     }
 }

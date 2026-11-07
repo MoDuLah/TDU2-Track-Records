@@ -177,6 +177,9 @@ namespace TDU2_Track_Records
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (Window.GetWindow(e.OriginalSource as DependencyObject) != this)
+                return;
+
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 this.DragMove();

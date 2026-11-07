@@ -20,9 +20,9 @@ namespace TDU2_Track_Records
         public powerlap()
         {
             InitializeComponent();
+            ThemeManager.ApplyScopedControlStyles(this);
             viewModel = new PowerLapViewModel();
             DataContext = viewModel;
-            Fill(combo_Track);
             List<ComboBoxItem> items = new List<ComboBoxItem>
             {
                 new ComboBoxItem { ImagePath = "Images/carClasses/SC.png", Description = "All", Value = "All" },
@@ -46,6 +46,7 @@ namespace TDU2_Track_Records
             };
 
             combo_Class.ItemsSource = items;
+            combo_Class.SelectedIndex = 0;
             List<ComboBoxItem> sorts = new List<ComboBoxItem>
             {
                 new ComboBoxItem { ImagePath = "Images/carClasses/SC.png", Description = "Car Name", Value = "carName" },
@@ -56,7 +57,7 @@ namespace TDU2_Track_Records
             combo_Sort.ItemsSource = sorts;
 
             combo_TextBlock.Visibility = Visibility.Collapsed;
-            //combo_Track.SelectionChanged += Combo_Track_SelectionChanged;
+            RefreshRecordedTracks();
         }
 
         private void Combo_Class_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -68,68 +69,31 @@ namespace TDU2_Track_Records
             }
         }
 
-        private void LoadFastestLaps()
+        private bool LoadFastestLaps()
         {
-            if (combo_Track.SelectedIndex == -1) return;
-            if (combo_Track.SelectedValue != null)
+            if (combo_Track.SelectedValue == null)
+                return false;
+
+            int trackId = Convert.ToInt32(combo_Track.SelectedValue);
+            int conditions = cb_conditions.IsChecked == true ? 1 : 0;
+            int orientation = cb_orientation.IsChecked == true ? 1 : 0;
+            string carClass = (combo_Class.SelectedItem as ComboBoxItem)?.Value ?? "All";
+
+            var lapDataAccess = new LapDataAccess(connectionString);
+            List<Lap> fastestLaps = lapDataAccess.GetFastestLapForEachCar(trackId, conditions, orientation, carClass);
+            LapsListBox.ItemsSource = fastestLaps;
+            if (fastestLaps.Count == 0)
             {
-                // Get the selected track ID
-                int trackId = Convert.ToInt32(combo_Track.SelectedValue);
-
-                // Determine the conditions and orientation based on the checkboxes
-                int conditions = cb_conditions.IsChecked == true ? 1 : 0;
-                int orientation = cb_orientation.IsChecked == true ? 1 : 0;
-
-                // Get the selected car class, if any
-                string carClass;
-                if (combo_Class.SelectedIndex >= 0)
-                {
-                    var selectedItem = combo_Class.SelectedItem as ComboBoxItem;
-                    carClass = selectedItem?.Value.ToString() ?? "*";
-                }
-                else
-                {
-                    carClass = "*";
-                }
-
-                LapDataAccess lapDataAccess = new LapDataAccess(connectionString);
-
-                // Get the fastest lap for each car
-                List<Lap> fastestLaps = lapDataAccess.GetFastestLapForEachCar(trackId, conditions, orientation, carClass);
-
-                LapsListBox.ItemsSource = fastestLaps;
-
-                // Update ViewModel based on conditions
-                foreach (var lap in fastestLaps)
-                {
-                    string wc, lo;
-
-                    if (lap.WeatherConditions == "0")
-                    {
-                        viewModel.WeatherImageSource = "/Images/sun.png"; // Example path
-                        viewModel.IsWeatherImageVisible = true;
-                        wc = viewModel.WeatherImageSource.ToString();
-                    }
-                    else
-                    {
-                        viewModel.WeatherImageSource = "/Images/rain.png"; // Hide weather image
-                        viewModel.IsWeatherImageVisible = true;
-                        wc = viewModel.WeatherImageSource.ToString();
-                    }
-                    if (lap.Orientation == "0")
-                    {
-                        viewModel.OrientationImageSource = "/Images/clockwise.png";
-                        viewModel.IsOrientationImageVisible = true;
-                        lo = viewModel.OrientationImageSource.ToString();
-                    }
-                    else
-                    {
-                        viewModel.OrientationImageSource = "/Images/anticlockwise.png";
-                        viewModel.IsOrientationImageVisible = true;
-                        lo = viewModel.OrientationImageSource.ToString();
-                    }
-                }
+                PowerLapStatus.Text = "No lap times for this class, weather and direction.";
+                return false;
             }
+
+            PowerLapStatus.Text = string.Empty;
+            viewModel.WeatherImageSource = conditions == 0 ? "/Images/sun.png" : "/Images/rain.png";
+            viewModel.IsWeatherImageVisible = true;
+            viewModel.OrientationImageSource = orientation == 0 ? "/Images/clockwise.png" : "/Images/anticlockwise.png";
+            viewModel.IsOrientationImageVisible = true;
+            return true;
         }
 
         private void cb_conditions_StateChanged(object sender, RoutedEventArgs e)
@@ -208,80 +172,62 @@ namespace TDU2_Track_Records
 
         private void combo_Button_Click(object sender, RoutedEventArgs e)
         {
-            if(combo_Class.SelectedIndex == -1) { return; }
-            //// Load the fastest laps based on the selected track
-            LoadFastestLaps();
+            if (!(combo_Track.SelectedItem is DataRowView selectedTrack) ||
+                !(combo_Class.SelectedItem is ComboBoxItem selectedClass) ||
+                !LoadFastestLaps())
+                return;
 
-            // Get the selected item from the ComboBox
-            var selectedTrack = combo_Track.SelectedItem;
-            var selectedItem = combo_Class.SelectedItem as ComboBoxItem;
-            string selectedClassText = "";
-            if (selectedTrack != null)
+            combo_TextBlock.Content = new Image
             {
-                // Assuming the selected item is a DataRowView (or similar) and "Name" is the column you want
-                var selectedTrackText = (selectedTrack as DataRowView)?["Name"].ToString();
-                if (combo_Class.SelectedIndex >= 0)
-                {
-                    selectedClassText = selectedItem?.Value.ToString() ?? "All";
-                }
-                else
-                {
-                    selectedClassText = "";
-                }
-
-                // Create an Image control to display the selected image
-                var imageControl = new Image
-                {
-                    Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(selectedItem.ImagePath, UriKind.Relative)),
-                    Width = 40,
-                    Height = 40
-                };
-
-                // Update the ContentControl with the selected image
-                trackName.Text = "@" + selectedTrackText;
-                combo_TextBlock.Content = imageControl;
-
-                cb_weather.IsEnabled = false;
-                txt_orientation.IsEnabled = false;
-                combo_TextBlock.Visibility = Visibility.Visible;
-                grp.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                // Handle case where no item is selected, if necessary
-                combo_TextBlock.Visibility = Visibility.Collapsed;
-                cb_weather.IsEnabled = true;
-                txt_orientation.IsEnabled = true;
-            }
-
-            // Make the TextBlock visible and collapse the group box
-
+                Source = new System.Windows.Media.Imaging.BitmapImage(new Uri(selectedClass.ImagePath, UriKind.Relative)),
+                Width = 40,
+                Height = 40
+            };
+            trackName.Text = "@" + selectedTrack["Name"];
+            combo_TextBlock.Visibility = Visibility.Visible;
+            cb_weather.IsEnabled = false;
+            txt_orientation.IsEnabled = false;
+            grp.Visibility = Visibility.Collapsed;
         }
 
-        private void Fill(ComboBox comboBox)
+        private void TrackComboBox_DropDownOpened(object sender, EventArgs e)
         {
-            using (SQLiteConnection dbConn = new SQLiteConnection(connectionString))
-            {
-                dbConn.Open();
-                using (SQLiteCommand dbCmd = new SQLiteCommand("SELECT id, Name FROM tracks", dbConn))
-                {
-                    try
-                    {
-                        using (SQLiteDataAdapter dbAdapter = new SQLiteDataAdapter(dbCmd))
-                        {
-                            DataSet ds = new DataSet();
-                            dbAdapter.Fill(ds, "tracks");
+            RefreshRecordedTracks();
+        }
 
-                            comboBox.ItemsSource = ds.Tables[0].DefaultView;
-                            comboBox.DisplayMemberPath = "Name"; // Display the 'Name' column
-                            comboBox.SelectedValuePath = "id"; // Use the 'id' column as the value
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"An error occurred while loading tracks:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
+        private void RefreshRecordedTracks()
+        {
+            const string query = @"
+                SELECT t.id, t.Name
+                FROM tracks t
+                WHERE EXISTS (
+                    SELECT 1 FROM records r
+                    WHERE r.trackId = t.id AND " + LapDataAccess.TimedRecordFilter + @"
+                )
+                ORDER BY t.Name COLLATE NOCASE, t.id;";
+
+            try
+            {
+                object selectedTrackId = combo_Track.SelectedValue;
+                using (var connection = new SQLiteConnection(connectionString))
+                using (var command = new SQLiteCommand(query, connection))
+                using (var adapter = new SQLiteDataAdapter(command))
+                {
+                    connection.Open();
+                    var tracks = new DataTable();
+                    adapter.Fill(tracks);
+                    combo_Track.DisplayMemberPath = "Name";
+                    combo_Track.SelectedValuePath = "id";
+                    combo_Track.ItemsSource = tracks.DefaultView;
+                    combo_Track.SelectedValue = selectedTrackId;
+                    combo_Button.IsEnabled = tracks.Rows.Count > 0;
+                    PowerLapStatus.Text = tracks.Rows.Count == 0 ? "No timed laps saved yet." : string.Empty;
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred while loading tracks:\n{ex.Message}",
+                    "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -289,8 +235,9 @@ namespace TDU2_Track_Records
         {
             grp.Visibility = Visibility.Visible;
             combo_TextBlock.Visibility = Visibility.Collapsed;
-            LapsListBox.ItemsSource = "";
+            LapsListBox.ItemsSource = null;
             trackName.Text = "";
+            PowerLapStatus.Text = combo_Track.Items.Count == 0 ? "No timed laps saved yet." : string.Empty;
             cb_weather.IsEnabled = true;
             txt_orientation.IsEnabled = true;
         }
@@ -324,6 +271,7 @@ namespace TDU2_Track_Records
     public class LapDataAccess
     {
         private readonly string _connectionString;
+        internal const string TimedRecordFilter = "TRIM(r.Total_Time) COLLATE NOCASE NOT IN ('', 'N/A')";
 
         public LapDataAccess(string connectionString)
         {
@@ -335,20 +283,14 @@ namespace TDU2_Track_Records
             List<Lap> laps = new List<Lap>();
             try
             {
-                string query;
-
-                if (carClass == "All")
-                {
-                    query = $"SELECT carName, MIN(Total_Time) AS Fastest_Time, carClass, conditions, orientation " +
-                            $"FROM records WHERE trackId = @TrackId AND conditions = @Conditions AND orientation = @Orientation " +
-                            $"GROUP BY carName, carClass, conditions, orientation ORDER BY Fastest_Time ASC";
-                }
-                else
-                {
-                    query = $"SELECT carName, MIN(Total_Time) AS Fastest_Time, carClass, conditions, orientation " +
-                            $"FROM records WHERE trackId = @TrackId AND carClass = @CarClass AND conditions = @Conditions AND orientation = @Orientation " +
-                            $"GROUP BY carName, carClass, conditions, orientation ORDER BY Fastest_Time ASC";
-                }
+                const string query = @"
+                    SELECT r.carName, MIN(r.Total_Time) AS Fastest_Time, r.carClass, r.conditions, r.orientation
+                    FROM records r
+                    WHERE r.trackId = @TrackId AND r.conditions = @Conditions AND r.orientation = @Orientation
+                      AND (@CarClass = 'All' OR r.carClass = @CarClass)
+                      AND " + TimedRecordFilter + @"
+                    GROUP BY r.carName, r.carClass, r.conditions, r.orientation
+                    ORDER BY Fastest_Time ASC;";
 
                 using (SQLiteConnection connection = new SQLiteConnection(_connectionString))
                 {

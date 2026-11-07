@@ -9,11 +9,11 @@
         mc:Ignorable="d" WindowStyle="None" AllowsTransparency="True"
         SizeToContent="WidthAndHeight"
         FontSize="16" WindowStartupLocation="CenterScreen"
-        Icon="/Images/tdu2.ico" FontFamily="Adobe Gothic Std B"
+        Icon="/TDU2.ico" FontFamily="Adobe Gothic Std B"
         Background="{x:Null}"
         Title="Power Lap Board"
         MinWidth="1100" MinHeight="600" MaxHeight="950"
-        HorizontalContentAlignment="Stretch"
+        HorizontalContentAlignment="Stretch" ResizeMode="CanResizeWithGrip"
         MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
     <Window.Resources>
@@ -26,7 +26,10 @@
     <Window.DataContext>
         <local:PowerLapViewModel/>
     </Window.DataContext>
-    <Border BorderBrush="Red" BorderThickness="2,2,2,2" CornerRadius="20,20,20,20" Margin="0" MinHeight="900" MinWidth="992" PreviewMouseRightButtonUp="LapsListBox_PreviewMouseRightButtonUp" HorizontalAlignment="Center">
+    <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+    <Border BorderBrush="{DynamicResource AppShellBorderBrush}" BorderThickness="{DynamicResource AppShellBorderThickness}"
+            CornerRadius="{DynamicResource AppShellCornerRadius}" Margin="0" MinHeight="900" MinWidth="992"
+            PreviewMouseRightButtonUp="LapsListBox_PreviewMouseRightButtonUp" HorizontalAlignment="Center">
         <Border.Background>
             <ImageBrush ImageSource="/Images/powerLapbg.png" Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}" Stretch="Fill"/>
         </Border.Background>
@@ -49,7 +52,10 @@
             </Grid.RowDefinitions>
             <DockPanel x:Name="grp" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <GroupBox Header="Track">
-                    <ComboBox x:Name="combo_Track" ItemsSource="{Binding}" TabIndex="0" MinWidth="150" MaxDropDownHeight="250" VerticalAlignment="Center" Height="45" MinHeight="45"/>
+                    <ComboBox x:Name="combo_Track" TabIndex="0" MinWidth="150" MaxDropDownHeight="250"
+                              VerticalAlignment="Center" Height="45" MinHeight="45"
+                              ToolTip="Tracks with saved lap times"
+                              DropDownOpened="TrackComboBox_DropDownOpened"/>
                 </GroupBox>
                 <GroupBox Header="Class">
                     <ComboBox x:Name="combo_Class" MinWidth="150" Margin="5" MaxDropDownHeight="250" VerticalAlignment="Center" Height="42" MinHeight="45" >
@@ -153,6 +159,9 @@
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
+            <TextBlock x:Name="PowerLapStatus" Grid.Row="4" Grid.Column="1" FontSize="18"
+                       Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,22,0,0"/>
         </Grid>
     </Border>
+    </Viewbox>
 </Window>

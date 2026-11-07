@@ -19,30 +19,34 @@ namespace TDU2_Track_Records
         readonly string SI = Settings.Default.system;
         public int SelectedMaxSlots = Settings.Default.dealershipSlots;
         public int dealershipColumn = Settings.Default.dealershipColumns;
+        private int DealerCardColumns => Math.Max(1, dealershipColumn);
         private static double lastcardLeft;
         private static double lastcardTop;
         bool isUnlocked = false;
+        private readonly LocationMenu locationMenu;
+
         public dealerships()
         {
             InitializeComponent();
-            PreloadAvailableCars(); // Preload cars once when initializing
+            PreloadAvailableCars();
+            var locations = LocationMenu.ReadLocations(connectionString,
+                "SELECT Name, Island FROM dealerships ORDER BY id", separateCasinoShowrooms: true);
+            locationMenu = new LocationMenu(LocationMenus, LocationSearchBox, LocationCountText,
+                locations, "LOCATIONS", ShowLocation, includeCasino: true);
+            locationMenu.SelectFirst();
         }
 
-        private void IslandComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private static TextBlock CreateGroupHeader(string text, double fontSize)
         {
-            if (DealershipListBox.Visibility == Visibility.Collapsed) 
+            return new TextBlock
             {
-                DealershipListBox.Visibility = Visibility.Visible;
-            }
-            string selectedIsland = IslandComboBox.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(selectedIsland))
-            {
-                LoadDealerships(selectedIsland);
-                VehiclesScrollViewer.Visibility = Visibility.Hidden;
-                Dealership.Visibility = Visibility.Collapsed;
-            }
-
+                Text = text,
+                FontSize = fontSize,
+                FontWeight = FontWeights.SemiBold,
+                TextTrimming = TextTrimming.CharacterEllipsis
+            };
         }
+
         // Preload the list of available cars once
         private List<dynamic> availableCars = new List<dynamic>();
 
@@ -77,46 +81,22 @@ namespace TDU2_Track_Records
         }
 
 
-        private void LoadDealerships(string island)
+        private void ShowLocation(LocationMenu.Location location)
         {
-            DealershipListBox.Items.Clear();
-
-            using (SQLiteConnection conn = new SQLiteConnection(connectionString))
-            {
-                conn.Open();
-                string query = "SELECT * FROM dealerships WHERE Island = @Island ORDER BY id ASC";
-                using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Island", island);
-                    using (SQLiteDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            string dealershipId = reader["Id"].ToString();
-                            string dealershipName = reader["Name"].ToString();
-                            DealershipListBox.Items.Add(dealershipName);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void DealershipListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (DealershipListBox.SelectedItem != null)
-            {
-                string selectedDealership = DealershipListBox.SelectedItem.ToString();
-                LoadVehicles(selectedDealership);
-                VehiclesScrollViewer.Visibility = Visibility.Visible;
-                VehiclesScrollViewer.ScrollToTop();
-            }
+            LoadVehicles(location.Name);
+            VehiclesScrollViewer.Visibility = Visibility.Visible;
+            VehiclesScrollViewer.ScrollToTop();
         }
 
         private void LoadVehicles(string dealershipName)
         {
             VehiclesStackPanel.Children.Clear(); // Clear existing UI elements before loading new ones
+            VehiclesStackPanel.ColumnDefinitions.Clear();
+            VehiclesStackPanel.RowDefinitions.Clear();
+            for (int columnIndex = 0; columnIndex < DealerCardColumns; columnIndex++)
+                VehiclesStackPanel.ColumnDefinitions.Add(new ColumnDefinition());
             int slotIndex = 0;
-            string island = IslandComboBox.SelectedValue?.ToString();
+            string island = locationMenu.Selected.Island;
 
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
@@ -130,24 +110,29 @@ namespace TDU2_Track_Records
                     {
                         if (reader.Read())
                         {
-                            // Load house image from file system
                             Dealership.Visibility = Visibility.Visible;
-                            Dealership.Header = dealershipName;
+                            DealershipTitleText.Text = dealershipName.ToUpperInvariant();
+                            DealershipIslandText.Text = island.ToUpperInvariant();
+                            DealershipSubtitleText.Text = $"Selected showroom on {island}. Browse the vehicles currently assigned to this location.";
+
+                            int inStockCount = 0;
+                            for (int stockIndex = 1; stockIndex <= SelectedMaxSlots; stockIndex++)
+                            {
+                                if (!string.IsNullOrWhiteSpace(reader[$"Slot{stockIndex}_VehicleId"]?.ToString()))
+                                    inStockCount++;
+                            }
+                            DealershipStockText.Text = $"{inStockCount} CARS";
 
                             try
                             {
                                 BitmapImage imagePath = new BitmapImage(new Uri($"/Images/dealerships/{island}/{dealershipName}.png", UriKind.Relative));
                                 DealershipImage.Source = imagePath;
-                                DealershipImage.Width = imagePath.Width * 0.65;
-                                DealershipImage.Height = imagePath.Height * 0.65;
                             }
                             catch (Exception)
                             {
                                 // Handle case where image is not found
                                 BitmapImage fallbackImage = new BitmapImage(new Uri("/Images/dealerships/default.png", UriKind.Relative)); // Fallback image
                                 DealershipImage.Source = fallbackImage;
-                                DealershipImage.Width = fallbackImage.Width * 0.15;
-                                DealershipImage.Height = fallbackImage.Height * 0.15;
                             }
 
                             // Loop through all 20 slots
@@ -189,7 +174,7 @@ namespace TDU2_Track_Records
                 // Create the main GroupBox for the empty slot
                 GroupBox emptySlotGroupBox = new GroupBox
                 {
-                    Header = $"Empty Slot {slotIndex + 1}",
+                    Header = CreateGroupHeader($"Empty Slot {slotIndex + 1}", 20),
                     Margin = new Thickness(5, 0, 5, 0),
                     BorderBrush = new SolidColorBrush(Color.FromRgb(150, 150, 150)),
                     BorderThickness = new Thickness(2),
@@ -243,7 +228,7 @@ namespace TDU2_Track_Records
                 }
 
                 // Determine the number of columns (make it consistent with LoadVehicles)
-                int columns = dealershipColumn; // You can set this to any number of columns you want per row
+                int columns = DealerCardColumns;
 
                 // Add columns dynamically if needed
                 while (grid.ColumnDefinitions.Count < columns)
@@ -289,8 +274,7 @@ namespace TDU2_Track_Records
 
         private void AddVehicleToSlot(string dealershipName, string vehicleId, string slotColumn)
         {
-            string island = IslandComboBox.SelectedValue?.ToString();
-            string column = "";
+            string island = locationMenu.Selected.Island;
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
@@ -306,16 +290,13 @@ namespace TDU2_Track_Records
                     cmd.ExecuteNonQuery();
                 }
             }
+            if (island != "Ibiza" && island != "Hawaii")
+                return;
+
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                if (island == "Ibiza") {
-                    column = "ibiza";
-                }
-                else
-                {
-                    column = "hawaii";
-                }
+                string column = island.ToLowerInvariant();
                 // Update the slot with the selected vehicle ID
                 string query = $"UPDATE vehicles SET _dealership_name_in_{column} = @Name WHERE id = @VehicleId";
 
@@ -336,7 +317,10 @@ namespace TDU2_Track_Records
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT * FROM vehicles WHERE Id = @Id";
+                string query = @"SELECT vehicles.*,
+                                        CAST(_vehicle_image AS BLOB) AS _vehicle_image_bytes
+                                 FROM vehicles
+                                 WHERE Id = @Id";
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Id", vehicleId);
@@ -354,7 +338,9 @@ namespace TDU2_Track_Records
                                 IsOwned = Convert.ToBoolean(reader["_is_owned"].ToString()),
                                 IsPurchasable = Convert.ToBoolean(reader["_is_purchasable"]),
                                 IsReward = Convert.ToBoolean(reader["_is_reward"]),
-                                VehicleImage = reader["_vehicle_image"] != DBNull.Value ? (byte[])reader["_vehicle_image"] : null
+                                VehicleImage = reader["_vehicle_image_bytes"] != DBNull.Value
+                                    ? (byte[])reader["_vehicle_image_bytes"]
+                                    : null
 
                             };
                         }
@@ -366,192 +352,137 @@ namespace TDU2_Track_Records
 
         private void AddVehicleToUI(VehicleManagement vehicle, int slotIndex, string slotColumn)
         {
-            // Create the main GroupBox for the vehicle
-            GroupBox vehicleGroupBox = new GroupBox
+            Border vehicleCard = new Border
             {
-                Header = vehicle.VehicleName, // Set the vehicle name as the header
-                Margin = new Thickness(5, 5, 5, 5),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(100, 100, 100)),
-                BorderThickness = new Thickness(2),
-                MinWidth = 450,
-                Padding = new Thickness(5, 0, 5, 0)
+                Margin = new Thickness(6),
+                Background = new SolidColorBrush(Color.FromRgb(26, 28, 32)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(59, 62, 69)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(2)
             };
 
-            // Create a StackPanel to hold all vehicle information
-            StackPanel contentStack = new StackPanel();
+            Grid cardLayout = new Grid();
+            cardLayout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            cardLayout.RowDefinitions.Add(new RowDefinition { Height = new GridLength(150) });
+            cardLayout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            cardLayout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            // Add the vehicle image
-            Image vehicleImage = new Image
+            Grid header = new Grid { Background = new SolidColorBrush(Color.FromRgb(37, 39, 44)) };
+            header.ColumnDefinitions.Add(new ColumnDefinition());
+            header.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            TextBlock name = new TextBlock
             {
-                Width = 400,
-                Source = LoadImage(vehicle.VehicleImage) // Convert byte[] to ImageSource
+                Text = vehicle.VehicleName.ToUpperInvariant(),
+                Foreground = Brushes.White,
+                FontSize = 18,
+                FontWeight = FontWeights.Bold,
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(12, 8, 8, 8)
             };
-            contentStack.Children.Add(vehicleImage);
-
-            // Create a StackPanel for the vehicle info
-            StackPanel infoStack = new StackPanel
+            header.Children.Add(name);
+            Border classChip = new Border
             {
-                Orientation = Orientation.Horizontal,
-                Margin = new Thickness(5,5,5,5),
-                HorizontalAlignment = HorizontalAlignment.Center
-            };
-            if (vehicle.IsPurchasable || vehicle.IsReward)
-            {
-                // Vehicle Price
-                GroupBox priceBox = new GroupBox
-                {
-                    Header = "Value",
-                    MinWidth = 120
-                };
-                priceBox.Content = new TextBlock
-                {
-                    Text = "$" + decimal.Parse(vehicle.VehiclePrice).ToString("N0"),
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    Margin = new Thickness(5),
-                    FontSize = 18
-                };
-                infoStack.Children.Add(priceBox);
-            }
-            // Vehicle Class
-            GroupBox classBox = new GroupBox
-            {
-                Header = "Class",
-            };
-            Image classImage = new Image
-            {
-                Width = 42,
-                Height = 42,
+                Background = new SolidColorBrush(Color.FromRgb(229, 37, 33)),
                 Margin = new Thickness(5),
-                Source = new BitmapImage(new Uri("/Images/carClasses/" + vehicle.VehicleCategory + ".png", UriKind.Relative))
+                Padding = new Thickness(8, 3, 8, 3),
+                VerticalAlignment = VerticalAlignment.Center,
+                Child = new TextBlock { Text = vehicle.VehicleCategory, Foreground = Brushes.White, FontWeight = FontWeights.Bold }
             };
-            classBox.Content = classImage;
-            infoStack.Children.Add(classBox);
+            Grid.SetColumn(classChip, 1);
+            header.Children.Add(classChip);
+            cardLayout.Children.Add(header);
 
-            // Vehicle Tune
-            if (vehicle.IsPurchasable || vehicle.IsReward )
+            Grid imageSurface = new Grid { Background = Brushes.Black, Margin = new Thickness(10, 8, 10, 0), ClipToBounds = true };
+            Image vehicleImage = new Image { Source = LoadImage(vehicle.VehicleImage), Stretch = Stretch.UniformToFill };
+            imageSurface.Children.Add(vehicleImage);
+            if (decimal.TryParse(vehicle.VehiclePrice, out decimal price))
             {
-                GroupBox levelBox = new GroupBox
+                Border priceBadge = new Border
                 {
-                    Header = "Tune",
+                    Background = new SolidColorBrush(Color.FromArgb(230, 12, 14, 18)),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(229, 37, 33)),
+                    BorderThickness = new Thickness(1),
+                    Padding = new Thickness(8, 4, 8, 4),
+                    Margin = new Thickness(8),
+                    HorizontalAlignment = HorizontalAlignment.Right,
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    Child = new TextBlock { Text = "$" + price.ToString("N0"), Foreground = new SolidColorBrush(Color.FromRgb(255, 180, 170)), FontWeight = FontWeights.Bold }
                 };
-                Image tuneImage = new Image
-                {
-                    Width = 40,
-                    Height = 40,
-                    Margin = new Thickness(5),
-                    Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative))
-                };
-                levelBox.Content = tuneImage;
-                infoStack.Children.Add(levelBox);
-
-            // Vehicle Status
-                GroupBox statusBox = new GroupBox
-            {
-                Header = "Status",
-            };
-
-                CheckBox ownedCheckBox = new CheckBox
-            {
-                IsChecked = vehicle.IsOwned == true,
-                Margin = new Thickness(5),
-                VerticalAlignment = VerticalAlignment.Center
-            }; 
-            // Add event handlers for CheckBox checked and unchecked events
-            ownedCheckBox.Checked += (sender, e) =>
-            {
-                UpdateIsOwnedStatus(vehicle.id, true);  // Update database when checked
-            };
-
-            ownedCheckBox.Unchecked += (sender, e) =>
-            {
-                UpdateIsOwnedStatus(vehicle.id, false);  // Update database when unchecked
-            };
-
-            TextBlock ownedText = new TextBlock
-            {
-                Text = "Owned",
-                FontSize = 16,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            
-            DockPanel statusPanel = new DockPanel();
-            statusPanel.Children.Add(ownedCheckBox);
-            statusPanel.Children.Add(ownedText);
-
-            statusBox.Content = statusPanel;
-            infoStack.Children.Add(statusBox);
+                imageSurface.Children.Add(priceBadge);
             }
+            Grid.SetRow(imageSurface, 1);
+            cardLayout.Children.Add(imageSurface);
 
-            // Add a button to open the vehicle card window
+            Grid metrics = new Grid { Margin = new Thickness(10, 8, 10, 8), Background = new SolidColorBrush(Color.FromRgb(12, 14, 18)) };
+            metrics.ColumnDefinitions.Add(new ColumnDefinition());
+            metrics.ColumnDefinitions.Add(new ColumnDefinition());
+            metrics.ColumnDefinitions.Add(new ColumnDefinition());
+            metrics.Children.Add(CreateDealerMetric("VALUE", decimal.TryParse(vehicle.VehiclePrice, out decimal parsedPrice) ? "$" + parsedPrice.ToString("N0") : "—", 0));
+            metrics.Children.Add(CreateDealerMetric("TUNE", "STAGE " + vehicle.VehicleLevel, 1));
+            metrics.Children.Add(CreateDealerMetric("STATUS", vehicle.IsOwned ? "OWNED" : "AVAILABLE", 2));
+            Grid.SetRow(metrics, 2);
+            cardLayout.Children.Add(metrics);
+
+            Grid actions = new Grid { Margin = new Thickness(10, 0, 10, 10) };
+            actions.ColumnDefinitions.Add(new ColumnDefinition());
+            actions.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            CheckBox ownedCheckBox = new CheckBox
+            {
+                IsChecked = vehicle.IsOwned,
+                Content = "OWNED",
+                Foreground = new SolidColorBrush(Color.FromRgb(255, 180, 170)),
+                VerticalAlignment = VerticalAlignment.Center,
+                FontWeight = FontWeights.SemiBold
+            };
+            ownedCheckBox.Checked += (sender, e) => UpdateIsOwnedStatus(vehicle.id, true);
+            ownedCheckBox.Unchecked += (sender, e) => UpdateIsOwnedStatus(vehicle.id, false);
+            actions.Children.Add(ownedCheckBox);
             Button viewDetailsButton = new Button
             {
-                Content = "Card",
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(5, 0, 5, 0),
-                Tag = vehicle.id // Store the vehicle ID in the button's Tag
+                Content = "CARD / VIEW SPECS",
+                FontSize = 14,
+                Padding = new Thickness(12, 6, 12, 6),
+                Tag = vehicle.id
             };
             viewDetailsButton.Click += ViewDetailsButton_Click;
-            infoStack.Children.Add(viewDetailsButton);
+            Grid.SetColumn(viewDetailsButton, 1);
+            actions.Children.Add(viewDetailsButton);
+            Grid.SetRow(actions, 3);
+            cardLayout.Children.Add(actions);
 
-            // If unlocked, add a delete button for each vehicle
-            if (isUnlocked)
-            {
-                Button deleteButton = new Button
-                {
-                    Content = "Remove",
-                    Margin = new Thickness(5, 0, 5, 0),
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Tag = slotColumn // Store the actual column name (e.g., "Slot1_VehicleId")
-                    
-                };
-                deleteButton.Click += DeleteVehicleButton_Click;
-                infoStack.Children.Add(deleteButton);
-            }
+            vehicleCard.Child = cardLayout;
 
-            // Add the infoStack to contentStack
-            contentStack.Children.Add(infoStack);
-
-            // Set the content of the GroupBox
-            vehicleGroupBox.Content = contentStack;
-
-            // Ensure VehiclesStackPanel is a Grid
-            Grid grid = VehiclesStackPanel as Grid;
-            if (grid == null)
-            {
-                grid = new Grid();
-                VehiclesStackPanel.Children.Clear();
-                VehiclesStackPanel.Children.Add(grid);
-            }
-
-            // Determine the number of columns dynamically
-            int columns = dealershipColumn; // You can set this to any number of columns you want per row
-
-            // Add columns dynamically if needed
+            Grid grid = VehiclesStackPanel;
+            int columns = DealerCardColumns;
             while (grid.ColumnDefinitions.Count < columns)
-            {
                 grid.ColumnDefinitions.Add(new ColumnDefinition());
-            }
-
-            // Calculate the number of rows needed based on the number of vehicles
-            int totalVehicles = slotIndex + 1;
-            int rows = (totalVehicles + columns - 1) / columns;
-
-            // Add rows dynamically if needed
+            int rows = (slotIndex + columns) / columns;
             while (grid.RowDefinitions.Count < rows)
+                grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            Grid.SetColumn(vehicleCard, slotIndex % columns);
+            Grid.SetRow(vehicleCard, slotIndex / columns);
+            grid.Children.Add(vehicleCard);
+        }
+
+        private static Border CreateDealerMetric(string label, string value, int column)
+        {
+            Border cell = new Border
             {
-                grid.RowDefinitions.Add(new RowDefinition());
-            }
-
-            // Determine the column and row for this vehicle
-            int column = slotIndex % columns;
-            int row = slotIndex / columns;
-
-            // Set the position of the GroupBox
-            Grid.SetColumn(vehicleGroupBox, column);
-            Grid.SetRow(vehicleGroupBox, row);
-
-            // Add the vehicleGroupBox to the grid
-            grid.Children.Add(vehicleGroupBox);
+                BorderBrush = new SolidColorBrush(Color.FromRgb(59, 62, 69)),
+                BorderThickness = new Thickness(column == 0 ? 0 : 1, 0, 0, 0),
+                Padding = new Thickness(8, 6, 8, 6),
+                Child = new StackPanel
+                {
+                    Children =
+                    {
+                        new TextBlock { Text = label, Foreground = new SolidColorBrush(Color.FromRgb(170, 174, 183)), FontSize = 10, HorizontalAlignment = HorizontalAlignment.Center },
+                        new TextBlock { Text = value, Foreground = Brushes.White, FontSize = 14, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Center }
+                    }
+                }
+            };
+            Grid.SetColumn(cell, column);
+            return cell;
         }
         // Method to update the vehicle owned status in the database
         private void UpdateIsOwnedStatus(int vehicleId, bool isOwned)
@@ -637,14 +568,14 @@ namespace TDU2_Track_Records
                 RemoveVehicleFromSlot(slotColumn);
 
                 // Refresh the UI after deletion
-                LoadVehicles(DealershipListBox.SelectedItem.ToString());
+                LoadVehicles(locationMenu.Selected.Name);
             }
         }
 
         private void RemoveVehicleFromSlot(string slotColumn)
         {
-            string dealershipName = DealershipListBox.SelectedItem.ToString();
-            string island = IslandComboBox.SelectedValue?.ToString();
+            string dealershipName = locationMenu.Selected.Name;
+            string island = locationMenu.Selected.Island;
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
@@ -670,7 +601,7 @@ namespace TDU2_Track_Records
                 lastcardLeft = cardWindow.Left;
                 lastcardTop = cardWindow.Top;
             }
-            LoadVehicles(DealershipListBox.SelectedItem.ToString());
+            LoadVehicles(locationMenu.Selected.Name);
         }
         private BitmapImage LoadImage(byte[] imageData)
         {
@@ -700,7 +631,7 @@ namespace TDU2_Track_Records
             }
         }
 
-        private void IslandComboBox_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        private void LocationMenus_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
 
             if(isUnlocked == false) { 
@@ -715,6 +646,9 @@ namespace TDU2_Track_Records
 
         private void dealerships_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if (Window.GetWindow(e.OriginalSource as DependencyObject) != this)
+                return;
+
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 this.DragMove();
@@ -745,41 +679,5 @@ namespace TDU2_Track_Records
             Window.GetWindow(this)?.Close();
         }
 
-        private void Dealership_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            // Get the image that was right-clicked
-            Image clickedImage = sender as Image;
-
-            if (clickedImage != null)
-            {
-                // Find the DockPanel, even if there are intermediate containers (like GroupBox)
-                DockPanel dockPanel = FindParent<DockPanel>(clickedImage);
-
-                if (dockPanel != null)
-                {
-                    // Get the dimensions of the DockPanel
-                    double dockPanelWidth = dockPanel.ActualWidth;
-                    double dockPanelHeight = dockPanel.ActualHeight;
-
-                    // Display the dimensions (you can use them however you want)
-                    MessageBox.Show($"DockPanel Dimensions: Width = {dockPanelWidth}, Height = {dockPanelHeight}");
-                }
-            }
-        }
-
-
-        // Helper method to find the parent of a specific type in the visual tree
-        private T FindParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            DependencyObject parentObject = VisualTreeHelper.GetParent(child);
-
-            // Traverse the tree upwards until we find a parent of type T or reach the root
-            while (parentObject != null && !(parentObject is T))
-            {
-                parentObject = VisualTreeHelper.GetParent(parentObject);
-            }
-
-            return parentObject as T;
-        }
     }
 }

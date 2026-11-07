@@ -1,104 +1,219 @@
-﻿<Window x:Class="TDU2_Track_Records.tracks"
+<Window x:Class="TDU2_Track_Records.tracks"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TDU2_Track_Records"
-        mc:Ignorable="d" MouseLeftButtonDown="Window_MouseLeftButtonDown"
-        Title="Add Event" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-        ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Adobe Gothic Std B" FontSize="16" 
-        WindowStyle="None" AllowsTransparency="True" 
-        Background="{x:Null}" SizeToContent="WidthAndHeight"
-        Topmost="True" KeyDown="Window_KeyDown">
-    <StackPanel Margin="10">
-        <StackPanel Orientation="Vertical" Margin="5">
-            <GroupBox Header="Add Event">
-                <StackPanel>
-                    <GroupBox Header="Race Type:">
-                        <ComboBox x:Name="RaceTypeComboBox" Width="200" Margin="5" SelectionChanged="RaceTypeComboBox_SelectionChanged" SelectedValuePath="id" >
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                        <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </GroupBox>
-                    <GroupBox Header="Event Name:">
-                        <TextBox x:Name="TrackNameTextBox" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-                    </GroupBox>
-                    <GroupBox x:Name="OrientationGroupBox" Header="Orientation">
-                        <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <CheckBox x:Name="cb_orientation" BorderBrush="{x:Null}" Checked="cb_orientation_StateChanged" Unchecked="cb_orientation_StateChanged" Margin="5,0,0,0" Visibility="Collapsed"/>
-                            <ToggleButton Foreground="{x:Null}" x:Name="txt_orientation" MouseLeftButtonDown="txt_orientation_MouseLeftButtonDown" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="32" MinHeight="32" Click="txt_orientation_Click" TabIndex="1003">
-                                <ToggleButton.Template>
-                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+        xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
+        mc:Ignorable="d"
+        Title="Add Event"
+        Icon="/TDU2.ico"
+        FontFamily="Adobe Gothic Std B"
+        FontSize="16"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="{x:Null}"
+        SizeToContent="Manual"
+        WindowStartupLocation="Manual"
+        ResizeMode="NoResize"
+        MinWidth="620"
+        MinHeight="500"
+        KeyDown="Window_KeyDown">
+    <Border BorderBrush="{DynamicResource AppShellBorderBrush}" BorderThickness="{DynamicResource AppShellBorderThickness}"
+            CornerRadius="{DynamicResource AppShellCornerRadius}" ClipToBounds="True">
+        <Border.Background>
+            <ImageBrush ImageSource="/Images/backgrounds/carbon.png"
+                        TileMode="Tile"
+                        Viewport="0,0,256,256"
+                        ViewportUnits="Absolute"
+                        Stretch="None"
+                        Opacity="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=OneWay}"/>
+        </Border.Background>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="#E6333333" BorderBrush="#FF666666" BorderThickness="0,0,0,1"
+                    MouseLeftButtonDown="Window_MouseLeftButtonDown">
+                <DockPanel Margin="16,8,8,8">
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Image x:Name="MinimizeButton" Width="38" Height="38" Margin="0,0,6,0"
+                               ToolTip="Minimize" MouseLeftButtonDown="MinimizeButton_MouseLeftButtonDown">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Source" Value="Images/ico/navigation/minimize.png"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Source" Value="Images/ico/navigation/minimize_over.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                        <Image x:Name="CloseButton" Width="38" Height="38"
+                               ToolTip="Close" MouseLeftButtonDown="CloseButton_MouseLeftButtonDown">
+                            <Image.Style>
+                                <Style TargetType="Image">
+                                    <Setter Property="Source" Value="Images/ico/navigation/close.png"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Source" Value="Images/ico/navigation/close_over.png"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Image.Style>
+                        </Image>
+                    </StackPanel>
+                    <TextBlock Text="Add Event" FontSize="25" FontWeight="Bold" Foreground="White"
+                               VerticalAlignment="Center"/>
+                </DockPanel>
+            </Border>
+
+            <ScrollViewer Grid.Row="1" Margin="12" VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled" CanContentScroll="False"
+                          FocusVisualStyle="{x:Null}">
+                <Grid Margin="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <GroupBox Header="Island">
+                            <ComboBox x:Name="IslandComboBox" Margin="5">
+                                <ComboBoxItem Content="Ibiza"/>
+                                <ComboBoxItem Content="Hawaii"/>
+                                <ComboBoxItem Content="Casino"/>
+                            </ComboBox>
+                        </GroupBox>
+
+                        <GroupBox Header="Event Name">
+                            <TextBox x:Name="TrackNameTextBox" Margin="5"
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        </GroupBox>
+
+                        <GroupBox x:Name="DistanceGroupBox" Header="Distance" Visibility="Visible">
+                            <DockPanel Margin="5">
+                                <TextBlock DockPanel.Dock="Right" x:Name="distanceTextBlock" Margin="8,0,0,0"
+                                           VerticalAlignment="Center" Text="{Binding Source={x:Static p:Settings.Default}, Path=distance}"/>
+                                <TextBox x:Name="LapLengthTextBox" HorizontalContentAlignment="Center"
+                                         VerticalContentAlignment="Center"/>
+                            </DockPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="Number of Laps" x:Name="LapsGroupBox" Visibility="Visible">
+                            <TextBox x:Name="LapsTextBox" Margin="5" Text="1"
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        </GroupBox>
+
+                        <GroupBox Header="Minimum Speed" x:Name="SpeedGroupBox" Visibility="Visible">
+                            <DockPanel Margin="5">
+                                <TextBlock DockPanel.Dock="Right" x:Name="MinimumSpeedDistance" Margin="8,0,0,0"
+                                           VerticalAlignment="Center" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed}"/>
+                                <TextBox x:Name="MinSpeedTextBox" Text="0"
+                                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                            </DockPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="Checkpoints" x:Name="CheckpointsGroupBox" Visibility="Visible">
+                            <TextBox x:Name="CheckpointsTextBox" Margin="5" Text="0"
+                                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                        </GroupBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <GroupBox Header="Race Type">
+                            <ComboBox x:Name="RaceTypeComboBox" Margin="5"
+                                      SelectionChanged="RaceTypeComboBox_SelectionChanged" SelectedValuePath="id">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill"/>
+                                            <TextBlock Text="{Binding Description}" Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </GroupBox>
+
+                        <GroupBox x:Name="OrientationGroupBox" Header="Orientation">
+                            <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
+                                <CheckBox x:Name="cb_orientation" BorderBrush="{x:Null}"
+                                          Checked="cb_orientation_StateChanged" Unchecked="cb_orientation_StateChanged"
+                                          Visibility="Collapsed"/>
+                                <ToggleButton x:Name="txt_orientation" Foreground="{x:Null}"
+                                              MouseLeftButtonDown="txt_orientation_MouseLeftButtonDown"
+                                              HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                                              Background="{x:Null}" BorderBrush="{x:Null}"
+                                              Width="26" Height="36" Click="txt_orientation_Click" TabIndex="1003">
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
                                             <Image>
                                                 <Image.Style>
-                                                    <Style>
-                                                        <Setter Property="Image.Source" Value="Images/clockwise.png" />
-                                                        <Setter Property="Image.ToolTip" Value="Clockwise"/>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="Images/clockwise.png"/>
+                                                        <Setter Property="ToolTip" Value="Clockwise"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsChecked,RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}" Value="True">
-                                                                <Setter Property="Image.Source" Value="Images/anticlockwise.png" />
-                                                                <Setter Property="Image.ToolTip" Value="Anticlockwise"/>
+                                                            <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=ToggleButton}}" Value="True">
+                                                                <Setter Property="Source" Value="Images/anticlockwise.png"/>
+                                                                <Setter Property="ToolTip" Value="Anticlockwise"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
                                                 </Image.Style>
                                             </Image>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+                                </ToggleButton>
+                            </DockPanel>
+                        </GroupBox>
+
+                        <GroupBox Header="Restricted Class" x:Name="RestrictedClassGroupBox" Visibility="Visible">
+                            <ComboBox x:Name="RestrictedClassComboBox" Margin="5" SelectedIndex="0"
+                                      SelectedValuePath="id" SelectionChanged="RestrictedClassComboBox_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill"/>
+                                            <TextBlock Text="{Binding Description}" Margin="6,0,0,0" VerticalAlignment="Center"/>
                                         </StackPanel>
-                                    </ControlTemplate>
-                                </ToggleButton.Template>
-                            </ToggleButton>
-                        </DockPanel>
-                    </GroupBox>
-                    <GroupBox x:Name="DistanceGroupBox" Visibility="Visible">
-                        <GroupBox.Header>
-                            <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Distance in ("/>
-                            <TextBlock x:Name="distanceTextBlock" Text="{Binding distance}"/>
-                             <TextBlock Text=")"/>
-                            </StackPanel>
-                        </GroupBox.Header>
-                        <TextBox x:Name="LapLengthTextBox" Width="200" Margin="5" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-                    </GroupBox>
-                    <GroupBox Header="Number of Laps:" x:Name="LapsGroupBox" Visibility="Visible">
-                        <TextBox x:Name="LapsTextBox" Width="200" Margin="5" Text="1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-                    </GroupBox>
-                    <GroupBox Header="Minimum Speed:" x:Name="SpeedGroupBox" Visibility="Visible">
-                        <StackPanel Orientation="Horizontal">
-                        <TextBox x:Name="MinSpeedTextBox" Width="200" Margin="5" Text="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-                        <TextBlock x:Name="MinimumSpeedDistance" Text="{Binding distance}"/>
-                        </StackPanel>
-                    </GroupBox>
-                    <GroupBox Header="Checkpoints:" x:Name="CheckpointsGroupBox" Visibility="Visible">
-                        <TextBox x:Name="CheckpointsTextBox" Width="200" Margin="5" Text="0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
-                    </GroupBox>
-                    <GroupBox Header="Restricted Class:" x:Name="RestrictedClassGroupBox" Visibility="Visible">
-                        <ComboBox x:Name="RestrictedClassComboBox" Width="200" Margin="5" SelectedIndex="0"  SelectedValuePath="id"  SelectionChanged="RestrictedClassComboBox_SelectionChanged">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Image Source="{Binding ImagePath}" Width="32" Height="32" Stretch="UniformToFill" />
-                                        <TextBlock Text="{Binding Description}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </GroupBox>
-                    <GroupBox Header="Restricted Car:" x:Name="RestrictedCarGroupBox" Visibility="Visible">
-                        <ComboBox x:Name="RestrictedCarComboBox" ItemsSource="{Binding}" Width="200" Margin="5" DisplayMemberPath="Name" SelectedValuePath="id" />
-                    </GroupBox>
-                    <CheckBox x:Name="KeepCheckBox" Content="Keep" VerticalAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" Click="KeepCheckBox_Click"/>
-                    <Button Content="Add Event" Width="100" Margin="5" Click="AddTrackButton_Click" />
-                    <TextBlock x:Name="LastEntry" Text="{Binding}" MaxWidth="218" HorizontalAlignment="Center" TextWrapping="Wrap" FontSize="14"/>
-                </StackPanel>
-            </GroupBox>
-        </StackPanel>
-        <Button Content="Close" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
-    </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                        </GroupBox>
+
+                        <GroupBox Header="Restricted Car" x:Name="RestrictedCarGroupBox" Visibility="Visible">
+                            <ComboBox x:Name="RestrictedCarComboBox" ItemsSource="{Binding}" Margin="5"
+                                      DisplayMemberPath="Name" SelectedValuePath="id"/>
+                        </GroupBox>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <TextBlock Grid.Row="2" x:Name="LastEntry" Text="{Binding}" Margin="18,4,18,6"
+                       HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
+                       FontSize="14" Foreground="#FFD0D0D0"/>
+
+            <Border Grid.Row="3" Background="#CC222222" BorderBrush="#FF555555" BorderThickness="0,1,0,0">
+                <DockPanel Margin="14,10" LastChildFill="False">
+                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                        <CheckBox x:Name="KeepCheckBox" Click="KeepCheckBox_Click"/>
+                        <TextBlock Text="Keep island and class" Foreground="White" Margin="8,0,0,0"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <Button Content="Close" Margin="5,0" Click="CancelButton_Click"
+                                MinWidth="90" MinHeight="40" Foreground="White"/>
+                        <Button Content="Add Event" Margin="5,0" Click="AddTrackButton_Click"
+                                MinWidth="120" MinHeight="40" Foreground="White"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Grid>
+    </Border>
 </Window>

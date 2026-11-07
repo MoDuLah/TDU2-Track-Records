@@ -13,7 +13,10 @@ namespace TDU2_Track_Records
             DependencyProperty.Register("Progress", typeof(double), typeof(CircularProgressBar), new PropertyMetadata(0.0, OnProgressChanged));
 
         public static readonly DependencyProperty MaximumProperty =
-            DependencyProperty.Register("Maximum", typeof(double), typeof(CircularProgressBar), new PropertyMetadata(100.0));
+            DependencyProperty.Register("Maximum", typeof(double), typeof(CircularProgressBar), new PropertyMetadata(100.0, OnProgressChanged));
+
+        public static readonly DependencyProperty IconProperty =
+            DependencyProperty.Register(nameof(Icon), typeof(ImageSource), typeof(CircularProgressBar));
 
         public static readonly DependencyProperty StrokeColorProperty =
             DependencyProperty.Register("StrokeColor", typeof(Brush), typeof(CircularProgressBar), new PropertyMetadata(Brushes.Blue));
@@ -47,12 +50,18 @@ namespace TDU2_Track_Records
             set { SetValue(PathColorProperty, value); }
         }
 
+        public ImageSource Icon
+        {
+            get { return (ImageSource)GetValue(IconProperty); }
+            set { SetValue(IconProperty, value); }
+        }
+
         public string ProgressText
         {
             get
             {
                 // Calculate percentage
-                double percentage = Maximum > 0 ? Math.Round((Progress * 100.0 / Maximum), 0) : 0;
+                double percentage = Maximum > 0 ? Math.Round(Math.Max(0, Math.Min(Progress / Maximum, 1)) * 100) : 0;
                 return $"{percentage}%"; // Returns percentage with a '%' sign
             }
         }
@@ -61,7 +70,7 @@ namespace TDU2_Track_Records
         {
             get
             {
-                double angle = (Progress / Maximum) * 360;
+                double angle = Maximum > 0 ? Math.Max(0, Math.Min(Progress / Maximum, 1)) * 360 : 0;
                 return CreateArcGeometry(angle);
             }
         }
@@ -71,7 +80,6 @@ namespace TDU2_Track_Records
         public CircularProgressBar()
         {
             InitializeComponent();
-            DataContext = this;
         }
 
         // Handles progress changes
@@ -88,13 +96,17 @@ namespace TDU2_Track_Records
         // Helper to create the arc based on the current progress
         private Geometry CreateArcGeometry(double angle)
         {
-            // Reducing the radius by multiplying it by a factor (e.g., 0.75 for 75% of the original size)
-            double radiusFactor = 0.65; // Adjust this factor as needed to decrease the arc's radius
-            double radius = (Math.Min(ActualWidth, ActualHeight) / 2) * radiusFactor; // Scale down the radius
-            Point startPoint = new Point(radius, 0);
+            if (angle <= 0)
+                return Geometry.Empty;
+
+            const double center = 32;
+            const double radius = 29;
+            if (angle >= 360)
+                return new EllipseGeometry(new Point(center, center), radius, radius);
+            Point startPoint = new Point(center, center - radius);
             Point endPoint = ComputeCartesianCoordinate(angle, radius);
-            endPoint.X += radius;
-            endPoint.Y += radius;
+            endPoint.X += center;
+            endPoint.Y += center;
 
             bool largeArc = angle > 180.0;
 

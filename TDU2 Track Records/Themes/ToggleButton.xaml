@@ -48,7 +48,7 @@
 
     <!-- ToggleButton style -->
     <Style x:Key="CustomToggleButtonStyle" TargetType="ToggleButton">
-        <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Background" Value="{StaticResource NormalBackground}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Foreground" Value="White"/>

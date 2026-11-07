@@ -13,14 +13,13 @@ namespace TDU2_Track_Records
     {
         private List<VehicleManagement> _vehicles = new List<VehicleManagement>();
         readonly string connectionString = Settings.Default.connectionString;
-        readonly string SI = Settings.Default.system;
-        readonly string distance = Settings.Default.distance;
+        private string SI => Settings.Default.system;
 
         public OdometerWindow()
         {
             InitializeComponent();
             LoadVehicles();
-            Distance.Text = distance;
+            UpdateUnitDisplay();
         }
 
         private void LoadVehicles()
@@ -72,18 +71,26 @@ namespace TDU2_Track_Records
 
         private void PopulateVehicleDetails(VehicleManagement selectedVehicle)
         {
-            if (SI == "Metric")
-            {
-                _odometer_metric.Text = selectedVehicle.VehicleOdometerMetric == 0.0 ? string.Empty : selectedVehicle.VehicleOdometerMetric.ToString("F1");
-                _odometer_imperial.Visibility = Visibility.Collapsed;
-                _odometer_metric.Visibility = Visibility.Visible;
-            }
-            else if (SI == "Imperial")
-            {
-                _odometer_imperial.Text = selectedVehicle.VehicleOdometerImperial == 0.0 ? string.Empty : selectedVehicle.VehicleOdometerImperial.ToString("F1");
-                _odometer_metric.Visibility = Visibility.Collapsed;
-                _odometer_imperial.Visibility = Visibility.Visible;
-            }
+            _odometer_metric.Text = selectedVehicle.VehicleOdometerMetric == 0.0 ? string.Empty : selectedVehicle.VehicleOdometerMetric.ToString("F2");
+            _odometer_imperial.Text = selectedVehicle.VehicleOdometerImperial == 0.0 ? string.Empty : selectedVehicle.VehicleOdometerImperial.ToString("F2");
+            UpdateUnitDisplay();
+        }
+
+        private void UpdateUnitDisplay()
+        {
+            bool imperial = MeasurementUnits.IsImperial;
+            Distance.Text = Settings.Default.distance;
+            _odometer_metric.Visibility = imperial ? Visibility.Collapsed : Visibility.Visible;
+            _odometer_imperial.Visibility = imperial ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        internal void RefreshMeasurementUnits()
+        {
+            bool imperial = MeasurementUnits.IsImperial;
+            TextBox previous = imperial ? _odometer_metric : _odometer_imperial;
+            TextBox current = imperial ? _odometer_imperial : _odometer_metric;
+            MeasurementUnits.ConvertDraft(previous, MeasurementUnits.MilesPerKilometer, imperial, current);
+            UpdateUnitDisplay();
         }
 
         private void SaveChangesButton_Click(object sender, RoutedEventArgs e)
@@ -92,15 +99,15 @@ namespace TDU2_Track_Records
             {
                 double mileage = 0.0;
 
-                if (SI == "Metric" && !string.IsNullOrWhiteSpace(_odometer_metric.Text) && double.TryParse(_odometer_metric.Text, out mileage))
+                if (SI == "Metric" && MeasurementUnits.TryParse(_odometer_metric.Text, out mileage))
                 {
-                    selectedVehicle.VehicleOdometerMetric = mileage;
-                    selectedVehicle.VehicleOdometerImperial = Math.Round(mileage * 0.621371, 1);
+                    selectedVehicle.VehicleOdometerMetric = Math.Round(mileage, 2);
+                    selectedVehicle.VehicleOdometerImperial = Math.Round(mileage * 0.621371, 2);
                 }
-                else if (SI == "Imperial" && !string.IsNullOrWhiteSpace(_odometer_imperial.Text) && double.TryParse(_odometer_imperial.Text, out mileage))
+                else if (SI == "Imperial" && MeasurementUnits.TryParse(_odometer_imperial.Text, out mileage))
                 {
-                    selectedVehicle.VehicleOdometerImperial = mileage;
-                    selectedVehicle.VehicleOdometerMetric = Math.Round(mileage * 1.60934, 1);
+                    selectedVehicle.VehicleOdometerImperial = Math.Round(mileage, 2);
+                    selectedVehicle.VehicleOdometerMetric = Math.Round(mileage * 1.60934, 2);
                 }
 
                 UpdateVehicleOdometer(selectedVehicle);
@@ -163,12 +170,9 @@ namespace TDU2_Track_Records
         private void OneDecimalPointTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             var textBox = sender as TextBox;
-            string currentText = textBox.Text.Insert(textBox.SelectionStart, e.Text);
-
-            // Regular expression to match up to one decimal point with a maximum of one digit after it
-            var regex = new Regex(@"^\d*\.?\d{0,1}$");
-
-            // Validate the input, ensuring only one decimal and one digit after the decimal
+            string currentText = textBox.Text.Remove(textBox.SelectionStart, textBox.SelectionLength)
+                .Insert(textBox.SelectionStart, e.Text);
+            var regex = new Regex(@"^\d*[.,]?\d{0,2}$");
             e.Handled = !regex.IsMatch(currentText);
         }
 

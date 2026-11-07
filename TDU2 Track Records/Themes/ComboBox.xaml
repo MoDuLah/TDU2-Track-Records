@@ -178,7 +178,7 @@
                                     BorderThickness="1,1,1,1" CornerRadius="3" Margin="0,3,0,3"
                                     BorderBrush="{StaticResource BorderBrush}"/>
                                 <ScrollViewer Margin="0,3" SnapsToDevicePixels="True"
-                                        IsDeferredScrollingEnabled="True" 
+                                        IsDeferredScrollingEnabled="False"
                                         CanContentScroll="False">
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>

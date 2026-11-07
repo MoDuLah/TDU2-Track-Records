@@ -299,36 +299,10 @@ namespace TDU2_Track_Records
                     }
                 }
             }
-            int cardCount = cards.Count;
-            int emptyCardCount = 6 - cardCount;
-
-            for (int i = 0; i < emptyCardCount; i++)
-            {
-                var emptyCard = CreateEmptySubCategoryCard();
-                cards.Add(emptyCard);
-            }
-
             foreach (var card in cards)
             {
                 targetGrid.Children.Add(card);
             }
-        }
-
-        private UIElement CreateEmptySubCategoryCard()
-        {
-            var card = new Border
-            {
-                Visibility = Visibility.Hidden,
-                Margin = new Thickness(5),
-                Padding = new Thickness(10),
-                Background = new SolidColorBrush(Color.FromRgb(42, 42, 42)),
-                CornerRadius = new CornerRadius(5),
-                BorderBrush = new SolidColorBrush(Color.FromRgb(85, 85, 85)),
-                BorderThickness = new Thickness(1),
-                Child = new StackPanel() // Empty stack panel
-            };
-
-            return card;
         }
 
         private UIElement CreateSubCategoryCard(string iconFileName, string subcategoryName, string status)
@@ -516,6 +490,9 @@ namespace TDU2_Track_Records
         private void LoadObjectivesForSubCategory(string category, string subcategoryName)
         {
             ObjectiveScrollViewerContent.Children.Clear();
+            ObjectiveScrollViewer.Visibility = Visibility.Visible;
+            SubCategoryRow.Height = new GridLength(3, GridUnitType.Star);
+            ObjectiveDetailsRow.Height = new GridLength(2, GridUnitType.Star);
 
             string query = @"SELECT id, Status, Description, Island, Points, MaximumPoints
                      FROM objectives_list
@@ -630,46 +607,44 @@ namespace TDU2_Track_Records
                 // Get the grid for the current tab
                 if (tab.Content is Grid tabGrid)
                 {
-                    foreach (UIElement element in tabGrid.Children)
+                    UniformGrid subCategoryGrid = GetSubCategoryGrid(tabGrid);
+                    if (subCategoryGrid != null)
                     {
-                        if (element is UniformGrid subCategoryGrid)
+                        // Loop through each card in the current tab's grid
+                        foreach (UIElement child in subCategoryGrid.Children)
                         {
-                            // Loop through each card in the current tab's grid
-                            foreach (UIElement child in subCategoryGrid.Children)
+                            if (child is Border card && card.Tag is string tag && subcategoryProgress.ContainsKey(tag))
                             {
-                                if (child is Border card && card.Tag is string tag && subcategoryProgress.ContainsKey(tag))
+                                var grid = (Grid)card.Child;
+                                var middleStackPanel = (StackPanel)grid.Children[1];
+
+                                // Update points and progress bar for the subcategory
+                                var progressInfo = subcategoryProgress[tag];
+                                int currentPoints = progressInfo.currentPoints;
+                                int maxPoints = progressInfo.maxPoints;
+                                double progress = maxPoints > 0 ? (double)currentPoints / maxPoints * 100 : 0;
+
+                                // Update the points text
+                                var pointsTextBlock = (TextBlock)middleStackPanel.Children[1]; // Points text block assumed to be at index 1
+                                pointsTextBlock.Text = $"Points: {currentPoints} / {maxPoints}";
+
+                                // Find the progress bar grid
+                                var progressGrid = (Grid)middleStackPanel.Children[2]; // Assuming the grid with the progress bar and text is at index 2
+
+                                // Update the progress bar
+                                var progressBar = (ProgressBar)progressGrid.Children[0]; // Assuming ProgressBar is the first child of the progress grid
+                                progressBar.Value = progress;
+
+                                // Update the progress percentage text
+                                var progressTextBlock = (TextBlock)progressGrid.Children[1]; // Assuming the percentage text block is the second child
+                                progressTextBlock.Text = $"{progress:F0}%"; // Display progress as a percentage
+
+                                // Check if all objectives are completed
+                                if (AllObjectivesCompleted(tag))
                                 {
-                                    var grid = (Grid)card.Child;
-                                    var middleStackPanel = (StackPanel)grid.Children[1];
-
-                                    // Update points and progress bar for the subcategory
-                                    var progressInfo = subcategoryProgress[tag];
-                                    int currentPoints = progressInfo.currentPoints;
-                                    int maxPoints = progressInfo.maxPoints;
-                                    double progress = maxPoints > 0 ? (double)currentPoints / maxPoints * 100 : 0;
-
-                                    // Update the points text
-                                    var pointsTextBlock = (TextBlock)middleStackPanel.Children[1]; // Points text block assumed to be at index 1
-                                    pointsTextBlock.Text = $"Points: {currentPoints} / {maxPoints}";
-
-                                    // Find the progress bar grid
-                                    var progressGrid = (Grid)middleStackPanel.Children[2]; // Assuming the grid with the progress bar and text is at index 2
-
-                                    // Update the progress bar
-                                    var progressBar = (ProgressBar)progressGrid.Children[0]; // Assuming ProgressBar is the first child of the progress grid
-                                    progressBar.Value = progress;
-
-                                    // Update the progress percentage text
-                                    var progressTextBlock = (TextBlock)progressGrid.Children[1]; // Assuming the percentage text block is the second child
-                                    progressTextBlock.Text = $"{progress:F0}%"; // Display progress as a percentage
-
-                                    // Check if all objectives are completed
-                                    if (AllObjectivesCompleted(tag))
-                                    {
-                                        // Find the checkbox and set it to checked
-                                        var checkBox = (CheckBox)grid.Children[2]; // Assuming the checkbox is the third child
-                                        checkBox.IsChecked = true;
-                                    }
+                                    // Find the checkbox and set it to checked
+                                    var checkBox = (CheckBox)grid.Children[2]; // Assuming the checkbox is the third child
+                                    checkBox.IsChecked = true;
                                 }
                             }
                         }
@@ -774,18 +749,16 @@ namespace TDU2_Track_Records
             {
                 if (tab is TabItem tabItem && tabItem.Content is Grid tabGrid)
                 {
-                    foreach (UIElement element in tabGrid.Children)
+                    UniformGrid subCategoryGrid = GetSubCategoryGrid(tabGrid);
+                    if (subCategoryGrid != null)
                     {
-                        if (element is UniformGrid subCategoryGrid)
+                        foreach (UIElement child in subCategoryGrid.Children)
                         {
-                            foreach (UIElement child in subCategoryGrid.Children)
+                            if (child is Border card && card.Tag is string tag && tag == subcategoryName)
                             {
-                                if (child is Border card && card.Tag is string tag && tag == subcategoryName)
-                                {
-                                    var grid = (Grid)card.Child;
-                                    var checkBox = (CheckBox)grid.Children[2]; // Assuming the checkbox is at index 2
-                                    checkBox.IsChecked = allObjectivesCompleted;
-                                }
+                                var grid = (Grid)card.Child;
+                                var checkBox = (CheckBox)grid.Children[2]; // Assuming the checkbox is at index 2
+                                checkBox.IsChecked = allObjectivesCompleted;
                             }
                         }
                     }
@@ -793,17 +766,25 @@ namespace TDU2_Track_Records
             }
         }
 
+        private static UniformGrid GetSubCategoryGrid(Grid tabGrid)
+        {
+            foreach (UIElement element in tabGrid.Children)
+            {
+                if (element is UniformGrid directGrid)
+                    return directGrid;
+                if (element is ScrollViewer scrollViewer && scrollViewer.Content is UniformGrid scrolledGrid)
+                    return scrolledGrid;
+            }
+
+            return null;
+        }
+
 
         private void ObjectivesTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (ObjectivesTabControl.SelectedIndex == 0)
-            {
-                ObjectiveScrollViewer.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ObjectiveScrollViewer.Visibility = Visibility.Visible;
-            }
+            ObjectiveScrollViewer.Visibility = Visibility.Collapsed;
+            SubCategoryRow.Height = new GridLength(1, GridUnitType.Star);
+            ObjectiveDetailsRow.Height = new GridLength(0);
             ObjectiveScrollViewerContent.Children.Clear();
         }
     }

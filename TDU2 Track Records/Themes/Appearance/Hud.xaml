@@ -1,0 +1,312 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+    <SolidColorBrush x:Key="AppShellBorderBrush" Color="#FF333539"/>
+    <SolidColorBrush x:Key="AppShellOverlayBrush" Color="#F2111317"/>
+    <SolidColorBrush x:Key="AppToolbarBackgroundBrush" Color="#FF1A1C20"/>
+    <SolidColorBrush x:Key="AppToolbarBorderBrush" Color="#FF333539"/>
+    <SolidColorBrush x:Key="AppTitleForegroundBrush" Color="#FFE2E2E7"/>
+    <SolidColorBrush x:Key="AppMutedForegroundBrush" Color="#FFAAAEB7"/>
+    <SolidColorBrush x:Key="AppSectionHeaderBrush" Color="#FF282A2E"/>
+    <SolidColorBrush x:Key="AppSectionBodyBrush" Color="#FF0C0E12"/>
+    <SolidColorBrush x:Key="AppSectionBorderBrush" Color="#FF333539"/>
+    <SolidColorBrush x:Key="AppAccentBrush" Color="#FFE52521"/>
+    <SolidColorBrush x:Key="HudSurfaceBrush" Color="#FF111317"/>
+    <SolidColorBrush x:Key="HudSurfaceLowBrush" Color="#FF1A1C20"/>
+    <SolidColorBrush x:Key="HudSurfaceBrushHigh" Color="#FF282A2E"/>
+    <SolidColorBrush x:Key="HudInputBrush" Color="#FF0C0E12"/>
+    <SolidColorBrush x:Key="HudTextBrush" Color="#FFE2E2E7"/>
+    <SolidColorBrush x:Key="HudMutedTextBrush" Color="#FFAAAEB7"/>
+
+    <Thickness x:Key="AppShellBorderThickness">1</Thickness>
+    <Thickness x:Key="AppToolbarBorderThickness">1</Thickness>
+    <Thickness x:Key="AppTitleBarMargin">0</Thickness>
+    <Thickness x:Key="AppFeatureToolbarMargin">0</Thickness>
+    <Thickness x:Key="AppPanelPadding">8</Thickness>
+    <CornerRadius x:Key="AppShellCornerRadius">2</CornerRadius>
+    <CornerRadius x:Key="AppToolbarCornerRadius">0</CornerRadius>
+    <FontFamily x:Key="AppMainFontFamily">Barlow Condensed, Bahnschrift SemiCondensed</FontFamily>
+    <system:Double x:Key="AppTitleFontSize">16</system:Double>
+    <system:Double x:Key="AppLogoSize">38</system:Double>
+    <system:Double x:Key="AppNavIconSize">28</system:Double>
+    <system:Double x:Key="AppWindowControlIconSize">28</system:Double>
+    <system:Double x:Key="AppSelectorHeight">32</system:Double>
+    <system:Double x:Key="AppSelectorIconSize">20</system:Double>
+    <system:Double x:Key="AppClassRestrictionIconSize">32</system:Double>
+    <GridLength x:Key="AppOuterGutterWidth">8</GridLength>
+    <GridLength x:Key="AppEventColumnWidth">350</GridLength>
+    <GridLength x:Key="AppVehicleColumnWidth">470</GridLength>
+    <GridLength x:Key="AppRaceColumnWidth">390</GridLength>
+    <GridLength x:Key="AppOuterTopBottomHeight">8</GridLength>
+    <GridLength x:Key="AppStatusRowHeight">24</GridLength>
+    <GridLength x:Key="AppVehicleMetricsColumnOneWidth">*</GridLength>
+    <GridLength x:Key="AppVehicleMetricsColumnGapWidth">6</GridLength>
+    <GridLength x:Key="AppVehicleMetricsColumnTwoWidth">*</GridLength>
+    <system:Double x:Key="AppEmbeddedContentHeight">620</system:Double>
+    <GridLength x:Key="AppRaceDataSpacerHeight">*</GridLength>
+
+    <Style x:Key="AppScopedGroupBoxStyle" TargetType="{x:Type GroupBox}">
+        <Setter Property="Foreground" Value="{StaticResource HudTextBrush}"/>
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="Padding" Value="6"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupBox}">
+                    <Grid SnapsToDevicePixels="True">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Padding="7,3" Background="{StaticResource HudSurfaceBrushHigh}"
+                                BorderBrush="{StaticResource AppSectionBorderBrush}" BorderThickness="1,1,1,0">
+                            <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center"
+                                              TextElement.Foreground="{StaticResource HudMutedTextBrush}"
+                                              TextElement.FontSize="11" TextElement.FontWeight="SemiBold"/>
+                        </Border>
+                        <Border Grid.Row="1" Padding="{TemplateBinding Padding}" Background="{StaticResource HudSurfaceLowBrush}"
+                                BorderBrush="{StaticResource AppSectionBorderBrush}" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AppLabeledGroupBoxStyle" TargetType="{x:Type GroupBox}" BasedOn="{StaticResource AppScopedGroupBoxStyle}">
+        <Setter Property="HeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <DockPanel MinHeight="21">
+                        <Border DockPanel.Dock="Left" Width="3" Margin="0,1,7,1" Background="{StaticResource AppAccentBrush}"/>
+                        <TextBlock Text="{Binding}" Foreground="{StaticResource HudTextBrush}" FontSize="16"
+                                   FontWeight="SemiBold" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                    </DockPanel>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AppMainSectionGroupBoxStyle" TargetType="{x:Type GroupBox}">
+        <Setter Property="Foreground" Value="{StaticResource HudTextBrush}"/>
+        <Setter Property="Padding" Value="{StaticResource AppPanelPadding}"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+        <Setter Property="MinHeight" Value="510"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type GroupBox}">
+                    <Grid SnapsToDevicePixels="True">
+                        <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                        <Border Grid.Row="0" Padding="10,4" Background="{StaticResource AppSectionHeaderBrush}"
+                                BorderBrush="{StaticResource AppSectionBorderBrush}" BorderThickness="1,1,1,0">
+                            <DockPanel LastChildFill="True">
+                                <Border Width="4" Margin="0,0,8,0" Background="{StaticResource AppAccentBrush}"/>
+                                <ContentPresenter ContentSource="Header" RecognizesAccessKey="True" VerticalAlignment="Center"
+                                                  TextElement.Foreground="{StaticResource HudTextBrush}"
+                                                  TextElement.FontWeight="Bold" TextElement.FontSize="15"/>
+                            </DockPanel>
+                        </Border>
+                        <Border Grid.Row="1" Padding="{TemplateBinding Padding}" Background="{StaticResource AppSectionBodyBrush}"
+                                BorderBrush="{StaticResource AppSectionBorderBrush}" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AppScopedComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
+        <Setter Property="Foreground" Value="{StaticResource HudTextBrush}"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Padding" Value="8,5"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                    <Border x:Name="ItemBorder" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"
+                            HorizontalAlignment="Stretch" SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#FF282A2E"/></Trigger>
+                        <Trigger Property="IsSelected" Value="True"><Setter TargetName="ItemBorder" Property="Background" Value="#FFE52521"/><Setter Property="Foreground" Value="White"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AppScopedComboBoxStyle" TargetType="{x:Type ComboBox}">
+        <Setter Property="Foreground" Value="{StaticResource HudTextBrush}"/>
+        <Setter Property="Background" Value="{StaticResource HudInputBrush}"/>
+        <Setter Property="BorderBrush" Value="#FF4A4D55"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="MinHeight" Value="32"/>
+        <Setter Property="Padding" Value="9,4,30,4"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBox}">
+                    <Grid>
+                        <Border x:Name="InputBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2"/>
+                        <ToggleButton HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Focusable="False"
+                                      FocusVisualStyle="{x:Null}" ClickMode="Press"
+                                      IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                    <Grid Background="Transparent">
+                                        <Border Width="26" HorizontalAlignment="Right" Background="#FFE52521"
+                                                BorderBrush="#FFFF6D6A" BorderThickness="1,0,0,0" CornerRadius="0,2,2,0">
+                                            <Path Width="8" Height="5" Fill="White" Stretch="Fill" Data="M 0 0 L 4 4 L 8 0 Z"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </Grid>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                        <ContentPresenter Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" IsHitTestVisible="False"/>
+                        <Popup x:Name="PART_Popup" Placement="Bottom" AllowsTransparency="True" Focusable="False"
+                               IsOpen="{TemplateBinding IsDropDownOpen}" PopupAnimation="Fade">
+                            <Border MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}" MaxHeight="320"
+                                    Background="#FF111317" BorderBrush="#FF5D3F3B" BorderThickness="1">
+                                <ScrollViewer Margin="1" SnapsToDevicePixels="True" VerticalScrollBarVisibility="Auto"
+                                              Focusable="False" FocusVisualStyle="{x:Null}"
+                                              HorizontalContentAlignment="Stretch" CanContentScroll="True">
+                                    <ItemsPresenter HorizontalAlignment="Stretch" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True"><Setter TargetName="InputBorder" Property="BorderBrush" Value="#FFE52521"/></Trigger>
+                        <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.55"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AppScopedTextBoxStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="Foreground" Value="{StaticResource HudTextBrush}"/>
+        <Setter Property="Background" Value="{StaticResource HudInputBrush}"/>
+        <Setter Property="BorderBrush" Value="#FF4A4D55"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="8,5"/>
+        <Setter Property="CaretBrush" Value="#FFFFB4AA"/>
+        <Setter Property="SelectionBrush" Value="#FFE52521"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="TextBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2">
+                        <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="TextBorder" Property="BorderBrush" Value="#FFE52521"/></Trigger>
+                        <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.55"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AppScopedButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Foreground" Value="{StaticResource HudTextBrush}"/>
+        <Setter Property="Background" Value="#FF202227"/>
+        <Setter Property="BorderBrush" Value="#FF424650"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="10,6"/>
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="2" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonBorder" Property="Background" Value="#FF353841"/><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#FF5B606C"/></Trigger>
+                        <Trigger Property="IsPressed" Value="True"><Setter TargetName="ButtonBorder" Property="Background" Value="#FF18191C"/></Trigger>
+                        <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.5"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AppScopedCheckBoxStyle" TargetType="{x:Type CheckBox}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="Foreground" Value="{StaticResource HudTextBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type CheckBox}">
+                    <StackPanel Orientation="Horizontal">
+                        <Border x:Name="CheckBorder" Width="17" Height="17" Background="{StaticResource HudInputBrush}"
+                                BorderBrush="#FF4A4D55" BorderThickness="1" CornerRadius="2">
+                            <Path x:Name="CheckMark" Visibility="Collapsed" Stroke="#FFFFB4AA" StrokeThickness="2" Data="M 3 8 L 7 12 L 14 4"/>
+                        </Border>
+                        <ContentPresenter Margin="6,0,0,0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True"><Setter TargetName="CheckMark" Property="Visibility" Value="Visible"/><Setter TargetName="CheckBorder" Property="BorderBrush" Value="#FFE52521"/></Trigger>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="CheckBorder" Property="BorderBrush" Value="#FFFFB4AA"/></Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="CheckBorder" Property="BorderBrush" Value="#FFFFB4AA"/></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="AppNavButtonStyle" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="#FF1E2024"/>
+        <Setter Property="BorderBrush" Value="#FF333539"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="2"/>
+        <Setter Property="Padding" Value="7,6"/>
+        <Setter Property="Margin" Value="2,0"/>
+    </Style>
+    <Style x:Key="AppNavActiveButtonStyle" TargetType="{x:Type Border}" BasedOn="{StaticResource AppNavButtonStyle}">
+        <Setter Property="BorderBrush" Value="#FFE52521"/>
+        <Setter Property="Background" Value="#FF282A2E"/>
+    </Style>
+    <Style x:Key="AppNavLabelStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="Visibility" Value="Visible"/>
+        <Setter Property="Foreground" Value="{StaticResource HudTextBrush}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="5,0,0,0"/>
+    </Style>
+    <Style x:Key="AppPrimaryButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource AppScopedButtonStyle}">
+        <Setter Property="Background" Value="#FFE52521"/>
+        <Setter Property="BorderBrush" Value="#FFFF6D6A"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Padding" Value="18,10"/>
+    </Style>
+    <Style x:Key="AppSecondaryButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource AppScopedButtonStyle}">
+        <Setter Property="Foreground" Value="{StaticResource HudMutedTextBrush}"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Padding" Value="14,10"/>
+    </Style>
+</ResourceDictionary>

@@ -7,10 +7,13 @@
         xmlns:local="clr-namespace:TDU2_Track_Records.Classes"
         Title="Car Info"
         FontSize="18"
-        MinWidth="800"
+        Width="900"
+        Height="760"
+        MinWidth="640"
         MaxWidth="900"
         WindowStyle="None"
-        MinHeight="710" MouseLeftButtonDown="Window_MouseLeftButtonDown" SizeToContent="WidthAndHeight"
+        MinHeight="520" MouseLeftButtonDown="Window_MouseLeftButtonDown" SizeToContent="Manual"
+        ResizeMode="CanResize" WindowStartupLocation="CenterOwner"
         >
     <Window.Background>
         <ImageBrush ImageSource="/Images/backgrounds/carbon.png"
@@ -50,7 +53,8 @@
             </Setter>
         </Style>
     </Window.Resources>
-    <Grid>
+    <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+    <Grid Width="900">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="54*"/>
             <ColumnDefinition Width="11*"/>
@@ -111,7 +115,8 @@
                 </Image>
             </StackPanel>
             <!-- Car Header -->
-            <Border Grid.Row="0" Grid.ColumnSpan="2" Background="#333" Margin="5" Padding="5">
+            <Border Grid.Row="0" Grid.ColumnSpan="2" Background="{DynamicResource AppSectionBodyBrush}"
+                    BorderBrush="{DynamicResource AppSectionBorderBrush}" BorderThickness="1" Margin="5" Padding="5">
                 <Grid>
                     <Grid.Background>
                         <ImageBrush x:Name="VehicleImage" ImageSource="{Binding VehicleImage}" Stretch="UniformToFill" TileMode="None" AlignmentX="Center" AlignmentY="Center"/>
@@ -132,7 +137,8 @@
                 </Grid>
             </Border>
             <!-- Quick Stats Section -->
-            <Border Grid.Row="1" Grid.Column="0"  Background="#FF333333" Padding="5,0,0,0" Margin="5">
+            <Border Grid.Row="1" Grid.Column="0" Background="{DynamicResource AppSectionBodyBrush}"
+                    BorderBrush="{DynamicResource AppSectionBorderBrush}" BorderThickness="1" Padding="5,0,0,0" Margin="5">
                 <StackPanel Margin="10,10,10,10">
                     <!-- Acceleration -->
                     <StackPanel Orientation="Horizontal" Margin="5,10,0,0">
@@ -221,7 +227,8 @@
                 </StackPanel>
             </Border>
             <!-- Engine Section -->
-            <Border Grid.Row="1" Grid.Column="1" Background="#333" Margin="5" >
+            <Border Grid.Row="1" Grid.Column="1" Background="{DynamicResource AppSectionBodyBrush}"
+                    BorderBrush="{DynamicResource AppSectionBorderBrush}" BorderThickness="1" Margin="5">
                 <StackPanel Margin="10">
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -265,7 +272,8 @@
                 </StackPanel>
             </Border>
             <!-- Chassis Section -->
-            <Border Grid.Row="2" Grid.Column="0" Background="#333" Padding="5,5,5,5" Margin="5">
+            <Border Grid.Row="2" Grid.Column="0" Background="{DynamicResource AppSectionBodyBrush}"
+                    BorderBrush="{DynamicResource AppSectionBorderBrush}" BorderThickness="1" Padding="5" Margin="5">
                 <StackPanel x:Name="chassisPanel" Margin="5,10,0,10">
                     <TextBlock Text="Chassis" Foreground="#999" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -326,7 +334,8 @@
                 </StackPanel>
             </Border>
             <!-- Performance Section -->
-            <Border Grid.Row="2" Grid.Column="1" Background="#333" Margin="5" >
+            <Border Grid.Row="2" Grid.Column="1" Background="{DynamicResource AppSectionBodyBrush}"
+                    BorderBrush="{DynamicResource AppSectionBorderBrush}" BorderThickness="1" Margin="5">
                 <StackPanel x:Name="performancePanel" Margin="10">
                     <TextBlock Text="Performance" Foreground="#999" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,5">
@@ -352,7 +361,9 @@
                     </StackPanel>
                 </StackPanel>
             </Border>
-            <Border Grid.Row="4" Background="#333" Grid.ColumnSpan="2" HorizontalAlignment="Center" Padding="10" Margin="5">
+            <Border Grid.Row="3" Background="{DynamicResource AppSectionBodyBrush}"
+                    BorderBrush="{DynamicResource AppSectionBorderBrush}" BorderThickness="1"
+                    Grid.ColumnSpan="2" HorizontalAlignment="Center" Padding="10" Margin="5">
                 <StackPanel Orientation="Vertical" >
                     <TextBlock Text="Information" Foreground="#999" FontWeight="Bold" FontSize="20" Margin="0,0,0,10"/>
                     <StackPanel Orientation="Horizontal">
@@ -406,4 +417,5 @@
             </Border>
         </Grid>
     </Grid>
+    </Viewbox>
 </Window>

@@ -15,14 +15,18 @@ namespace TDU2_Track_Records
     {
         public int Popup = 0;
         readonly string connectionString = Settings.Default.connectionString;
-        public string distance = Settings.Default.distance;
-        public string speed = Settings.Default.speed;
-        readonly string SI = Settings.Default.system;
         public int keep = 0;
 
         public tracks()
         {
             InitializeComponent();
+            Rect workArea = SystemParameters.WorkArea;
+            Width = Math.Min(760, Math.Max(MinWidth, workArea.Width - 48));
+            Height = Math.Min(700, Math.Max(MinHeight, workArea.Height - 48));
+            MaxWidth = Width;
+            MaxHeight = Height;
+            Left = workArea.Left + Math.Max(0, (workArea.Width - Width) / 2);
+            Top = workArea.Top + Math.Max(0, (workArea.Height - Height) / 2);
             OrientationGroupBox.Visibility = Visibility.Collapsed;
             LapsGroupBox.Visibility = Visibility.Collapsed;
             DistanceGroupBox.Visibility = Visibility.Collapsed;
@@ -44,13 +48,21 @@ namespace TDU2_Track_Records
                 new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_speed.png", Description = "Speed Multiplayer", Value = "Speed MP" },
                 new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_ftl.png", Description = "Follow The Leader", Value = "Follow The Leader MP" },
                 new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_kyd.png", Description = "Keep Your Distance", Value = "Keep Your Distance MP" },
-                new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_speedtrap.png", Description = "Speed Trap Multiplayer", Value = "Speed Trap MP" }
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_mp_speedtrap.png", Description = "Speed Trap Multiplayer", Value = "Speed Trap MP" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_cup_timeattack.png", Description = "Time Attack Player Challenge", Value = "Time Attack PC" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_cup_speed.png", Description = "Speed Player Challenge", Value = "Speed PC" },
+                new ComboBoxItem { ImagePath = "Images/ico/events/ico_cup_speedtrap.png", Description = "Speed Trap Player Challenge", Value = "Speed Trap PC" }
             };
-            distanceTextBlock.Text = distance;
-            MinimumSpeedDistance.Text = distance;
             RaceTypeComboBox.ItemsSource = items;
             PopulateClasses();
             ShowLastEntry();
+        }
+
+        internal void RefreshMeasurementUnits()
+        {
+            bool imperial = MeasurementUnits.IsImperial;
+            MeasurementUnits.ConvertDraft(LapLengthTextBox, MeasurementUnits.MilesPerKilometer, imperial);
+            MeasurementUnits.ConvertDraft(MinSpeedTextBox, MeasurementUnits.MilesPerKilometer, imperial);
         }
 
         private void PopulateClasses()
@@ -86,7 +98,7 @@ namespace TDU2_Track_Records
             try
             {
                 // Define the query to get the last entry
-                string query = "SELECT Name, RaceType, Length, RestrictedClass FROM tracks ORDER BY id DESC LIMIT 1";
+                string query = "SELECT Island, Name, RaceType, Length, RestrictedClass FROM tracks ORDER BY id DESC LIMIT 1";
 
                 // Execute the query and retrieve the data
                 using (var conn = new SQLiteConnection(Settings.Default.connectionString))
@@ -99,11 +111,12 @@ namespace TDU2_Track_Records
                         {
                             // Retrieve the values from the last entry
                             string trackName = reader["Name"].ToString();
+                            string island = reader["Island"].ToString();
                             string raceType = reader["RaceType"].ToString();
-                            string length = reader["Length"].ToString();
+                            string length = reader["Length"].ToString() + " km";
                             string RestictClass = reader["RestrictedClass"].ToString(); 
                             // Update the TextBlock with the information
-                            LastEntry.Text = $"Last Entry: {trackName},     Class: {RestictClass},     Type: {raceType},     Length: {length}";
+                            LastEntry.Text = $"Last Entry: {trackName},     Island: {island},     Class: {RestictClass},     Type: {raceType},     Length: {length}";
                         }
                         else
                         {
@@ -229,7 +242,14 @@ namespace TDU2_Track_Records
             // Retrieve and trim input values
             var selectedItemType = RaceTypeComboBox.SelectedItem as ComboBoxItem;
             string raceType = selectedItemType.Value;
+            string island = (IslandComboBox.SelectedItem as System.Windows.Controls.ComboBoxItem)?.Content?.ToString();
             string trackName = TrackNameTextBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(island))
+            {
+                ShowValidationError("Island must be selected.", IslandComboBox);
+                return;
+            }
 
             if (OrientationGroupBox.Visibility == Visibility.Visible) {
                 if (cb_orientation.IsChecked == true) {
@@ -250,10 +270,11 @@ namespace TDU2_Track_Records
             {
                 lapsText = "1";
             }
-            if (DistanceGroupBox.Visibility == Visibility.Visible) { 
-            totalDistanceText = Convert.ToDouble(LapLengthTextBox.Text);
-            } else {
-                totalDistanceText = 0;
+            if (DistanceGroupBox.Visibility == Visibility.Visible &&
+                (!MeasurementUnits.TryParse(LapLengthTextBox.Text, out totalDistanceText) || totalDistanceText < 0))
+            {
+                ShowValidationError("Enter a valid distance.", LapLengthTextBox);
+                return;
             }
             string minSpeedText = MinSpeedTextBox.Text.Trim();
             string checkpointsText = CheckpointsTextBox.Text.Trim();
@@ -295,9 +316,15 @@ namespace TDU2_Track_Records
             //    return;
 
             // Parse numeric inputs
-            double totalDistance = totalDistanceText;
+            double totalDistance = DistanceGroupBox.Visibility == Visibility.Visible
+                ? MeasurementUnits.DraftToMetric(LapLengthTextBox, totalDistanceText, MeasurementUnits.MilesPerKilometer)
+                : 0;
             int laps = ParseInt(lapsText, "Number of Laps", LapsTextBox);
-            int minSpeed = ParseInt(minSpeedText, "Minimum Speed", MinSpeedTextBox);
+            if (!MeasurementUnits.TryReadMetricInteger(minSpeedText, MeasurementUnits.MilesPerKilometer, out int minSpeed))
+            {
+                ShowValidationError("Enter a valid minimum speed.", MinSpeedTextBox);
+                return;
+            }
             int checkpoints = ParseInt(checkpointsText, "Checkpoints", CheckpointsTextBox);
             int orientation = Convert.ToInt32(orientationCB);
 
@@ -308,8 +335,8 @@ namespace TDU2_Track_Records
             double lapLength = CalculateLapLength(raceType, totalDistance, laps);
 
             // Insert the event into the database
-            InsertTrackIntoDatabase(trackName, raceType, orientation, totalDistance, lapLength, laps, minSpeed, checkpoints, restrictedClass, restrictedCar);
-            LastEntry.Text = $"{trackName}, {raceType}, {totalDistance}";
+            InsertTrackIntoDatabase(island, trackName, raceType, orientation, totalDistance, lapLength, laps, minSpeed, checkpoints, restrictedClass, restrictedCar);
+            LastEntry.Text = $"{trackName}, {island}, {raceType}, {totalDistanceText} {Settings.Default.distance}";
             // Inform the user of success and clear input fields
             LastEntry.Text = $" Success: " + LastEntry.Text;
             //MessageBox.Show("Event added successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -317,18 +344,22 @@ namespace TDU2_Track_Records
         }
 
         // Updated InsertTrackIntoDatabase to include the restricted class and car
-        private void InsertTrackIntoDatabase(string trackName, string raceType, int orientation, double totalDistance, double lapLength, int laps, int minSpeed, int checkpoints, string restrictedClass, string restrictedCar)
+        private void InsertTrackIntoDatabase(string island, string trackName, string raceType, int orientation, double totalDistance, double lapLength, int laps, int minSpeed, int checkpoints, string restrictedClass, string restrictedCar)
         {
             try
             {
                 using (var conn = new SQLiteConnection(Settings.Default.connectionString))
                 {
                     conn.Open();
-                    string query = "INSERT INTO tracks (Name, Length, RaceType, Laps, MinSpeed, Checkpoints, RestrictedClass, RestrictedCar, Runs) VALUES (@name, @length, @type, @laps, @minSpeed, @checkpoints, @restrictedClass, @restrictedCar, @runs)";
+                    string query = @"INSERT INTO tracks
+                        (Island, Name, Length, RaceType, Orientation, Laps, MinSpeed, Checkpoints, RestrictedClass, RestrictedCar, Runs)
+                        VALUES
+                        (@island, @name, @length, @type, @orientation, @laps, @minSpeed, @checkpoints, @restrictedClass, @restrictedCar, @runs)";
 
                     using (var cmd = new SQLiteCommand(query, conn))
                     {
                         // Prepare parameters for the insert statement
+                        cmd.Parameters.Add("@island", DbType.String).Value = island;
                         cmd.Parameters.Add("@name", DbType.String).Value = trackName;
                         cmd.Parameters.Add("@type", DbType.String).Value = raceType;
                         cmd.Parameters.Add("@orientation", DbType.Int32).Value = orientation;
@@ -458,7 +489,8 @@ namespace TDU2_Track_Records
             RaceTypeComboBox.SelectedIndex = -1; // Reset selection
             cb_orientation.IsChecked = false; // Reset selection
             RestrictedCarComboBox.SelectedIndex = -1;
-            if (keep == 0) { 
+            if (keep == 0) {
+            IslandComboBox.SelectedIndex = -1;
             RestrictedClassComboBox.SelectedIndex = -1;
             }
             OrientationGroupBox.Visibility = Visibility.Collapsed;
@@ -477,18 +509,19 @@ namespace TDU2_Track_Records
 
             // Adjust visibility based on the selected race type
             bool isRaceOrEliminator = selectedRaceType == "Race SP" || selectedRaceType == "Eliminator SP" || selectedRaceType == "Race MP";
-            bool requiresDistance = isRaceOrEliminator || selectedRaceType == "Time Attack SP";
-            bool isSpeedEvent = selectedRaceType == "Speed SP" || selectedRaceType == "Speed MP";
-            bool isSpeedTrap = selectedRaceType == "Speed Trap SP" || selectedRaceType == "Speed Trap MP";
+            bool isTimeAttack = selectedRaceType == "Time Attack SP" || selectedRaceType == "Time Attack PC";
+            bool requiresDistance = isRaceOrEliminator || isTimeAttack;
+            bool isSpeedEvent = selectedRaceType == "Speed SP" || selectedRaceType == "Speed MP" || selectedRaceType == "Speed PC";
+            bool isSpeedTrap = selectedRaceType == "Speed Trap SP" || selectedRaceType == "Speed Trap MP" || selectedRaceType == "Speed Trap PC";
 
             // Define conditions for restricted class and vehicle
-            bool needsRestrictedClass = selectedRaceType.EndsWith("SP") || selectedRaceType.EndsWith("MP"); 
-            bool needsRestrictedVehicle = selectedRaceType.EndsWith("MP");
+            bool needsRestrictedClass = selectedRaceType.EndsWith("SP") || selectedRaceType.EndsWith("MP") || selectedRaceType.EndsWith("PC");
+            bool needsRestrictedVehicle = selectedRaceType.EndsWith("MP") || selectedRaceType.EndsWith("PC");
 
             // Show or hide group boxes based on the event type
             DistanceGroupBox.Visibility = requiresDistance ? Visibility.Visible : Visibility.Collapsed;
-            LapsGroupBox.Visibility = isRaceOrEliminator ? Visibility.Visible : Visibility.Collapsed;
-            OrientationGroupBox.Visibility = isRaceOrEliminator && requiresDistance ? Visibility.Visible : Visibility.Collapsed;
+            LapsGroupBox.Visibility = isRaceOrEliminator || isTimeAttack ? Visibility.Visible : Visibility.Collapsed;
+            OrientationGroupBox.Visibility = requiresDistance ? Visibility.Visible : Visibility.Collapsed;
             SpeedGroupBox.Visibility = isSpeedEvent ? Visibility.Visible : Visibility.Collapsed;
             CheckpointsGroupBox.Visibility = isSpeedTrap ? Visibility.Visible : Visibility.Collapsed;
 
@@ -542,7 +575,25 @@ namespace TDU2_Track_Records
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            if (Window.GetWindow(sender as DependencyObject) is MainWindow mainWindow)
+            {
+                mainWindow.ShowEventsView();
+                return;
+            }
+
             Close();
+        }
+
+        private void MinimizeButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+            e.Handled = true;
+        }
+
+        private void CloseButton_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Close();
+            e.Handled = true;
         }
 
         protected override void OnClosed(EventArgs e)
@@ -557,6 +608,9 @@ namespace TDU2_Track_Records
             {
                 throw new ArgumentNullException(nameof(e));
             }
+
+            if (Window.GetWindow(e.OriginalSource as DependencyObject) != this)
+                return;
 
             if (e.ButtonState == MouseButtonState.Pressed)
             {

@@ -5,13 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:p="clr-namespace:TDU2_Track_Records.Properties"
         xmlns:local="clr-namespace:TDU2_Track_Records.Classes"
-        mc:Ignorable="d" FontFamily="Adobe Gothic Std B" FontSize="16" MinHeight="573" MinWidth="1525"
+        mc:Ignorable="d" FontFamily="Adobe Gothic Std B" FontSize="16" MinHeight="500" MinWidth="800"
         Title="Database Vehicle Managment" WindowStyle="None" AllowsTransparency="True" 
         Opacity="{Binding Source={x:Static p:Settings.Default}, Path=MainWindowOpacity, Mode=OneWay}"
         Background="{x:Null}"
         ResizeMode="CanResizeWithGrip" SizeToContent="WidthAndHeight" HorizontalContentAlignment="Stretch"
         ScrollViewer.HorizontalScrollBarVisibility="Auto" MouseLeftButtonDown="VehicleManagement_MouseLeftButtonDown">
-    <Grid>
+    <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+    <Grid MinHeight="573" MinWidth="1525">
+        <Grid.Resources>
+            <Style TargetType="{x:Type GroupBox}" BasedOn="{StaticResource AppLabeledGroupBoxStyle}"/>
+        </Grid.Resources>
         <Grid.Background>
             <ImageBrush ImageSource="/Images/backgrounds/carbon.png"
                     TileMode="Tile" 
@@ -83,7 +87,8 @@
             <!--Image Content Panel-->
             <GroupBox Header="Select Vehicle" Margin="5" DockPanel.Dock="Top">
                 <StackPanel>
-                <ComboBox x:Name="VehicleComboBox" SelectionChanged="VehicleComboBox_SelectionChanged" Margin="5"/>
+                <ComboBox x:Name="VehicleComboBox" SelectionChanged="VehicleComboBox_SelectionChanged"
+                          FocusVisualStyle="{x:Null}" Margin="5"/>
                     <TextBlock x:Name="VehicleComboBoxSelectionDisplay" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
                 </StackPanel>
             </GroupBox>
@@ -155,7 +160,7 @@
                                     <TextBox x:Name="VehicleModelTextBox" Margin="0,0,0,0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" AutoWordSelection="True" MaxLength="47" MinWidth="150" MaxWidth="150" TextWrapping="WrapWithOverflow" />
                                 </GroupBox>
                                 <GroupBox Header="Category" Padding="5,5,5,5">
-                                    <ComboBox x:Name="VehicleClassComboBox" VerticalAlignment="Top" MinWidth="80" MinHeight="0">
+                                    <ComboBox x:Name="VehicleClassComboBox" SelectedValuePath="Content" VerticalAlignment="Top" MinWidth="80" MinHeight="0">
                                         <ComboBoxItem Content="A1"/>
                                         <ComboBoxItem Content="A2"/>
                                         <ComboBoxItem Content="A3"/>
@@ -274,7 +279,7 @@
                             </DockPanel>
                         </GroupBox>
                         <GroupBox Header="Type" Margin="5">
-                            <ComboBox x:Name="EngineTypeComboBox" Margin="5" VerticalAlignment="Stretch">
+                            <ComboBox x:Name="EngineTypeComboBox" SelectedValuePath="Content" Margin="5" VerticalAlignment="Stretch">
                                 <ComboBoxItem Content="Flat 4-cylinder" Tag="0"/>
                                 <ComboBoxItem Content="L-twin" Tag="1"/>
                                 <ComboBoxItem Content="Rotary engine" Tag="2"/>
@@ -293,14 +298,14 @@
                             </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Drive" Margin="5">
-                            <ComboBox x:Name="EngineDriveComboBox" Margin="5" VerticalAlignment="Stretch">
+                            <ComboBox x:Name="EngineDriveComboBox" SelectedValuePath="Content" Margin="5" VerticalAlignment="Stretch">
                                 <ComboBoxItem Content="FWD" Tag="FWD"/>
                                 <ComboBoxItem Content="AWD" Tag="AWD"/>
                                 <ComboBoxItem Content="RWD" Tag="RWD"/>
                             </ComboBox>
                         </GroupBox>
                         <GroupBox Header="Placement" Margin="5">
-                            <ComboBox x:Name="EnginePositionComboBox" Margin="5" VerticalAlignment="Stretch">
+                            <ComboBox x:Name="EnginePositionComboBox" SelectedValuePath="Content" Margin="5" VerticalAlignment="Stretch">
                                 <ComboBoxItem Content="Front" Tag="Front"/>
                                 <ComboBoxItem Content="Central" Tag="Central"/>
                                 <ComboBoxItem Content="Rear" Tag="Rear"/>
@@ -308,7 +313,7 @@
                         </GroupBox>
                         <GroupBox Header="Max Torque" Margin="5">
                             <StackPanel Orientation="Horizontal">
-                                <TextBox x:Name="MaxTorqueTextBox" Width="50" Margin="5,5,5,5" MaxLength="3" TextChanged="TextBox_TextChanged" />
+                                <TextBox x:Name="MaxTorqueTextBox" Width="72" Margin="5" MaxLength="8" />
                                 <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=torque, Mode=OneWay}" VerticalAlignment="Center" Margin="2,0,0,0"/>
                                 <TextBlock Text=" @" VerticalAlignment="Center" />
                                 <TextBox x:Name="MaxTorqueRPMTextBox" Width="50" Margin="5" MaxLength="4" TextChanged="TextBox_TextChanged" />
@@ -329,14 +334,14 @@
                 <GroupBox Header="Performance" Margin="5">
                     <StackPanel>
                         <GroupBox x:Name="Gearbox" Header="Gearbox" Margin="5">
-                            <ComboBox x:Name="GearboxComboBox" Margin="5" VerticalAlignment="Stretch">
+                            <ComboBox x:Name="GearboxComboBox" SelectedValuePath="Content" Margin="5" VerticalAlignment="Stretch">
                                 <ComboBoxItem Content="Automatic" Tag="Auto"/>
                                 <ComboBoxItem Content="Mechanical" Tag="Mech"/>
                                 <ComboBoxItem Content="Sequential" Tag="Seq"/>
                             </ComboBox>
                         </GroupBox>
                         <GroupBox x:Name="Gears" Header="# Gears" Margin="5">
-                            <ComboBox x:Name="GearsComboBox" Margin="5" VerticalAlignment="Stretch">
+                            <ComboBox x:Name="GearsComboBox" SelectedValuePath="Content" Margin="5" VerticalAlignment="Stretch">
                                 <ComboBoxItem Content="7"/>
                                 <ComboBoxItem Content="6"/>
                                 <ComboBoxItem Content="5"/>
@@ -346,7 +351,7 @@
                         </GroupBox>
                         <GroupBox Header="Top Speed" Margin="5">
                             <DockPanel>
-                                <TextBox x:Name="TopSpeedTextBox" Margin="5" Width="100" MaxLength="3" TextChanged="TextBox_TextChanged" />
+                                <TextBox x:Name="TopSpeedTextBox" Margin="5" Width="100" MaxLength="8" />
                                 <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" VerticalAlignment="Center" Margin="0,0,5,0"/>
                             </DockPanel>
                         </GroupBox>
@@ -362,7 +367,7 @@
                         </GroupBox>
                         <GroupBox Header="Weight" Margin="5">
                             <DockPanel>
-                                <TextBox x:Name="WeightTextBox" Width="100" MaxLength="4"  TextChanged="TextBox_TextChanged" />
+                                <TextBox x:Name="WeightTextBox" Width="100" MaxLength="9" />
                                 <TextBlock Text="{Binding Source={x:Static p:Settings.Default}, Path=weight, Mode=OneWay}" VerticalAlignment="Center" Padding="0,0,5,0"/>
                             </DockPanel>
                         </GroupBox>
@@ -373,4 +378,5 @@
 
         </Grid>
     </Grid>
+    </Viewbox>
 </Window>

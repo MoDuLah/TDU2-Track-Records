@@ -11,12 +11,23 @@
  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
         ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Adobe Gothic Std B" FontSize="16" 
         WindowStyle="None" AllowsTransparency="True" 
-        Background="{x:Null}" SizeToContent="WidthAndHeight" ResizeMode="NoResize" ShowInTaskbar="False" Closing="Window_Closing">
+        Background="{x:Null}" Width="980" Height="500" MinWidth="760" MinHeight="420"
+        SizeToContent="Manual" ResizeMode="NoResize" ShowInTaskbar="False" Closing="Window_Closing">
 
     <Window.Resources>
         <local:UnitConverter x:Key="UnitConverter"/>
     </Window.Resources>
-                   <StackPanel Margin="10">
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="12"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
                         <GroupBox Header="Main Window Opacity">
                             <StackPanel Orientation="Horizontal">
                                 <Slider x:Name="OpacitySlider" Minimum="0.05" LargeChange="0.25" Maximum="1" Width="150" Margin="5" TickFrequency="0.05" TickPlacement="Both"
@@ -25,7 +36,7 @@
                                 <TextBlock Text="{Binding ElementName=OpacitySlider, Path=Value, StringFormat='Opacity: {0:F2}'}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox Header="Background Opacity">
+                        <GroupBox Header="Background Opacity" Grid.Row="1" VerticalAlignment="Top">
                             <StackPanel Orientation="Horizontal">
                                 <Slider x:Name="BGOpacitySlider" Minimum="0.05" LargeChange="0.25" Maximum="1" Width="150" Margin="5" TickFrequency="0.05" TickPlacement="Both"
                                         Value="{Binding Source={x:Static p:Settings.Default}, Path=BGOpacity, Mode=TwoWay}"  />
@@ -33,10 +44,11 @@
                                 <TextBlock Text="{Binding ElementName=BGOpacitySlider, Path=Value, StringFormat='Opacity: {0:F2}'}" Margin="10,0,0,0" VerticalAlignment="Center"/>
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox Header="Units">
+                        <GroupBox Header="Units" Grid.Column="2">
                             <StackPanel Orientation="Vertical" Margin="5">
                                 <Slider x:Name="UnitSlider" Minimum="0" Maximum="1" TickFrequency="1" IsSnapToTickEnabled="True" Width="150"
-                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Converter={StaticResource UnitConverter}, Mode=TwoWay}" />
+                                        Value="{Binding Source={x:Static p:Settings.Default}, Path=system, Converter={StaticResource UnitConverter}, Mode=OneWay}"
+                                        ToolTip="Switch between Metric and Imperial immediately" />
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                                     <TextBlock Text="Speed: " FontSize="12"/>
                                     <TextBlock x:Name="SpeedUnit"  FontSize="12" Text="{Binding Source={x:Static p:Settings.Default}, Path=speed, Mode=OneWay}" />
@@ -49,9 +61,23 @@
                                 </StackPanel>
                             </StackPanel>
                         </GroupBox>
-                        <GroupBox Header="Dealership Columns">
-                            <TextBox Text="{Binding Source={x:Static p:Settings.Default}, Path=dealershipColumns, Mode=TwoWay}" HorizontalContentAlignment="Center" TextChanged="TextBox_TextChanged"/>
+                        <GroupBox Header="Dealership Columns" Grid.Column="2" Grid.Row="1">
+                            <TextBox Text="{Binding Source={x:Static p:Settings.Default}, Path=dealershipColumns, Mode=TwoWay}" HorizontalContentAlignment="Center"/>
                         </GroupBox>
-        <Button Content="Close" Margin="5" Click="CancelButton_Click" HorizontalAlignment="Center" VerticalAlignment="Center" MinWidth="70" MinHeight="40" Foreground="White" />
-    </StackPanel>
+                        <GroupBox Header="Save Profile" Grid.Column="2" Grid.Row="2" VerticalAlignment="Top">
+                            <StackPanel Margin="5">
+                                <TextBlock Text="Choose the active Track Records profile, then sync only that save."
+                                           Margin="5,0,5,5" TextWrapping="Wrap" FontSize="13"/>
+                                <DockPanel LastChildFill="True">
+                                    <Button x:Name="SyncSelectedProfileButton" Content="Sync Selected Profile"
+                                            Click="SyncSelectedProfile_Click" DockPanel.Dock="Right"
+                                            Margin="5,2" Padding="8,2"
+                                            ToolTip="Import cars, garage locations, slots, and mileage for only the selected profile"/>
+                                    <ComboBox x:Name="ProfileComboBox" MinWidth="210" Margin="5,2"
+                                              SelectionChanged="ProfileComboBox_SelectionChanged"
+                                              ToolTip="Choose which save profile is active in Track Records"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </GroupBox>
+        </Grid>
 </Window>

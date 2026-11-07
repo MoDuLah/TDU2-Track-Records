@@ -27,6 +27,12 @@ namespace TDU2_Track_Records
         public vehicleCard(int vehicleId)
         {
             InitializeComponent();
+            ThemeManager.ApplyScopedControlStyles(this);
+            Rect workArea = SystemParameters.WorkArea;
+            MaxWidth = Math.Max(MinWidth, workArea.Width - 24);
+            MaxHeight = Math.Max(MinHeight, workArea.Height - 48);
+            Width = Math.Min(900, MaxWidth);
+            Height = Math.Min(760, MaxHeight);
             conversionSpeedFactor = SI == "Imperial" ? 0.621371 : 1.0;
             conversionWeightFactor = SI == "Imperial" ? 2.20462 : 1.0;
             conversionTorqueFactor = SI == "Imperial" ? 0.737562 : 1.0;
@@ -37,6 +43,7 @@ namespace TDU2_Track_Records
             if (vehicle != null)
             {
                 this.DataContext = vehicle;
+                UpdateStorageLocationVisibility(vehicle);
                 VehiclerClass.Source = new BitmapImage(new Uri("/Images/carClasses/" + vehicle.VehicleCategory + ".png", UriKind.Relative));
                 VehiclerLevel.Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative)); //" + vehicle.VehicleLevel + "
                 AccTimeImage.Source = new BitmapImage(new Uri($"/Images/vehicleCard/acc{conversionAccImage}ph.png", UriKind.Relative));
@@ -58,7 +65,10 @@ namespace TDU2_Track_Records
             using (SQLiteConnection conn = new SQLiteConnection(connectionString))
             {
                 conn.Open();
-                string query = "SELECT * FROM vehicles WHERE Id = @Id";
+                string query = @"SELECT vehicles.*,
+                                        CAST(_vehicle_image AS BLOB) AS _vehicle_image_bytes
+                                 FROM vehicles
+                                 WHERE Id = @Id";
                 using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
                 {
                     cmd.Parameters.AddWithValue("@Id", vehicleId);
@@ -71,7 +81,9 @@ namespace TDU2_Track_Records
                                 id = Convert.ToInt32(reader["id"]),
                                 // Header banner
                                 VehicleName = reader["_vehicle_name"].ToString(),
-                                VehicleImage = reader["_vehicle_image"] != DBNull.Value ? (byte[])reader["_vehicle_image"] : null,
+                                VehicleImage = reader["_vehicle_image_bytes"] != DBNull.Value
+                                    ? (byte[])reader["_vehicle_image_bytes"]
+                                    : null,
                                 VehicleCategory = reader["_vehiclecategory_name"].ToString(),
                                 VehicleLevel = reader["_upgrade_level"].ToString(),
                                 // Statistics
@@ -351,6 +363,7 @@ namespace TDU2_Track_Records
 
                     // Update the UI
                     this.DataContext = vehicle;
+                    UpdateStorageLocationVisibility(vehicle);
                     VehiclerLevel.Source = new BitmapImage(new Uri($"/Images/vehicleCard/Tune{vehicle.VehicleLevel}.png", UriKind.Relative));
                 }
                 catch (FormatException ex)
@@ -364,6 +377,16 @@ namespace TDU2_Track_Records
                     MessageBox.Show("An unexpected error occurred: " + ex.Message);
                 }
             }
+        }
+
+        private void UpdateStorageLocationVisibility(VehicleManagement vehicle)
+        {
+            HouseIbiza.Visibility = string.IsNullOrWhiteSpace(vehicle?.HouseStoredNameIbiza)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
+            HouseHawaii.Visibility = string.IsNullOrWhiteSpace(vehicle?.HouseStoredNameHawaii)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
         }
         public double ConvertToZeroToSixtyTime(double zeroToHundredKmhTime)
         {
